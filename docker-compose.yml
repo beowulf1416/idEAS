@@ -1,0 +1,73 @@
+version: "3.9"
+services:
+  db:
+    build:
+      context: ./data/db
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+  api:
+    build:
+      context: ./services
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    environment:
+      - RUST_LOG=debug
+      - URL_DB_FILE=/run/secrets/url_db
+      - CERT_FILE=/run/secrets/site.key
+      - KEY_FILE=/run/secrets/site.key
+      - JWT_SECRET_FILE=/run/secrets/jwt.txt
+    secrets:
+      - source: url_db
+        target: url_db
+      - source: site.key
+        target: site.key
+      - source: site.crt
+        target: site.crt
+      - source: jwt_secret
+        target: jwt.txt
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    # depends_on:
+    #   - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ui/public/www/html/saas:/opt/erp/ui/public/www/html
+    environment:
+      - NGINX_HOST=erp.com
+      - NGINX_PORT=80
+    secrets:
+      - source: site.key
+        target: site.key
+      - source: site.crt
+        target: site.crt
+  swagger:
+    build:
+      context: ./ui/swagger
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "8080:8080"
+    #volumes:
+    #  - ./ui/swagger:/mnt
+    environment:
+      - SWAGGER_JSON_URL=http://erp.com:8080/definitions/swagger.json
+    #  - SWAGGER_JSON=./ui/swagger/swagger.json
+    #  - BASE_URL=/swagger
+secrets:
+  url_db:
+    file: ./secrets/url_db.txt
+  site.key:
+    file: ./secrets/site.key
+  site.crt:
+    file: ./secrets/site.crt
+  jwt_secret:
+    file: ./secrets/jwt.txt
