@@ -1,0 +1,170 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ERP openapi document",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://erp.com:8081",
+            "description": "api server"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "apiResponse": {
+                "type": "object",
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "data": {
+                        "type": "object",
+                        "readOnly": true
+                    }
+                }
+            },
+            "signUpRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "writeOnly": true
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "email": "email@email.com",
+                    "password": "thisIs1Password*"
+                }
+            },
+            "signInRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "writeOnly": true
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "email": "email@email.com",
+                    "password": "thisIs1Password*"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/user/signup": {
+            "summary": "sign up",
+            "description": "sign up",
+            "post": {
+                "summary": "POST signup credentials",
+                "description": "POST signup credentials",
+                "tags": [ "user" ],
+                "operationId": "user_signup",
+                "requestBody": {
+                    "required": true,
+                    "description": "request body of email and password json object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/signUpRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "user failed to sign up",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signin": {
+            "summary": "sign in",
+            "description": "sign in",
+            "post": {
+                "summary": "POST sign in credentials",
+                "description": "POST sign in credentials",
+                "tags": [ "user" ],
+                "operationId": "user_signin",
+                "requestBody": {
+                    "required": true,
+                    "description": "request body of email and password json object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/signInRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user signed in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "user sign in failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
