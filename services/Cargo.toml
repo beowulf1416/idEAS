@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "common",
+    "data/tenants",
+    "data/users",
+    "api"
+]
