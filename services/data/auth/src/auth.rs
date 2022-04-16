@@ -10,6 +10,7 @@ use deadpool_postgres::{ Pool };
 
 use uuid::Uuid;
 use common::email::Email;
+use common::user::User;
 
 use crate::jwt;
 use crate::db;
@@ -120,8 +121,6 @@ impl Auth {
                         return Err(String::from("unable to prepare statement"));
                     }
                 }
-
-                return true;
             } else {
                 error!("unable to retrieve database client");
 
@@ -142,6 +141,7 @@ impl Auth {
 mod tests {
 
     use crate::jwt::JWT;
+    use crate::auth::Auth;
 
     #[test]
     fn test_new() {
@@ -171,12 +171,12 @@ mod tests {
         }
 
         let email_1 = String::from("email@email.com");
-        if let Ok(token) = jwt.generate(email_1) {
+        if let Ok(token) = jwt.generate(email_1.clone()) {
             let auth = Auth::new();
             if auth.validate(&token) {
                 if let Ok(claims) = auth.claims(&token) {
                     let email = claims.get_email();
-                    assert!(email.eq(email_1));
+                    assert!(email.eq(&email_1));
                 } else {
                     assert!(false);
                 }

@@ -18,7 +18,6 @@ hmac = "0.12.0"
 sha2 = "0.10.1"
 jwt = "0.16.0"
 
-uuid = { version = "0.8.2", features = ["v4", "serde"] }
 serde = { version = "*", features = ["derive"] }
 chrono = { version = "0.4.19", features = [ "serde" ] }
 
