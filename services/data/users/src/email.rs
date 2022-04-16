@@ -29,7 +29,7 @@ impl ToSql for EmailAddress {
     to_sql_checked!();
 
     fn accepts(ty: &Type) -> bool {
-        info!("{:?}", ty);
+        info!("EmailAddress::accepts(): {:?}", ty);
         return ty.name() == "email_address";
     }
 }

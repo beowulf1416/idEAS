@@ -96,17 +96,18 @@ impl Users {
                 ).await {
                     Ok(r) => {
                         let authentic: bool = r.get("user_authenticate");
+                        debug!("Users::authenticate(): {:?}", authentic);
                         return Ok(authentic);
                     }
                     Err(e) => {
                         error!("ERROR: {:?}", e);
-                        return Err(String::from("unable to authenticate user"));
+                        return Err(format!("unable to authenticate user: {}", e));
                     }
                 }
             }
             Err(e) => {
                 error!("unable to prepare statement: {}", e);
-                return Err(String::from("unable to prepare statement"));
+                return Err(format!("unable to authenticate user: {}", e));
             }
         }
     }

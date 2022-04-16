@@ -56,3 +56,17 @@ pub fn configure() -> Result<Pool, String> {
         return Err(String::from("environment variable 'URL_DB_FILE' is empty"));
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_configure() {
+        if let Ok(pool) = configure() {
+            assert!(true);
+        } else {
+            assert!(false);
+        }
+    }
+}
