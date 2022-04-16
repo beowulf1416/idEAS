@@ -18,6 +18,7 @@ begin
     from iam.users a
     where
         a.email = p_email
+        and a.active = true
     ;
 
     return t_authentic;
