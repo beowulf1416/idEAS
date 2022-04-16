@@ -1,6 +1,4 @@
-/**
- * 
- */
+/// data
 use log::{ info, error };
 
 use std::env;
