@@ -61,6 +61,8 @@ pub fn configure() -> Result<Pool, String> {
 #[cfg(test)]
 mod tests {
 
+    use crate::db::configure;
+
     #[test]
     fn test_configure() {
         if let Ok(pool) = configure() {

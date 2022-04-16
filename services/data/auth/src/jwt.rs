@@ -137,7 +137,6 @@ mod tests {
         if let Err(e) = jwt.generate(String::from("email@email.com")) {
             assert!(false);
         }
-
     }
 
     #[test]
