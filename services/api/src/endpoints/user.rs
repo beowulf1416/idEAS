@@ -92,7 +92,7 @@ async fn signup_post(
             return HttpResponse::Ok()
                 .json(ApiResponse {
                     status: String::from("error"),
-                    message: String::from("error"),
+                    message: format!("{}", e),
                     data: None
                 });
         }
@@ -122,12 +122,12 @@ async fn signin_post(
                     match jwt.generate(sign_in.email.clone()) {
                         Ok(token) => {
                             return HttpResponse::Ok()
-                            .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                            .json(ApiResponse {
-                                status: String::from("success"),
-                                message: String::from("success"),
-                                data: None
-                            });
+                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                .json(ApiResponse {
+                                    status: String::from("success"),
+                                    message: String::from("success"),
+                                    data: None
+                                });
                         }
                         Err(e) => {
                             error!("unable to generate token: {}", e);
@@ -135,7 +135,7 @@ async fn signin_post(
                             return HttpResponse::Ok()
                                 .json(ApiResponse {
                                     status: String::from("error"),
-                                    message: String::from("error"),
+                                    message: format!("{}", e),
                                     data: None
                                 });
                         }
@@ -163,7 +163,7 @@ async fn signin_post(
             return HttpResponse::Ok()
                 .json(ApiResponse {
                     status: String::from("error"),
-                    message: String::from("error"),
+                    message: format!("{}", e),
                     data: None
                 });
         }

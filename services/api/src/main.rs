@@ -26,6 +26,8 @@ use std::{fs::File, io::BufReader};
 
 use actix_web::{ HttpServer, App, web, HttpResponse, Responder };
 
+use auth::auth::Auth;
+
 
 
 
@@ -81,10 +83,13 @@ async fn main() -> std::io::Result<()> {
     // let config = load_tls_config();
 
     let server = HttpServer::new(move || {
+        let auth = Auth::new();
+
         App::new()
             .configure(crate::data::db::configure)
             .configure(crate::utils::jwt::configure)
             .wrap(crate::middleware::cors::CORS::new())
+            .wrap(crate::middleware::user::User::new(auth))
             .service(web::scope("/user").configure(crate::endpoints::user::config))
             .route("/status", web::get().to(status))
     })
