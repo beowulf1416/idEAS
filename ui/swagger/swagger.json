@@ -33,6 +33,30 @@
                     }
                 }
             },
+            "currentUserResponse": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "active",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": "true"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "readOnly": true
+                    }
+                }
+            },
             "signUpRequest": {
                 "type": "object",
                 "required": [
@@ -47,6 +71,7 @@
                     },
                     "password": {
                         "type": "string",
+                        "format": "password",
                         "writeOnly": true
                     }
                 },
@@ -69,6 +94,7 @@
                     },
                     "password": {
                         "type": "string",
+                        "format": "password",
                         "writeOnly": true
                     }
                 },
@@ -76,6 +102,15 @@
                     "email": "email@email.com",
                     "password": "thisIs1Password*"
                 }
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "description": "Bearer authentication",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "bearer"
             }
         }
     },
@@ -164,6 +199,47 @@
                         }
                     }
                 }
+            }
+        },
+        "/user/current": {
+            "summary": "get current user",
+            "description": "get current user",
+            "post": {
+                "summary": "POST get current user",
+                "description": "POST get current user",
+                "tags": [ "user"],
+                "operationId": "user_get_current",
+                "requestBody": {
+                    "required": false,
+                    "description": "empty request body"
+                },
+                "responses": {
+                    "200": {
+                        "description": "user credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/currentUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         }
     }
