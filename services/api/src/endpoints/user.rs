@@ -5,6 +5,11 @@
 use log::{ info, error, debug };
 
 use serde::{ Serialize, Deserialize };
+use serde_json::{
+    from_str,
+    json
+};
+
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
 use actix_http::header::{self, HeaderMap, HeaderValue};
 
@@ -19,6 +24,8 @@ use crate::endpoints::common::default_options;
 
 // use crate::extractors::user::UserParam;
 // use users::user::User;
+
+// use json::object;
 
 use common::email::Email;
 use users::{
@@ -185,13 +192,14 @@ async fn get_user_post(
     info!("endpoints::user::get_user_post()");
 
     debug!("USER: {:?}", user);
-
-    
+    let u = user.to_user();
 
     return HttpResponse::Ok()
         .json(ApiResponse {
-            status: String::from("error"),
-            message: String::from("error"),
-            data: None
+            status: String::from("success"),
+            message: String::from("success"),
+            data: Some(json!({
+                "email": u.get_email()
+            }))
         });
 }
