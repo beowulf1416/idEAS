@@ -3,6 +3,5 @@ members = [
     "common",
     "data/tenants",
     "data/users",
-    "data/auth",
     "api"
 ]
