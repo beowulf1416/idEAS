@@ -13,8 +13,12 @@ pub struct Email(String);
 
 impl Email {
 
-    pub fn new(email: String) -> Self {
-        return Email(email);
+    pub fn new(email: String) -> Result<Self, String> {
+        if email.is_empty() {
+            return Err(String::from("email address cannot be empty"));
+        } else {
+            return Ok(Email(email));
+        }
     }
 
     pub fn get_email_str(&self) -> String {

@@ -2,7 +2,7 @@
  * user related endpoints
  */
 
-use log::{ info, error };
+use log::{ info, error, debug };
 
 use serde::{ Serialize, Deserialize };
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
@@ -17,8 +17,14 @@ use crate::models::api_response::ApiResponse;
 // use crate::data::user::User;
 use crate::endpoints::common::default_options;
 
+// use crate::extractors::user::UserParam;
+// use users::user::User;
+
 use common::email::Email;
-use users::users::Users;
+use users::{
+    users::Users,
+    user_param::UserParam
+};
 
 use crate::utils::jwt::JWT;
 
@@ -73,7 +79,7 @@ async fn signup_post(
             let id = Uuid::new_v4();
             if let Ok(s) = users.add(
                 id,
-                Email::new(sign_up.email.clone()),
+                Email::new(sign_up.email.clone()).unwrap(),
                 sign_up.password.clone()
             ).await {
                 info!("user signed up");
@@ -114,7 +120,7 @@ async fn signin_post(
         Ok(client) => {
             let users = Users::new(client);
             if let Ok(authentic) = users.authenticate(
-                Email::new(sign_in.email.clone()),
+                Email::new(sign_in.email.clone()).unwrap(),
                 sign_in.password.clone()
             ).await {
                 if authentic {
@@ -173,9 +179,14 @@ async fn signin_post(
 /// get user endpoint
 async fn get_user_post(
     _request: HttpRequest,
-    pool: web::Data<Pool>
+    pool: web::Data<Pool>,
+    user: UserParam
 ) -> impl Responder {
     info!("endpoints::user::get_user_post()");
+
+    debug!("USER: {:?}", user);
+
+    
 
     return HttpResponse::Ok()
         .json(ApiResponse {

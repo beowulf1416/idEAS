@@ -1,19 +1,27 @@
+/// users data object
 use log::{ info, error, debug };
 
-use deadpool_postgres::{ Manager };
+use actix_web::{
+    web,
+    HttpRequest
+};
+
+use deadpool_postgres::{ Manager, Pool };
 use deadpool::managed::Object;
 
 use uuid::Uuid;
 
 use common::email::Email;
 use common::user::User;
+
 use crate::email::EmailAddress;
 
 
-/// Users
+/// Users data object
 pub struct Users {
     client: Object<Manager>
 }
+
 
 impl Users {
 
@@ -23,6 +31,27 @@ impl Users {
         return Users {
             client: client
         };
+    }
+
+    /// create an instance of the Users data object from request
+    pub async fn from_request(request: &HttpRequest) ->  Result<Self, String> {
+        debug!("users::users::Users::from_request()");
+
+        if let Some(pool) = request.app_data::<web::Data<Pool>>() {
+            if let Ok(client) = pool.get().await {
+                return Ok(Users {
+                    client: client
+                });
+            } else {
+                error!("unable to retrieve database client");
+
+                return Err(String::from("unable to retrieve database client"));
+            }
+        } else {
+            error!("unable to retrieve database pool");
+
+            return Err(String::from("unable to retrieve database pool"));
+        }
     }
 
     /// add a user account
@@ -171,13 +200,17 @@ impl Users {
 
                         let id: Uuid = r.get("id");
                         let active: bool = r.get("active");
-                        let email: Email = Email::new(r.get("email"));
+                        if let Ok(email) = Email::new(r.get("email")){
+                            return Ok(User::new(
+                                id,
+                                active,
+                                email
+                            ));
+                        } else {
+                            error!("unable to create email object");
 
-                        return Ok(User::new(
-                            id,
-                            active,
-                            email
-                        ));
+                            return Err(String::from("unable to create email"));
+                        }
                     }
                     Err(e) => {
                         error!("Error: {:?}", e);
@@ -248,7 +281,7 @@ mod tests {
                     let id = Uuid::new_v4();
                     let email = Email::new(String::from(
                         format!("email{suffix}@email.com", suffix = suffix)
-                    ));
+                    )).unwrap();
                     let pw = String::from("thisIs1Password");
 
                     let users = crate::users::Users::new(pool.get().await.unwrap());
@@ -300,7 +333,7 @@ mod tests {
                     let id = Uuid::new_v4();
                     let email = Email::new(String::from(
                         format!("email{suffix}@email.com", suffix = suffix)
-                    ));
+                    )).unwrap();
                     let pw = String::from("thisIs1Password");
 
                     let users = crate::users::Users::new(
@@ -361,7 +394,7 @@ mod tests {
                     let id = Uuid::new_v4();
                     let email = Email::new(String::from(
                         format!("email{suffix}@email.com", suffix = suffix)
-                    ));
+                    )).unwrap();
                     let pw = String::from("thisIs1Password");
 
                     let users = crate::users::Users::new(
@@ -420,7 +453,7 @@ mod tests {
                     let id = Uuid::new_v4();
                     let email = Email::new(String::from(
                         format!("email{suffix}@email.com", suffix = suffix)
-                    ));
+                    )).unwrap();
                     let pw = String::from("thisIs1Password");
 
                     let users = crate::users::Users::new(
