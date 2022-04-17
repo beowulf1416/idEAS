@@ -166,6 +166,7 @@ where
                     debug!("auth.user() succeeded");
 
                     // request.app_data(web::Data::new(User));
+                    // request.extensions_mut().insert(user);
                 }
             }
             
