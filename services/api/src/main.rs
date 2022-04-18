@@ -16,7 +16,6 @@ use rustls_pemfile::{
 mod data;
 mod models;
 mod utils;
-mod extractors;
 mod middleware;
 mod endpoints;
 
