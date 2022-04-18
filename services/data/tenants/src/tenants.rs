@@ -27,6 +27,26 @@ impl Tenants {
         };
     }
 
+    pub async fn from_request(request: HttpRequest) -> Result<Self, String> {
+        debug!("tenants::tenants::Tenants::from_request()");
+
+        if let Some(pool) = request.app_data::<web::Data<Pool>>() {
+            if let Ok(client) = pool.get().await {
+                return Ok(Tenants {
+                    client: client
+                });
+            } else {
+                error!("unable to retrieve database client");
+
+                return Err(String::from("unable to retrieve database client"));
+            }
+        } else {
+            error!("unable to retrieve database pool");
+
+            return Err(String::from("unable to retrieve database pool"));
+        }
+    }
+
     /// add tenant record
     pub async fn add(
         &self,
