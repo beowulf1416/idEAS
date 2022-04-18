@@ -60,6 +60,7 @@ impl JWT {
         };
     }
 
+    /// generate JWT token
     pub fn generate(
         &self,
         email: String
@@ -84,7 +85,7 @@ impl JWT {
         }
     }
 
-
+    /// validate JWT token
     pub fn validate(&self, token: &String) -> bool {
         debug!("JWT::validate()");
 
@@ -98,7 +99,7 @@ impl JWT {
         }
     }
 
-
+    /// retrieve claims encoded in a token
     pub fn get_claims(&self, token: &String) -> Result<Claims, String> {
         debug!("JWT::get_claims()");
 
