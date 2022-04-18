@@ -1,26 +1,26 @@
-use crate::email::Email;
-use uuid::Uuid;
+/// tenant class
+use log::{ info, error, debug };
 
 
 #[derive(Debug)]
-pub struct User {
+pub struct Tenant {
     id: Uuid,
     active: bool,
-    email: Email
+    name: String
 }
 
 
-impl User {
+impl Tenant {
 
     pub fn new(
         id: Uuid,
         active: bool,
-        email: Email
+        name: String
     ) -> Self {
-        return User {
+        return Tenant {
             id: id,
             active: active,
-            email: email
+            name: name
         };
     }
 
@@ -29,10 +29,10 @@ impl User {
     }
 
     pub fn get_active(&self) -> bool {
-        return self.active.clone();
+        return self.active;
     }
 
-    pub fn get_email(&self) -> Email {
-        return self.email.clone();
+    pub fn get_name(&self) -> String {
+        return self.name;
     }
 }
