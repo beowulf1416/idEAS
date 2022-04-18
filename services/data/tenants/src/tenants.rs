@@ -93,7 +93,7 @@ impl Tenants {
             Err(e) => {
                 error!("unable to prepare statement to toggle tenant active status: {:?}", e);
 
-                return Err(String::from("unable to prepare statement to toggle active status"));
+                return Err(String::from("unable to prepare statement to toggle tenant active status"));
             }
         }
     }
