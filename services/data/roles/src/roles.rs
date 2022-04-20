@@ -31,12 +31,13 @@ impl Roles {
     pub async fn add(
         &self,
         id: Uuid,
-        name: String
+        name: String,
+        description: String
     ) -> Result<(), String> {
         info!("roles::roles::Roles::add()");
 
         let result_stmt = self.client.prepare_cached(
-            "call iam.role_add($1, $2);"
+            "call iam.role_add($1, $2, $3);"
         ).await;
         match result_stmt {
             Ok(stmt) => {
@@ -44,7 +45,8 @@ impl Roles {
                     &stmt,
                     &[
                         &id,
-                        &name
+                        &name,
+                        &description
                     ]
                 ).await {
                     error!("unable to add role: {:?}", e);
@@ -152,9 +154,10 @@ mod tests {
                     
                     let id = Uuid::new_v4();
                     let name = format!("role_{}", suffix);
+                    let desc = name.clone();
 
                     let roles = crate::roles::Roles::new(pool.get().await.unwrap());
-                    if let Err(e) = roles.add(id, name).await {
+                    if let Err(e) = roles.add(id, name, desc).await {
                         error!("error: {:?}", e);
 
                         assert!(false);
@@ -198,9 +201,10 @@ mod tests {
                     
                     let id = Uuid::new_v4();
                     let name = format!("tenant_{}", suffix);
+                    let desc = name.clone();
 
                     let roles = crate::roles::Roles::new(pool.get().await.unwrap());
-                    if let Err(e) = roles.add(id, name).await {
+                    if let Err(e) = roles.add(id, name, desc).await {
                         error!("error: {:?}", e);
 
                         assert!(false);
