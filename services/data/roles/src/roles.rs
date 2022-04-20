@@ -30,21 +30,23 @@ impl Roles {
     /// add role
     pub async fn add(
         &self,
-        id: Uuid,
+        role_id: Uuid,
+        tenant_id: Uuid,
         name: String,
         description: String
     ) -> Result<(), String> {
         info!("roles::roles::Roles::add()");
 
         let result_stmt = self.client.prepare_cached(
-            "call iam.role_add($1, $2, $3);"
+            "call iam.role_add($1, $2, $3, $4);"
         ).await;
         match result_stmt {
             Ok(stmt) => {
                 if let Err(e) = self.client.query(
                     &stmt,
                     &[
-                        &id,
+                        &role_id,
+                        &tenant_id,
                         &name,
                         &description
                     ]
@@ -117,6 +119,8 @@ mod tests {
 
     use rand::Rng;
 
+    use tenants::tenants::Tenants;
+
 
     use std::sync::Once;
     static INIT: Once = Once::new();
@@ -156,14 +160,20 @@ mod tests {
                     let name = format!("role_{}", suffix);
                     let desc = name.clone();
 
-                    let roles = crate::roles::Roles::new(pool.get().await.unwrap());
-                    if let Err(e) = roles.add(id, name, desc).await {
-                        error!("error: {:?}", e);
-
-                        assert!(false);
+                    let tenants = Tenants::new(pool.get().await.unwrap());
+                    if let Ok(tenant_id) = tenants.default_tenant_id().await {
+                        let roles = crate::roles::Roles::new(pool.get().await.unwrap());
+                        if let Err(e) = roles.add(id, tenant_id, name, desc).await {
+                            error!("error: {:?}", e);
+    
+                            assert!(false);
+                        } else {
+                            assert!(true);
+                        }
                     } else {
-                        assert!(true);
-                    }
+                        error!("unable to retrieve default tenant id");
+                        assert!(false);
+                    }                    
                 }
                 Err(e) => {
                     error!("error: {:?}", e);
@@ -203,20 +213,24 @@ mod tests {
                     let name = format!("tenant_{}", suffix);
                     let desc = name.clone();
 
-                    let roles = crate::roles::Roles::new(pool.get().await.unwrap());
-                    if let Err(e) = roles.add(id, name, desc).await {
-                        error!("error: {:?}", e);
-
-                        assert!(false);
-                    } else {
-                        if let Err(e1) = roles.active(id, true).await {
-                            error!("unable to toggle role active status: {:?}", e1);
-
+                    let tenants = Tenants::new(pool.get().await.unwrap());
+                    if let Ok(tenant_id) = tenants.default_tenant_id().await {
+                        let roles = crate::roles::Roles::new(pool.get().await.unwrap());
+                        if let Err(e) = roles.add(id, tenant_id, name, desc).await {
+                            error!("error: {:?}", e);
                             assert!(false);
                         } else {
-                            assert!(true);
+                            if let Err(e) = roles.active(id, true).await {
+                                error!("error: {:?}", e);
+                                assert!(false);
+                            } else {
+                                assert!(true);
+                            }
                         }
-                    }
+                    } else {
+                        error!("unable to retrieve default tenant id");
+                        assert!(false);
+                    }  
                 }
                 Err(e) => {
                     error!("error: {:?}", e);
