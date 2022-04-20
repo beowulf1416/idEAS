@@ -117,6 +117,36 @@ impl Tenants {
             }
         }
     }
+
+    /// get default tenant id
+    pub async fn default_tenant_id(&self) -> Result<Uuid, String> {
+        info!("tenants::tenants::Tenants::default_tenant_id()");
+
+        let result_stmt = self.client.prepare_cached(
+            "select tenants.tenant_default_id();"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                match self.client.query_one(&stmt, &[]).await {
+                    Ok(row) => {
+                        let tenant_id: Uuid = row.get("tenant_default_id");
+
+                        return Ok(tenant_id);
+                    }
+                    Err(e) => {
+                        error!("unable to retrieve default tenant id: {:?}", e);
+                        return Err(String::from("unable to retrieve default tenant id"));
+                    }
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to toggle tenant active status: {:?}", e);
+
+                return Err(String::from("unable to prepare statement to toggle tenant active status"));
+            }
+        }
+    }
 }
 
 
@@ -224,13 +254,52 @@ mod tests {
 
                         assert!(false);
                     } else {
-                        if let Err(e1) = tenants.active(id, true).await {
-                            error!("unable to toggle tenant active status: {:?}", e1);
-
+                        if let Err(e) = tenants.active(id, true).await {
+                            error!("error: {:?}", e);
                             assert!(false);
                         } else {
                             assert!(true);
                         }
+                    }
+                }
+                Err(e) => {
+                    error!("error: {:?}", e);
+
+                    assert!(false);
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test]
+    async fn test_default_tenant_id() {
+        initialize();
+
+        if let Ok(url_db) = env::var("URL_DB") {
+            info!("connection string: {}", url_db);
+            match Config::from_str(&url_db) {
+                Ok(db_cfg) => {
+                    let mgr = Manager::from_config(
+                        db_cfg,
+                        NoTls,
+                        ManagerConfig {
+                            recycling_method: RecyclingMethod::Fast
+                        }
+                    );
+                    let pool = Pool::builder(mgr)
+                        .max_size(16)
+                        .build()
+                        .unwrap();
+
+                    let tenants = crate::tenants::Tenants::new(pool.get().await.unwrap());
+                    if let Err(e) = tenants.default_tenant_id().await {
+                        error!("error: {:?}", e);
+
+                        assert!(false);
+                    } else {
+                        assert!(true);
                     }
                 }
                 Err(e) => {

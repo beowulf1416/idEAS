@@ -344,20 +344,25 @@ mod tests {
                         email.clone(), 
                         pw.clone()
                     ).await {
-                        if let Err(e) = users.authenticate(
-                            email.clone(), 
-                            pw.clone()
-                        ).await {
+                        if let Err(e) = users.set_active(id, true).await {
                             error!("error: {:?}", e);
 
                             assert!(false);
+                        } else {
+                            if let Err(e) = users.authenticate(
+                                email.clone(), 
+                                pw.clone()
+                            ).await {
+                                error!("error: {:?}", e);
+    
+                                assert!(false);
+                            }
                         }
+                        
                     }
-                    
                 }
                 Err(e) => {
                     error!("error: {:?}", e);
-
                     assert!(false);
                 }
             }
