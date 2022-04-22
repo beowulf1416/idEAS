@@ -116,7 +116,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["0c455886-1415-4b64-b2f1-2ec88b260556", "2f634011-6755-4f97-8fea-3167d2347479"]
+    "tests": ["0c455886-1415-4b64-b2f1-2ec88b260556"]
   }],
   "urls": ["http://erp.com/user/signup"],
   "plugins": []
