@@ -9,8 +9,8 @@
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" required formControlName="email" />
                     <div class="errors" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
-                        <div class="error" *ngIf="email?.errors?.required">Email address is required</div>
-                        <div class="error" *ngIf="email?.errors?.email">Email is not valid</div>
+                        <div class="error required" *ngIf="email?.errors?.required">Email address is required</div>
+                        <div class="error invalid" *ngIf="email?.errors?.email">Email is not valid</div>
                     </div>
                 </div><!-- .wrapper-field -->
                 <div id="field-email-confirm" class="wrapper-field">
