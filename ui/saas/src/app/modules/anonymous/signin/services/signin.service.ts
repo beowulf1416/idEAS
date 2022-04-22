@@ -32,18 +32,23 @@ export class SigninService {
         password: password
       }
     ).pipe(
-      catchError(this.handleError)
+      catchError(err => this.handleError(err))
     )
   }
 
   handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
-      // client side error
-      console.error(error);
+      return throwError({
+        status: "error",
+        message: "client side error",
+        data: {}
+      });
     } else {
-      // backend error
-      console.error(error);
+      return throwError({
+        status: "error",
+        message: "backend error",
+        data: {}
+      });
     }
-    return throwError(() => new Error("oops"));
   }
 }
