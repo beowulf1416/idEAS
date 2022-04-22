@@ -1,14 +1,21 @@
 <div id="wrapper-signup">
     <div class="wrapper-form">
-        <form id="form-signup">
+        <form id="form-signup" [formGroup]="signupForm" (ngSubmit)="signup()">
+            <fieldset class="errors" *ngIf="signupForm.invalid">
+                <div class="error" *ngIf="signupForm.errors?.controlsIdentical">Emails are not identical</div>
+            </fieldset>
             <fieldset class="fields">
                 <div id="field-email" class="wrapper-field">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required />
+                    <input type="email" id="email" name="email" required formControlName="email" />
+                    <div class="errors" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+                        <div class="error" *ngIf="email?.errors?.required">Email address is required</div>
+                        <div class="error" *ngIf="email?.errors?.email">Email is not valid</div>
+                    </div>
                 </div><!-- .wrapper-field -->
                 <div id="field-email-confirm" class="wrapper-field">
                     <label for="email-confirm">Confirm Email</label>
-                    <input type="email" id="email-confirm" name="email-confirm" required />
+                    <input type="email" id="email-confirm" name="email-confirm" required formControlName="confirm"/>
                 </div><!-- .wrapper-field -->
             </fieldset>
             <fieldset class="actions">
