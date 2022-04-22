@@ -2,10 +2,10 @@
   "id": "5f3e2bbd-f445-45ea-920d-92cf3ba97422",
   "version": "2.0",
   "name": "user_signup",
-  "url": "http://erp.com/user/signup",
+  "url": "http://localhost:4200",
   "tests": [{
     "id": "0c455886-1415-4b64-b2f1-2ec88b260556",
-    "name": "test_user_signup",
+    "name": "test_simple",
     "commands": [{
       "id": "49f8c6c6-0da5-428e-aaf3-b9c83e4e7245",
       "comment": "",
@@ -64,7 +64,7 @@
     }]
   }, {
     "id": "2f634011-6755-4f97-8fea-3167d2347479",
-    "name": "test_user_signup_to_signin",
+    "name": "test_signin_link",
     "commands": [{
       "id": "72bef5d5-fc4b-40d8-8059-881db099beb0",
       "comment": "",
@@ -109,6 +109,70 @@
       "targets": [],
       "value": "/user/signin"
     }]
+  }, {
+    "id": "9ff029f5-aa3e-4ff3-b571-cf16ed40b08f",
+    "name": "test_emails_not_identical",
+    "commands": [{
+      "id": "3500a595-dd3c-4cff-b3e5-4875ab5a2c38",
+      "comment": "",
+      "command": "open",
+      "target": "/user/signup",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9769c9af-55ed-4b7e-b658-44ba7837e729",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return (Math.random() * 100).toString().substring(1,3)",
+      "targets": [],
+      "value": "suffix"
+    }, {
+      "id": "a561c319-f652-4249-aa11-40bcb0c23df2",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "test_${suffix}@test.com"
+    }, {
+      "id": "4f445ac7-b1ff-42cc-81bd-2d68a51de9d0",
+      "comment": "",
+      "command": "type",
+      "target": "id=email-confirm",
+      "targets": [],
+      "value": "purposely_different@email.com"
+    }, {
+      "id": "af01859b-9720-4791-bf0c-0300456b4786",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.error",
+      "targets": [],
+      "value": "Emails are not identical"
+    }]
+  }, {
+    "id": "99c61247-6de0-4e42-96cc-3517ccb8e558",
+    "name": "test_email_validation",
+    "commands": [{
+      "id": "1c8d6165-f6dd-4c0f-b77d-5cb47f476b82",
+      "comment": "",
+      "command": "open",
+      "target": "/user/signup",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3901789c-701d-4e63-aa70-5a921ea47ca6",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "invalid_email"
+    }, {
+      "id": "b37971d5-f9fe-434c-8187-c2291ca43647",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=#field-email .error.invalid",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "aa98a712-8c33-4d6b-a9aa-246a67f358ad",
@@ -116,8 +180,8 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["0c455886-1415-4b64-b2f1-2ec88b260556", "2f634011-6755-4f97-8fea-3167d2347479"]
+    "tests": ["0c455886-1415-4b64-b2f1-2ec88b260556", "2f634011-6755-4f97-8fea-3167d2347479", "99c61247-6de0-4e42-96cc-3517ccb8e558", "9ff029f5-aa3e-4ff3-b571-cf16ed40b08f"]
   }],
-  "urls": ["http://erp.com/user/signup"],
+  "urls": ["http://erp.com/user/signup", "http://erp.com/", "http://localhost:4200/"],
   "plugins": []
 }
