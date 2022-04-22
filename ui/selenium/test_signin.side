@@ -1,0 +1,49 @@
+{
+  "id": "c411de97-d670-4994-9fd7-a417e9ca91f6",
+  "version": "2.0",
+  "name": "test_signin",
+  "url": "http://erp.com",
+  "tests": [{
+    "id": "b2f8047f-620b-4dc4-b65a-623147803be1",
+    "name": "test_signin_to_signup",
+    "commands": [{
+      "id": "72826a29-f0f0-4401-9f02-1a6f531955a6",
+      "comment": "",
+      "command": "open",
+      "target": "/user/signin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "010cfa14-581d-469a-a367-a66538372694",
+      "comment": "",
+      "command": "click",
+      "target": "id=link-user-signup",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "16ee5082-a22d-4f68-9be3-46ba16dd2578",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return document.location.pathname",
+      "targets": [],
+      "value": "url"
+    }, {
+      "id": "fc79b8e6-4c72-4113-9049-ee40903bc255",
+      "comment": "",
+      "command": "assert",
+      "target": "url",
+      "targets": [],
+      "value": "/user/signup"
+    }]
+  }],
+  "suites": [{
+    "id": "94f4f820-be91-4700-a0c0-9a1ca25ae83e",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["b2f8047f-620b-4dc4-b65a-623147803be1"]
+  }],
+  "urls": ["http://localhost:4200/"],
+  "plugins": []
+}
