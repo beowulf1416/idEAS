@@ -2,7 +2,7 @@
   "id": "5f3e2bbd-f445-45ea-920d-92cf3ba97422",
   "version": "2.0",
   "name": "user_signup",
-  "url": "http://localhost:4200",
+  "url": "http://erp.com",
   "tests": [{
     "id": "0c455886-1415-4b64-b2f1-2ec88b260556",
     "name": "test_simple",
