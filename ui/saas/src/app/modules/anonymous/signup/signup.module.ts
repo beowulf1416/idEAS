@@ -1,4 +1,7 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+
 import { SignupRoutingModule } from './signup-routing.module';
 import { SignupComponent } from './components/signup/signup.component';
 
@@ -9,6 +12,8 @@ import { SignupComponent } from './components/signup/signup.component';
     SignupComponent
   ],
   imports: [
+    CommonModule,
+    ReactiveFormsModule,
     SignupRoutingModule
   ]
 })

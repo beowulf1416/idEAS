@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
 import { SigninService } from '../../services/signin.service';
 
 
@@ -43,6 +42,11 @@ export class SigninComponent implements OnInit {
       this.signinForm.get("pw")?.value
     ).subscribe(r => {
       console.log(r);
+      if (r.status == "success") {
+        // redirect to sign in page
+      } else {
+
+      }
     });
   }
 }
