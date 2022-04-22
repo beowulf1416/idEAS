@@ -1,0 +1,76 @@
+{
+  "id": "5f3e2bbd-f445-45ea-920d-92cf3ba97422",
+  "version": "2.0",
+  "name": "user_signup",
+  "url": "http://erp.com/user/signup",
+  "tests": [{
+    "id": "0c455886-1415-4b64-b2f1-2ec88b260556",
+    "name": "test_user_signup",
+    "commands": [{
+      "id": "49f8c6c6-0da5-428e-aaf3-b9c83e4e7245",
+      "comment": "",
+      "command": "open",
+      "target": "/user/signup",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "161c1e27-9aab-4401-a6ac-a5645ec886f7",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return (Math.random() * 100).toString().substring(1,3)",
+      "targets": [],
+      "value": "suffix"
+    }, {
+      "id": "03af6dfe-9166-4b83-8c89-6983982b905f",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["name=email", "name"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='field-email']/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "test_${suffix}@test.com"
+    }, {
+      "id": "51cf1c20-9702-4ead-a7ea-1819159fe490",
+      "comment": "",
+      "command": "type",
+      "target": "id=email-confirm",
+      "targets": [
+        ["id=email-confirm", "id"],
+        ["name=email-confirm", "name"],
+        ["css=#email-confirm", "css:finder"],
+        ["xpath=//input[@id='email-confirm']", "xpath:attributes"],
+        ["xpath=//div[@id='field-email-confirm']/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "test_${suffix}@test.com"
+    }, {
+      "id": "96cf1ef9-b2a8-4bfa-8774-77dd22a4011b",
+      "comment": "",
+      "command": "click",
+      "target": "css=button",
+      "targets": [
+        ["css=button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//form[@id='form-signup']/fieldset[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Sign Up')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "aa98a712-8c33-4d6b-a9aa-246a67f358ad",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["0c455886-1415-4b64-b2f1-2ec88b260556"]
+  }],
+  "urls": ["http://erp.com/user/signup"],
+  "plugins": []
+}
