@@ -42,11 +42,10 @@ export class SigninComponent implements OnInit {
       this.signinForm.get("pw")?.value
     ).subscribe(r => {
       console.log(r);
-      if (r.status == "success") {
-        // redirect to sign in page
-      } else {
-
-      }
-    });
+    }, (error: any) => {
+      console.error(error.message);
+      this.signinForm.setErrors({ 'backend': true});
+    }
+    );
   }
 }
