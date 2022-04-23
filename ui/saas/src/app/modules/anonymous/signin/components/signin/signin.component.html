@@ -16,11 +16,13 @@
                 <div class="errors" *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (pw?.invalid && (pw?.dirty || pw?.touched))">
                     <div class="error error-email-required" *ngIf="email?.errors?.required">Email is required</div>
                     <div class="error error-pw-required" *ngIf="pw?.errors?.required">Password is required</div>
+                    <div class="error error-pw-minlength" *ngIf="pw?.errors?.minlength">Password is too short</div>
+                    <div class="error error-pw-pattern" *ngIf="pw?.errors?.pattern">Password is to simple</div>
                 </div><!-- .errors -->
             </fieldset>
             <fieldset class="actions">
                 <button type="submit" id="submit">
-                    Sign Up
+                    Sign In
                 </button>
             </fieldset>
             <fieldset class="links">
@@ -28,6 +30,8 @@
                     <li><a id="link-user-signup" routerLink="/user/signup">Sign Up</a></li>
                 </ul>
             </fieldset>
+            <pre>{{ email?.valid | json }}</pre>
+            <pre>{{ pw?.valid | json }}</pre>
         </form>
     </div><!-- .wrapper-form -->
 </div><!-- #wrapper-signup -->

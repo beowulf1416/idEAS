@@ -24,7 +24,7 @@ export class SigninComponent implements OnInit {
     ]),
     pw: new FormControl('', [
       Validators.minLength(8),
-      Validators.pattern("\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
+      Validators.pattern("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}")
     ])
   });
 
@@ -47,7 +47,12 @@ export class SigninComponent implements OnInit {
 
   signin() {
     console.log("SigninComponent::signin()");
+    console.log(this.signinForm);
+
     if (this.signinForm.valid) {
+
+      console.log(this.signinForm);
+
       this.service.signIn(
         this.signinForm.get("email")?.value,
         this.signinForm.get("pw")?.value
