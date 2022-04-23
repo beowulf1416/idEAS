@@ -99,6 +99,38 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "b5bea935-2daf-43b7-b8b4-11761bf35ab3",
+    "name": "test_signin_success",
+    "commands": [{
+      "id": "fa18b825-7bf6-4d0f-958e-46445c4c9c1d",
+      "comment": "",
+      "command": "open",
+      "target": "/user/signin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c7f75d85-03ee-4f5e-8739-3699364711c4",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "testemail@email.com"
+    }, {
+      "id": "c9c62f62-df37-4688-8de9-71f407a89376",
+      "comment": "",
+      "command": "type",
+      "target": "id=pw",
+      "targets": [],
+      "value": "thisIs1Password"
+    }, {
+      "id": "9f89fed9-1b77-46c4-91d4-922fc2411421",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "94f4f820-be91-4700-a0c0-9a1ca25ae83e",
@@ -106,7 +138,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["b2f8047f-620b-4dc4-b65a-623147803be1", "dd971b50-95a8-41c3-b04c-09e913d20a61"]
+    "tests": ["b2f8047f-620b-4dc4-b65a-623147803be1", "dd971b50-95a8-41c3-b04c-09e913d20a61", "e19c2d55-01a2-4ba0-94d7-dafbc133215b"]
   }],
   "urls": ["http://localhost:4200/", "http://erp.com/"],
   "plugins": []
