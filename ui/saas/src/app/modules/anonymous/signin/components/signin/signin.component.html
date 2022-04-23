@@ -2,7 +2,7 @@
     <div class="wrapper-form">
         <form id="form-signin" [formGroup]="signinForm" (ngSubmit)="signin()">
             <fieldset class="errors" *ngIf="signinForm.invalid">
-                <div class="error" *ngIf="signinForm?.errors?.backend">this is an error</div>
+                <div class="error" *ngIf="signinForm?.errors?.backend">{{ formErrorText }}</div>
             </fieldset><!-- .errors -->
             <fieldset class="fields">
                 <div id="field-email" class="wrapper-field">

@@ -28,6 +28,8 @@ export class SigninComponent implements OnInit {
     ])
   });
 
+  formErrorText = '';
+
   constructor(
     private service: SigninService
   ) { }
@@ -44,6 +46,7 @@ export class SigninComponent implements OnInit {
       console.log(r);
     }, (error: any) => {
       console.error(error.message);
+      this.formErrorText = error.message;
       this.signinForm.setErrors({ 'backend': true});
     }
     );
