@@ -1,15 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
 
 
-export const controlsIdenticalValidator: ValidatorFn = (control: AbstractControl): 
-  ValidationErrors | null => {
-    const email1 = control.get('email')?.value;
-    const email2 = control.get('confirm')?.value;
+export function matchValidator(control1: string, control2: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value1 = control.get(control1)?.value;
+    const value2 = control.get(control2)?.value;
 
-    return email1 == email2 ? null : { controlsIdentical: true };
+    return value1 == value2 ? null : { identical: true };
   }
+}
 
+export function patternValidator(pattern: RegExp, error: ValidationErrors): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) {
+      return null;
+    }
+
+    const valid = pattern.test(control.value);
+    return valid ? null : error;
+  }
+}
 
 @Component({
   selector: 'app-signup',
@@ -19,16 +30,34 @@ export const controlsIdenticalValidator: ValidatorFn = (control: AbstractControl
 export class SignupComponent implements OnInit {
 
   signupForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      Validators.email
-    ]),
-    confirm: new FormControl('', [
-      Validators.required,
-      Validators.required
-    ])
-  }, {
-    validators: controlsIdenticalValidator
+    emails: new FormGroup({
+      email: new FormControl('', [
+        Validators.required,
+        Validators.email
+      ]),
+      confirm: new FormControl('', [
+        Validators.required
+      ])
+    },{
+      validators: matchValidator("email", "confirm")
+    }),
+    passwords: new FormGroup({
+      pw1: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        // Validators.pattern("\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
+        patternValidator(new RegExp("[A-Z]{2,}"), { upper: true }),
+        patternValidator(new RegExp("[a-z]{2,}"), { lower: true }),
+        patternValidator(new RegExp("[0-9]{2,}"), { number: true })
+      ]),
+      pw2: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern("\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
+      ])
+    }, {
+      validators: matchValidator("pw1", "pw2")
+    })
   });
 
   constructor() { }
@@ -37,11 +66,27 @@ export class SignupComponent implements OnInit {
   }
 
   get email() {
-    return this.signupForm.get('email');
+    return this.signupForm.get('emails.email');
   }
 
   get confirm() {
-    return this.signupForm.get('confirm');
+    return this.signupForm.get('emails.confirm');
+  }
+
+  get emails() {
+    return this.signupForm.get("emails");
+  }
+
+  get pw1() {
+    return this.signupForm.get("passwords.pw1");
+  }
+
+  get pw2() {
+    return this.signupForm.get("passwords.pw2");
+  }
+
+  get passwords() {
+    return this.signupForm.get("passwords");
   }
 
   signup() {
