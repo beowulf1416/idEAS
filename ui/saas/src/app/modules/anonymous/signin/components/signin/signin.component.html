@@ -13,9 +13,12 @@
                     <label for="pw">Password</label>
                     <input type="password" id="pw" name="pw" required formControlName="pw" />
                 </div><!-- .wrapper-field -->
+                <div class="errors" *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (pw?.invalid && (pw?.dirty || pw?.touched))">
+                    <div class="error error-email-required" *ngIf="email?.errors?.required">Email is required</div>
+                </div><!-- .errors -->
             </fieldset>
             <fieldset class="actions">
-                <button type="submit">
+                <button type="submit" id="submit">
                     Sign Up
                 </button>
             </fieldset>

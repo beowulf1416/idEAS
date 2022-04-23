@@ -37,18 +37,27 @@ export class SigninComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  get email() {
+    return this.signinForm.get("email");
+  }
+
+  get pw() {
+    return this.signinForm.get("pw");
+  }
+
   signin() {
     console.log("SigninComponent::signin()");
-    this.service.signIn(
-      this.signinForm.get("email")?.value,
-      this.signinForm.get("pw")?.value
-    ).subscribe(r => {
-      console.log(r);
-    }, (error: any) => {
-      console.error(error.message);
-      this.formErrorText = error.message;
-      this.signinForm.setErrors({ 'backend': true});
+    if (this.signinForm.valid) {
+      this.service.signIn(
+        this.signinForm.get("email")?.value,
+        this.signinForm.get("pw")?.value
+      ).subscribe(r => {
+        console.log(r);
+      }, (error: any) => {
+        console.error(error.message);
+        this.formErrorText = error.message;
+        this.signinForm.setErrors({ 'backend': true});
+      });
     }
-    );
   }
 }
