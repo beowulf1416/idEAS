@@ -15,6 +15,7 @@
                 </div><!-- .wrapper-field -->
                 <div class="errors" *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (pw?.invalid && (pw?.dirty || pw?.touched))">
                     <div class="error error-email-required" *ngIf="email?.errors?.required">Email is required</div>
+                    <div class="error error-pw-required" *ngIf="pw?.errors?.required">Password is required</div>
                 </div><!-- .errors -->
             </fieldset>
             <fieldset class="actions">

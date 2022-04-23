@@ -2,7 +2,7 @@
   "id": "c411de97-d670-4994-9fd7-a417e9ca91f6",
   "version": "2.0",
   "name": "test_signin",
-  "url": "http://erp.com",
+  "url": "http://erp.com/",
   "tests": [{
     "id": "b2f8047f-620b-4dc4-b65a-623147803be1",
     "name": "test_signin_to_signup",
@@ -64,6 +64,38 @@
       "comment": "",
       "command": "assertElementPresent",
       "target": "css=.error-email-required",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "e19c2d55-01a2-4ba0-94d7-dafbc133215b",
+    "name": "test_password_required",
+    "commands": [{
+      "id": "4f14cc5b-4ed7-4337-acf4-3a1981df701c",
+      "comment": "",
+      "command": "open",
+      "target": "/user/signin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a82e6638-235d-46d2-8126-00f9e296b8e8",
+      "comment": "",
+      "command": "click",
+      "target": "id=pw",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ef8b0afc-edf8-453d-adf3-1f64df968b60",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "db480e44-3194-46bd-9bd1-e5f7475565cb",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.error-pw-required",
       "targets": [],
       "value": ""
     }]
