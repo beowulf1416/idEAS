@@ -1,7 +1,6 @@
 /**
 * create test accounts for testing
  */
-
 create procedure init_schema()
 language plpgsql
 as $$
@@ -17,10 +16,10 @@ begin
     -- create test tenant and make active
     call tenants.tenant_add(
         t_tenant_id,
-        'test tenant',
+        'test tenant'
     );
 
-    call tenants.set_active(
+    call tenants.tenant_set_active(
         t_tenant_id,
         true
     );
@@ -63,3 +62,6 @@ begin
     );
 end
 $$;
+
+call init_schema();
+drop procedure init_schema();
