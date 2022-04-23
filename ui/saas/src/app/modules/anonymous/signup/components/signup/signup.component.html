@@ -27,19 +27,19 @@
                 </div><!-- .wrapper-field -->
                 <div class="wrapper-field-errors">
                     <div class="errors" *ngIf="(pw1?.invalid && (pw1?.dirty || pw1?.touched)) || (pw2?.invalid && (pw2?.dirty || pw2?.touched)) || (passwords?.errors?.identical)">
-                        <div class="error error-required" *ngIf="pw1?.errors?.required">Password is required</div>
-                        <div class="error error-minlength" *ngIf="pw1?.errors?.minlength">Password is too short</div>
-                        <div class="error error-required" *ngIf="pw2?.errors?.required">Please confirm password</div>
-                        <div class="error error-upper" *ngIf="pw1?.errors?.upper">Password requires a minimum of 2 uppercase characters</div>
-                        <div class="error error-lower" *ngIf="pw1?.errors?.lower">Password requires a minimum of 2 lowercase characters</div>
-                        <div class="error error-number" *ngIf="pw1?.errors?.number">Password requires a minimum of 2 numbers</div>
+                        <div class="error error-email-required" *ngIf="pw1?.errors?.required">Password is required</div>
+                        <div class="error error-email-minlength" *ngIf="pw1?.errors?.minlength">Password is too short</div>
+                        <div class="error error-confirm-required" *ngIf="pw2?.errors?.required">Please confirm password</div>
+                        <div class="error error-pw-upper" *ngIf="pw1?.errors?.upper">Password requires a minimum of 2 uppercase characters</div>
+                        <div class="error error-pw-lower" *ngIf="pw1?.errors?.lower">Password requires a minimum of 2 lowercase characters</div>
+                        <div class="error error-pw-number" *ngIf="pw1?.errors?.number">Password requires a minimum of 2 numbers</div>
                         <div class="error error-passwords-identical" *ngIf="passwords?.errors?.identical">Passwords are not identical</div>
                         
                     </div><!-- .errors -->
                 </div><!-- .wrapper-field-errors -->
             </fieldset><!-- .fields -->
             <fieldset class="actions">
-                <button type="submit">
+                <button type="submit" id="submit">
                     Sign Up
                 </button>
             </fieldset>
