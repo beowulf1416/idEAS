@@ -7,7 +7,8 @@ export const environment = {
   api_base_url: 'http://erp.com:8081',
   api_user_signup: '/user/signup',
   api_user_signin: '/user/signin',
-  api_user_current: '/user/current'
+  api_user_current: '/user/current',
+  api_dashboard: '/dashboard'
 };
 
 /*

@@ -1,8 +1,11 @@
 <div id="wrapper-signin">
     <div class="wrapper-form">
         <form id="form-signin" [formGroup]="signinForm" (ngSubmit)="signin()">
-            <fieldset class="errors" *ngIf="signinForm.invalid">
-                <div class="error" *ngIf="signinForm?.errors?.backend">{{ formErrorText }}</div>
+            <fieldset class="msg" *ngIf="formMsg != ''">
+                <div class="info" *ngIf="formMsg != ''">{{ formMsg }}</div>
+            </fieldset>
+            <fieldset class="errors" *ngIf="formErrorText != ''">
+                <div class="error" *ngIf="formErrorText != ''">{{ formErrorText }}</div>
             </fieldset><!-- .errors -->
             <fieldset class="fields">
                 <div id="field-email" class="wrapper-field">
@@ -17,7 +20,8 @@
                     <div class="error error-email-required" *ngIf="email?.errors?.required">Email is required</div>
                     <div class="error error-pw-required" *ngIf="pw?.errors?.required">Password is required</div>
                     <div class="error error-pw-minlength" *ngIf="pw?.errors?.minlength">Password is too short</div>
-                    <div class="error error-pw-pattern" *ngIf="pw?.errors?.pattern">Password is to simple</div>
+                    <div class="error error-pw-upper" *ngIf="pw?.errors?.upper">Password needs at least 1 uppercase character</div>
+                    <div class="error error-pw-lower" *ngIf="pw?.errors?.numeric">Password needs at least 1 numeric character</div>
                 </div><!-- .errors -->
             </fieldset>
             <fieldset class="actions">
@@ -30,8 +34,6 @@
                     <li><a id="link-user-signup" routerLink="/user/signup">Sign Up</a></li>
                 </ul>
             </fieldset>
-            <pre>{{ email?.valid | json }}</pre>
-            <pre>{{ pw?.valid | json }}</pre>
         </form>
     </div><!-- .wrapper-form -->
 </div><!-- #wrapper-signup -->
