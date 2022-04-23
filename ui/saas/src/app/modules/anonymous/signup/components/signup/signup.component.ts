@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+
 import { SigninService } from '../../../signin/services/signin.service';
 
 
@@ -46,15 +47,12 @@ export class SignupComponent implements OnInit {
       pw1: new FormControl('', [
         Validators.required,
         Validators.minLength(8),
-        // Validators.pattern("\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
         patternValidator(new RegExp("[A-Z]{2,}"), { upper: true }),
-        patternValidator(new RegExp("[a-z]{2,}"), { lower: true }),
-        patternValidator(new RegExp("[0-9]{2,}"), { number: true })
+        patternValidator(new RegExp("[0-9]{2,}"), { numeric: true })
       ]),
       pw2: new FormControl('', [
         Validators.required,
-        Validators.minLength(8),
-        Validators.pattern("\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
+        Validators.minLength(8)
       ])
     }, {
       validators: matchValidator("pw1", "pw2")

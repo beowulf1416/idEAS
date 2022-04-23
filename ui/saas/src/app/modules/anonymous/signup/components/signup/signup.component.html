@@ -30,9 +30,8 @@
                         <div class="error error-email-required" *ngIf="pw1?.errors?.required">Password is required</div>
                         <div class="error error-email-minlength" *ngIf="pw1?.errors?.minlength">Password is too short</div>
                         <div class="error error-confirm-required" *ngIf="pw2?.errors?.required">Please confirm password</div>
-                        <div class="error error-pw-upper" *ngIf="pw1?.errors?.upper">Password requires a minimum of 2 uppercase characters</div>
-                        <div class="error error-pw-lower" *ngIf="pw1?.errors?.lower">Password requires a minimum of 2 lowercase characters</div>
-                        <div class="error error-pw-number" *ngIf="pw1?.errors?.number">Password requires a minimum of 2 numbers</div>
+                        <div class="error error-pw-upper" *ngIf="pw1?.errors?.upper">Password requires at least 2 uppercase characters</div>
+                        <div class="error error-pw-number" *ngIf="pw1?.errors?.numeric">Password requires at least 2 numeric characters</div>
                         <div class="error error-passwords-identical" *ngIf="passwords?.errors?.identical">Passwords are not identical</div>
                         
                     </div><!-- .errors -->
