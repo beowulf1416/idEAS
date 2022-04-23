@@ -2,7 +2,7 @@
   "id": "c411de97-d670-4994-9fd7-a417e9ca91f6",
   "version": "2.0",
   "name": "test_signin",
-  "url": "http://localhost:4200/",
+  "url": "http://erp.com",
   "tests": [{
     "id": "b2f8047f-620b-4dc4-b65a-623147803be1",
     "name": "test_signin_to_signup",
