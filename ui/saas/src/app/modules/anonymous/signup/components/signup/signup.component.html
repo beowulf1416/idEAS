@@ -1,9 +1,6 @@
 <div id="wrapper-signup">
     <div class="wrapper-form">
         <form id="form-signup" [formGroup]="signupForm" (ngSubmit)="signup()">
-            <fieldset class="errors" *ngIf="signupForm.invalid">
-                <div class="error" *ngIf="signupForm.errors?.controlsIdentical">Emails are not identical</div>
-            </fieldset>
             <fieldset class="fields" formGroupName="emails">
                 <div id="field-email" class="wrapper-field">
                     <label for="email">Email</label>

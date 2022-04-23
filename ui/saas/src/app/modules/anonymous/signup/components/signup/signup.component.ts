@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { SigninService } from '../../../signin/services/signin.service';
 
 
 export function matchValidator(control1: string, control2: string): ValidatorFn {
@@ -60,7 +61,9 @@ export class SignupComponent implements OnInit {
     })
   });
 
-  constructor() { }
+  constructor(
+    private service: SigninService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -91,7 +94,12 @@ export class SignupComponent implements OnInit {
 
   signup() {
     if (this.signupForm.valid) {
-      console.log("signup submit");
+      this.service.signIn(
+        this.signupForm.get("emails.email")?.value,
+        this.signupForm.get("passwords.pw1")?.value
+      ).subscribe(r => {
+        console.log(r);
+      });
     } else {
       console.log("signup form is invalid");
     }
