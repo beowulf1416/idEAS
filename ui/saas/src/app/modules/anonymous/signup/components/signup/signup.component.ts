@@ -93,6 +93,7 @@ export class SignupComponent implements OnInit {
   }
 
   signup() {
+    console.log('signup()');
     if (this.signupForm.valid) {
       this.service.signIn(
         this.signupForm.get("emails.email")?.value,
