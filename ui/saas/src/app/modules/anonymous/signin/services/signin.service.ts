@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
@@ -24,14 +24,20 @@ export class SigninService {
   signIn(
     email: string,
     password: string
-  ): Observable<ApiResponse> {
+  ): Observable<HttpResponse<ApiResponse>> {
     return this.http.post<ApiResponse>(
       environment.api_base_url + environment.api_user_signin,
       {
         email: email,
         password: password
+      },
+      {
+        observe: 'response'
       }
     ).pipe(
+      tap(o => {
+        console.log(o);
+      }),
       catchError(err => this.handleError(err))
     )
   }
