@@ -76,18 +76,7 @@ export class SigninComponent implements OnInit {
         this.signinForm.get("email")?.value,
         this.signinForm.get("pw")?.value
       ).subscribe(r => {
-        // console.log(r);
-
-        console.log(r.headers);
-        const token = r.headers.get('authorization');
-        if (token != null) {
-          console.log(token);
-        }
-
         if (r.body?.status == "success") {
-
-          console.log(r);
-
           this.formMsg = "Successfully signed in. Redirecting to home page in 3 seconds...";
           
           let counter = 3;
@@ -103,7 +92,6 @@ export class SigninComponent implements OnInit {
       }, (error: any) => {
         console.error(error.message);
         this.formErrorText = error.message;
-        // this.signinForm.setErrors({ 'backend': true });
       });
     }
   }

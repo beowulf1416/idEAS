@@ -40,7 +40,7 @@ export class SigninService {
           const authorization = o.headers.get("authorization");
           if (authorization != null) {
             const token = authorization?.replace("Bearer", "");
-            sessionStorage.setItem("token", token);
+            sessionStorage.setItem(environment.session_token_key, token);
           }
         }
       }),
