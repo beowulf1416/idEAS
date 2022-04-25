@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { UserService } from 'src/app/services/user.service';
 
 import { environment } from 'src/environments/environment';
 
@@ -18,7 +19,8 @@ export interface ApiResponse {
 export class SigninService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private user: UserService
   ) { }
 
   signIn(
@@ -41,6 +43,12 @@ export class SigninService {
           if (authorization != null) {
             const token = authorization?.replace("Bearer", "");
             sessionStorage.setItem(environment.session_token_key, token);
+
+            // retrieve roles
+            this.user.current_user().subscribe(r => {
+              console.log("SignService::signIn()");
+              console.log(r);
+            });
           }
         }
       }),

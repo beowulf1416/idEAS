@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { $ } from 'protractor';
+
+import { TitleService } from 'src/app/services/title.service';
 import { environment } from 'src/environments/environment';
 
 import { SigninService } from '../../services/signin.service';
@@ -39,7 +40,6 @@ export class SigninComponent implements OnInit {
     ]),
     pw: new FormControl('', [
       Validators.minLength(8),
-      // Validators.pattern("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}")
       patternValidator(new RegExp("[A-Z]"), { upper: true }),
       patternValidator(new RegExp("[0-9]"), { numeric: true })
     ])
@@ -49,9 +49,12 @@ export class SigninComponent implements OnInit {
   formMsg = "";
 
   constructor(
+    private title: TitleService,
     private service: SigninService,
     private router: Router
-  ) { }
+  ) { 
+    this.title.set_title("Sign In");
+  }
 
   ngOnInit(): void {
   }
