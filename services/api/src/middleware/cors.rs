@@ -17,11 +17,12 @@ use actix_web::{
 use http::header::{ 
     HeaderName,
     HeaderValue,
+    AUTHORIZATION,
     ACCESS_CONTROL_ALLOW_ORIGIN,
     ACCESS_CONTROL_ALLOW_METHODS,
     ACCESS_CONTROL_ALLOW_HEADERS, 
     // ACCESS_CONTROL_ALLOW_CREDENTIALS,
-    // ACCESS_CONTROL_EXPOSE_HEADERS
+    ACCESS_CONTROL_EXPOSE_HEADERS
 };
 
 use futures::future::LocalBoxFuture;
@@ -107,17 +108,18 @@ where
 
             if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_HEADERS) {
                 info!("modifying access_control_allow_headers");
-                res.headers_mut().insert(ACCESS_CONTROL_ALLOW_HEADERS, HeaderValue::from_static("Content-Type, Authorization"));
+                res.headers_mut().insert(ACCESS_CONTROL_ALLOW_HEADERS, HeaderValue::from_static("content-type, authorization"));
+                // res.headers_mut().insert(ACCESS_CONTROL_ALLOW_HEADERS, HeaderValue::from_static("*"));
             }
 
             // if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_CREDENTIALS) {
             //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_CREDENTIALS, HeaderValue::from_static("false"));
             // }
 
-            // if !res.headers().contains_key(ACCESS_CONTROL_EXPOSE_HEADERS) {
-            //     // TODO: need to tighten this
-            //     res.headers_mut().insert(ACCESS_CONTROL_EXPOSE_HEADERS, HeaderValue::from_static("*"));
-            // }
+            if !res.headers().contains_key(ACCESS_CONTROL_EXPOSE_HEADERS) {
+                // TODO: need to tighten this
+                res.headers_mut().insert(ACCESS_CONTROL_EXPOSE_HEADERS, HeaderValue::from_static("authorization"));
+            }
 
             Ok(res)
         })
