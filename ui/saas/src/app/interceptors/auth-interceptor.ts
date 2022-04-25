@@ -4,16 +4,14 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log("AuthInterceptor::intercept()");
-        // console.log(req);
-
-        const token = sessionStorage.getItem("token");
+        const token = sessionStorage.getItem(environment.session_token_key);
 
         if (token != null) {
             const authReq = req.clone({
