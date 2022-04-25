@@ -36,7 +36,13 @@ export class SigninService {
       }
     ).pipe(
       tap(o => {
-        console.log(o);
+        if (o.headers.has("authorization")){
+          const authorization = o.headers.get("authorization");
+          if (authorization != null) {
+            const token = authorization?.replace("Bearer", "");
+            sessionStorage.setItem("token", token);
+          }
+        }
       }),
       catchError(err => this.handleError(err))
     )
