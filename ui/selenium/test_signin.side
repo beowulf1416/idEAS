@@ -130,6 +130,20 @@
       "target": "id=submit",
       "targets": [],
       "value": ""
+    }, {
+      "id": "d4399db2-5a0a-44dd-a811-dc21042a00c8",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "css=title",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "994fc363-b2b3-493f-9733-98b12b6cfd4f",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "ERP - Dashboard",
+      "targets": [],
+      "value": ""
     }]
   }],
   "suites": [{
@@ -138,7 +152,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["b2f8047f-620b-4dc4-b65a-623147803be1", "dd971b50-95a8-41c3-b04c-09e913d20a61", "e19c2d55-01a2-4ba0-94d7-dafbc133215b"]
+    "tests": ["b2f8047f-620b-4dc4-b65a-623147803be1", "dd971b50-95a8-41c3-b04c-09e913d20a61", "e19c2d55-01a2-4ba0-94d7-dafbc133215b", "b5bea935-2daf-43b7-b8b4-11761bf35ab3"]
   }],
   "urls": ["http://localhost:4200/", "http://erp.com/"],
   "plugins": []
