@@ -18,6 +18,10 @@ const routes: Routes = [
       permission: 'dashboard.view'
     },
     loadChildren: () => import('./modules/auth/dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  {
+    path: 'tenants',
+    loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
   }
 ];
 
