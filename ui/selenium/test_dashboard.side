@@ -1,0 +1,42 @@
+{
+  "id": "f48bc5b7-8c8a-45ab-8eb2-2a8485b02ba5",
+  "version": "2.0",
+  "name": "test_dashboard",
+  "url": "http://erp.com",
+  "tests": [{
+    "id": "7420b352-d9d2-4b51-b6bf-cda2840e72bb",
+    "name": "test_dashboard",
+    "commands": [{
+      "id": "90597170-f9b5-4760-9f48-f49ceeb5d39f",
+      "comment": "",
+      "command": "open",
+      "target": "/dashboard",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5b34c361-c17f-432a-a967-d9d90447944c",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "css=title",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "c6598e5d-e544-4d0c-b121-398d854f3c64",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "ERP - Dashboard",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "dea01f36-9b28-4c1b-b73b-91f08fa1f14e",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["7420b352-d9d2-4b51-b6bf-cda2840e72bb"]
+  }],
+  "urls": [],
+  "plugins": []
+}

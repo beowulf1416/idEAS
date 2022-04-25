@@ -7,6 +7,9 @@ const routes: Routes = [
   {
     path: '',
     canActivate: [AuthGuard],
+    data: {
+      permission: 'dashboard.view'
+    },
     component: DashboardComponent
   }
 ];
