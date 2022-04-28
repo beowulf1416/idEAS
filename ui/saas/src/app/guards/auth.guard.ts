@@ -28,9 +28,17 @@ export class AuthGuard implements CanActivate {
     } else {
       // TODO check permissions
       console.log("AuthGuard::canActivate() check permissions");
-      const permission = this.user.get_permissions();
-
-      return true;
+      if (route.data?.permission) {
+        const permissions = this.user.get_permissions();
+        if (permissions.includes(route.data?.permission)){
+          return true;
+        } else {
+          return this.router.parseUrl("/error/forbidden");  
+        }
+      } else {
+        // TODO redirect to forbidden page
+        return this.router.parseUrl("/error/forbidden");
+      }
     }
   }
   

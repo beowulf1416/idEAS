@@ -6,11 +6,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { httpInterceptorProviders } from './interceptors';
+import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ForbiddenComponent
   ],
   imports: [
     BrowserModule,
