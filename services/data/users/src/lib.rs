@@ -1,3 +1,4 @@
+pub mod jwt;
 pub mod email;
 pub mod user_param;
 pub mod users;
