@@ -2,13 +2,13 @@ version: "3.9"
 services:
   db:
     build:
-      context: ./data/db
+      context: data/db
       dockerfile: Dockerfile
     ports:
       - "5432:5432"
   api:
     build:
-      context: ./services
+      context: services
       dockerfile: Dockerfile
     depends_on:
       - db
@@ -31,7 +31,7 @@ services:
         target: jwt.txt
   ui:
     build:
-      context: ./ui
+      context: ui
       dockerfile: Dockerfile
     # depends_on:
     #   - api
@@ -50,7 +50,7 @@ services:
         target: site.crt
   swagger:
     build:
-      context: ./ui/swagger
+      context: ui/swagger
       dockerfile: Dockerfile
     depends_on:
       - api
