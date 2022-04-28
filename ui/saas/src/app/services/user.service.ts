@@ -15,7 +15,7 @@ export interface ApiResponse {
 })
 export class UserService {
 
-  permissions = null;
+  permissions: string[] = [];
 
   constructor(
     private http: HttpClient
@@ -38,13 +38,18 @@ export class UserService {
     return this.get_current_user();
   }
 
-  get_permissions() {
+  get_permissions(): string[] {
     console.log("UserService::permissions()");
-    if (this.permissions == null) {
+    if (this.permissions.length == 0) {
       this.get_current_user().subscribe(r => {
         // TODO parse permissions
         console.log(r);
+      }, e => {
+        console.error(e);
+        this.permissions = [];
       })
     }
+
+    return this.permissions;
   }
 }
