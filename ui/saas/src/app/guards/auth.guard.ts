@@ -19,11 +19,8 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    console.log(route);
-    
-
     const token = sessionStorage.getItem(environment.session_token_key);
-    if (token != null) {
+    if (token == null) {
       return this.router.parseUrl("/user/signin");
     } else {
       // TODO check permissions
