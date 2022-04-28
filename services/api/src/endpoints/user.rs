@@ -195,6 +195,15 @@ async fn get_user_post(
     debug!("USER: {:?}", user);
     let u = user.to_user();
 
+    match pool.get().await {
+        Ok(client) => {
+            let users = Users::new(client);
+        }
+        Err(e) => {
+            error!("ERROR: {}", e);
+        }
+    }
+
     return HttpResponse::Ok()
         .json(ApiResponse {
             status: String::from("success"),
