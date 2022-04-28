@@ -14,6 +14,8 @@ rand = "0.8.4"
 [dependencies]
 log = "*"
 
+serde = { version = "*", features = ["derive"] }
+
 actix-web = { version = "4" }
 http = "*"
 
@@ -24,5 +26,12 @@ deadpool-postgres = "0.10.1"
 tokio-postgres = { version = "0.7", features = ["with-uuid-0_8"] }
 postgres-types = { version = "*", features = ["derive"] }
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
+
+hmac = "0.12.0"
+sha2 = "0.10.1"
+jwt = "0.16.0"
+
+chrono = { version = "0.4.19", features = [ "serde" ] }
+
 
 common = { path = "../../common" }

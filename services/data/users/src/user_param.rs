@@ -3,6 +3,8 @@ use log::{ info, error, debug };
 
 use std::write;
 
+use http::header::AUTHORIZATION;
+
 use actix_web::{
     dev::Payload,
     http::StatusCode, 
@@ -26,6 +28,7 @@ use deadpool_postgres::{ Manager, Pool };
 use common::email::Email;
 use common::user::User;
 
+use crate::jwt::JWT;
 use crate::users::Users;
 
 
@@ -81,18 +84,51 @@ impl FromRequest for UserParam {
 
         let pool = request.app_data::<web::Data<Pool>>().unwrap().clone();
 
-        return Box::pin(async move {
-            if let Ok(client) = pool.get().await {
-                let users = Users::new(client);
-                let user = users.get_by_email(Email::new(String::from("email@email.com")).unwrap()).await.unwrap();
-                return Ok(UserParam {
-                    id: user.get_id(),
-                    active: true,
-                    email: user.get_email()
-                });
-            } else {
-                return Err(UserError::InternalServerError);
+        if let Some(header_value) = request.headers().get(AUTHORIZATION) {
+            if let Ok(header_str) = header_value.to_str() {
+                let token = String::from(header_str.replace("Bearer", "").trim());
+                if !token.is_empty() {
+                    if let Some(jwt) = request.app_data::<web::Data<JWT>>() {
+                        if jwt.validate(&token) {
+                            if let Ok(claims) = jwt.get_claims(&token) {
+                                let email_str = claims.get_email();
+
+                                if let Ok(email) = Email::new(String::from(email_str)) {
+                                    return Box::pin(async move {
+                                        if let Ok(client) = pool.get().await {
+                                            let users = Users::new(client);
+                                            // let user = users.get_by_email(Email::new(String::from("email@email.com")).unwrap()).await.unwrap();
+                                            let user = users.get_by_email(email).await.unwrap();
+                                            return Ok(UserParam {
+                                                id: user.get_id(),
+                                                active: true,
+                                                email: user.get_email()
+                                            });
+                                        } else {
+                                            return Err(UserError::InternalServerError);
+                                        }
+                                    });
+                                } else {
+                                    error!("email is not valid");
+                                }
+                            }
+                        } else {
+                            error!("token is not valid");
+                        }
+                    } else {
+                        error!("unable to obtain JWT object");
+                    }
+                } else {
+                    error!("token is empty");
+                }
             }
+        } else {
+            error!("Authorization header is empty or not provided");
+        }
+
+
+        return Box::pin(async move {
+            return Err(UserError::InternalServerError);
         });
     }
 }

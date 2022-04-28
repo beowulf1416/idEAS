@@ -29,11 +29,12 @@ use crate::endpoints::common::default_options;
 
 use common::email::Email;
 use users::{
+    jwt::JWT,
     users::Users,
     user_param::UserParam
 };
 
-use crate::utils::jwt::JWT;
+// use crate::utils::jwt::JWT;
 
 
 #[derive(Debug, Serialize, Deserialize)]

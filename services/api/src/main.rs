@@ -28,6 +28,7 @@ use actix_web::{ HttpServer, App, web, HttpResponse, Responder };
 
 // use auth::auth::Auth;
 
+use users::jwt::JWT;
 
 
 
@@ -87,7 +88,8 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .configure(crate::data::db::configure)
-            .configure(crate::utils::jwt::configure)
+            // .configure(crate::utils::jwt::configure)
+            .configure(users::jwt::configure)
             .wrap(crate::middleware::cors::CORS::new())
             // .wrap(crate::middleware::user::User::new(auth))
             .service(web::scope("/user").configure(crate::endpoints::user::config))
