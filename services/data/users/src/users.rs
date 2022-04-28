@@ -224,6 +224,17 @@ impl Users {
             }
         }
     }
+
+    /// retrieve user permissions
+    pub async fn get_user_permissions(
+        &self,
+        user_id: Uuid
+    ) -> Result<(), String> {
+        info!("Users::get_user_permissions()");
+
+
+        return Ok(());
+    }
 }
 
 
