@@ -270,12 +270,45 @@ impl Users {
     /// retrieve user permissions
     pub async fn get_user_permissions(
         &self,
-        user_id: Uuid
-    ) -> Result<(), String> {
+        user_id: Uuid,
+        tenant_id: Uuid
+    ) -> Result<Vec<(Uuid, String)>, String> {
         info!("Users::get_user_permissions()");
 
+        let result_stmt = self.client.prepare_cached(
+            "select * from iam.permissions_get($1, $2);"
+        ).await;
 
-        return Ok(());
+        match result_stmt {
+            Ok(stmt) => {
+                match self.client.query(
+                    &stmt,
+                    &[
+                        &user_id,
+                        &tenant_id
+                    ]
+                ).await {
+                    Ok(rows) => {
+                        let mut v = Vec::new();
+                        for r in rows {
+                            let permission_id: Uuid = r.get("permission_id");
+                            let permission_name: String = r.get("permission_name");
+
+                            v.push((permission_id, permission_name));
+                        }
+                        return Ok(v);
+                    }
+                    Err(e) => {
+                        error!("Error: {:?}", e);
+                        return Err(String::from("unable to retrieve permissions"));
+                    }
+                }
+            }
+            Err(e) => {
+                error!("ERROR: {:?}", e);
+                return Err(String::from("unable to prepare statement"));
+            }
+        }
     }
 }
 
@@ -544,6 +577,71 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_user_get_tenants() {
+        initialize();
+
+        if let Ok(url_db) = env::var("URL_DB") {
+            info!("connection string: {}", url_db);
+            match Config::from_str(&url_db) {
+                Ok(db_cfg) => {
+                    let mgr = Manager::from_config(
+                        db_cfg,
+                        NoTls,
+                        ManagerConfig {
+                            recycling_method: RecyclingMethod::Fast
+                        }
+                    );
+                    let pool = Pool::builder(mgr)
+                        .max_size(16)
+                        .build()
+                        .unwrap();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+                    
+                    let user_id = Uuid::new_v4();
+                    let email = Email::new(String::from(
+                        format!("email{suffix}@email.com", suffix = suffix)
+                    )).unwrap();
+                    let pw = String::from("thisIs1Password");
+
+                    let tenants = tenants::tenants::Tenants::new(pool.get().await.unwrap());
+                    let users = crate::users::Users::new(
+                        pool.get().await.unwrap()
+                    );
+
+                    if let Ok(tenant_id) = tenants.default_tenant_id().await {
+                        if let Ok(_) = users.add(
+                            user_id, 
+                            email.clone(), 
+                            pw.clone()
+                        ).await {
+                            if let Err(e) = users.get_user_permissions(
+                                user_id,
+                                tenant_id
+                            ).await {
+                                error!("error: {:?}", e);
+    
+                                assert!(false);
+                            }
+                        }
+                    } else {
+                        error!("unable to retrieve default tenant id");
+
+                        assert!(false);
+                    }
+                }
+                Err(e) => {
+                    error!("error: {:?}", e);
+                    assert!(false);
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test]
+    async fn test_user_get_permissions() {
         initialize();
 
         if let Ok(url_db) = env::var("URL_DB") {
