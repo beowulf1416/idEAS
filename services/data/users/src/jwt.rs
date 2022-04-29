@@ -127,7 +127,7 @@ impl JWT {
 mod tests {
 
     use log::{ error, debug };
-    use crate::utils::jwt::JWT;
+    use crate::jwt::JWT;
 
     #[test]
     fn test_generate() {
