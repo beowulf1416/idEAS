@@ -16,6 +16,10 @@ comment on table permissions is 'table of permissions';
 
 
 -- create permissions
-insert into iam.permissions (id, active, name, description) values 
-(1, true, 'tenant.users.view', 'view tenant users'),
-(2, true, 'tenant.users.add', 'add user to tenant');
+insert into iam.permissions (id, active, name, description) values
+(1, true, 'tenant.create', 'add tenant'), 
+(2, true, 'tenant.view', 'view tenant information'),
+(3, true, 'tenant.users.view', 'view tenant users'),
+(4, true, 'tenant.users.add', 'add user to tenant'),
+(5, true, 'tenant.view', 'view tenant information')
+;
