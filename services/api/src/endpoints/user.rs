@@ -195,21 +195,60 @@ async fn get_user_post(
     debug!("USER: {:?}", user);
     let u = user.to_user();
 
+    let user_id = u.get_id();
+    let user_email = u.get_email();
+
     match pool.get().await {
         Ok(client) => {
             let users = Users::new(client);
+
+            if let Ok(tenants) = users.get_tenants(u.get_id()).await {
+                debug!("tenants: {:?}", tenants);
+
+                if tenants.len() > 0 {
+                    // get default client
+                    let default_tenant = (&tenants[0..1])[0].clone();
+                    debug!("default tenant: {:?}", default_tenant);
+
+                    // retrieve user permissions
+                    let default_tenant_id = default_tenant.0;
+                    if let Ok(permissions) = users.get_user_permissions(
+                        user_id,
+                        default_tenant_id
+                    ).await {
+                        debug!("permissions: {:?}", permissions);
+
+                        return HttpResponse::Ok()
+                            .json(ApiResponse {
+                                status: String::from("success"),
+                                message: String::from("success"),
+                                data: Some(json!({
+                                    "email": user_email,
+                                    "tenants": tenants,
+                                    "tenant_default": default_tenant,
+                                    "permissions": permissions
+                                }))
+                            });
+
+                    } else {
+                        error!("unable to retrieve user permissions");
+                    }
+                } else {
+                    error!("user is not associated with any tenant");
+                }
+            } else {
+                error!("unable to retrieve tenants");
+            }
         }
         Err(e) => {
             error!("ERROR: {}", e);
         }
     }
 
-    return HttpResponse::Ok()
+    return HttpResponse::InternalServerError()
         .json(ApiResponse {
-            status: String::from("success"),
-            message: String::from("success"),
-            data: Some(json!({
-                "email": u.get_email()
-            }))
+            status: String::from("error"),
+            message: String::from("error"),
+            data: None
         });
 }
