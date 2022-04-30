@@ -7,6 +7,7 @@ as $$
 declare
     t_role_client_admin_id iam.roles.id%type;
     t_role_everybody_id iam.roles.id%type;
+    t_permission_id iam.permissions.id%type;
 begin
     insert into tenants.tenants (
         id,
@@ -15,6 +16,13 @@ begin
         p_tenant_id,
         p_tenant_name
     );
+
+    select
+        p.id into t_permission_id 
+    from iam.permissions p
+    where
+        p.name = 'dashboard.view'
+    ;
 
     -- create default roles
     t_role_client_admin_id := public.gen_random_uuid();
@@ -61,7 +69,20 @@ begin
             ;
 
             -- assign 'dashboard.view' permission to 'everybody' role
-            
+            insert into iam.role_permissions (
+                role_id,
+                permission_id
+            ) values (
+                t_role_everybody_id,
+                t_permission_id
+            );
+
+            update iam.role_permissions set
+                active = true
+            where
+                role_id = t_role_everybody_id
+                and permission_id = t_permission_id
+            ;
         end;
     else
         begin
@@ -88,6 +109,18 @@ begin
 
             call iam.role_set_active(
                 t_role_everybody_id,
+                true
+            );
+
+            -- assign 'dashboard.view' permission to 'everybody' role
+            call iam.assign_permission_to_role(
+                t_role_everybody_id,
+                t_permission_id
+            );
+
+            call iam.role_permission_set_active (
+                t_role_everybody_id,
+                t_permission_id,
                 true
             );
         end;
