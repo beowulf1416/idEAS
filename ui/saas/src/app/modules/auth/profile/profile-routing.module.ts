@@ -1,12 +1,19 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
+import { AuthGuard } from 'src/app/guards/auth.guard';
+import { PasswordComponent } from './components/password/password.component';
 
 
+const routes: Routes = [
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    component: PasswordComponent
+  }
+];
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule
-  ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class ProfileRoutingModule { }
