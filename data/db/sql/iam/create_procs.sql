@@ -19,3 +19,4 @@ set schema 'iam';
 
 \ir procedures/role_permissions/assign_permission_to_role.sql
 \ir procedures/role_permissions/revoke_permission_from_role.sql
+\ir procedures/role_permissions/role_permission_set_active.sql
