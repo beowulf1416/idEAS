@@ -14,6 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'password',
+    canActivate: [AuthGuard],
     component: PasswordComponent
   }
 ];
