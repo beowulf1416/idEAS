@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { AuthGuard } from './guards/auth.guard';
+import { ProfileModule } from './modules/auth/profile/profile.module';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'tenants',
     loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./modules/auth/profile/profile.module').then(m => ProfileModule)
   },
   {
     path: 'error/forbidden',
