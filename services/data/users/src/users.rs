@@ -310,6 +310,41 @@ impl Users {
             }
         }
     }
+
+    /// set user password
+    pub async fn set_password(
+        &self,
+        user_id: Uuid,
+        password: String
+    ) -> Result<(), String> {
+        info!("Users::set_password()");
+
+        let result_stmt = self.client.prepare_cached(
+            "call iam.user_set_password($1, $2);"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                if let Err(e) = self.client.query(
+                    &stmt,
+                    &[
+                        &user_id,
+                        &password
+                    ]
+                ).await {
+                    error!("unable to set user password: {}", e);
+
+                    return Err(String::from("unable to set user password"));
+                } else {
+                    return Ok(());
+                }
+            }
+            Err(e) => {
+                error!("ERROR: {:?}", e);
+                return Err(String::from("unable to prepare statement"));
+            }
+        }
+    }
 }
 
 
@@ -679,6 +714,64 @@ mod tests {
                         pw.clone()
                     ).await {
                         if let Err(e) = users.get_tenants(id).await {
+                            error!("error: {:?}", e);
+
+                            assert!(false);
+                        }
+                    }
+                }
+                Err(e) => {
+                    error!("error: {:?}", e);
+                    assert!(false);
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test]
+    async fn test_user_set_password() {
+        initialize();
+
+        if let Ok(url_db) = env::var("URL_DB") {
+            info!("connection string: {}", url_db);
+            match Config::from_str(&url_db) {
+                Ok(db_cfg) => {
+                    let mgr = Manager::from_config(
+                        db_cfg,
+                        NoTls,
+                        ManagerConfig {
+                            recycling_method: RecyclingMethod::Fast
+                        }
+                    );
+                    let pool = Pool::builder(mgr)
+                        .max_size(16)
+                        .build()
+                        .unwrap();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+                    
+                    let id = Uuid::new_v4();
+                    let email = Email::new(String::from(
+                        format!("email{suffix}@email.com", suffix = suffix)
+                    )).unwrap();
+                    let pw = String::from("thisIs1Password");
+
+                    let users = crate::users::Users::new(
+                        pool.get().await.unwrap()
+                    );
+
+                    if let Ok(_) = users.add(
+                        id, 
+                        email.clone(), 
+                        pw.clone()
+                    ).await {
+                        if let Err(e) = users.set_password(
+                            id.clone(), 
+                            String::from("ThisIs1NewPassword")
+                        ).await {
                             error!("error: {:?}", e);
 
                             assert!(false);
