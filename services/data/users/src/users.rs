@@ -272,7 +272,7 @@ impl Users {
         &self,
         user_id: Uuid,
         tenant_id: Uuid
-    ) -> Result<Vec<(Uuid, String)>, String> {
+    ) -> Result<Vec<(i8, String)>, String> {
         info!("Users::get_user_permissions()");
 
         let result_stmt = self.client.prepare_cached(
@@ -291,7 +291,7 @@ impl Users {
                     Ok(rows) => {
                         let mut v = Vec::new();
                         for r in rows {
-                            let permission_id: Uuid = r.get("permission_id");
+                            let permission_id: i8 = r.get("permission_id");
                             let permission_name: String = r.get("permission_name");
 
                             v.push((permission_id, permission_name));

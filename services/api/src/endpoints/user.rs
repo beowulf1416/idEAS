@@ -6,12 +6,12 @@ use log::{ info, error, debug };
 
 use serde::{ Serialize, Deserialize };
 use serde_json::{
-    from_str,
+    // from_str,
     json
 };
 
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
-use actix_http::header::{self, HeaderMap, HeaderValue};
+// use actix_http::header::{self, HeaderMap, HeaderValue};
 
 use http::header::AUTHORIZATION;
 
@@ -49,6 +49,11 @@ pub struct SignInRequest {
     pub password: String
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PasswordChangeRequest {
+    pub password: String
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
@@ -66,6 +71,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::resource("/current")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::post().to(get_user_post))   
+        )
+        .service(
+            web::resource("/password")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::post().to(password_change))
         )
     ;
 }
@@ -245,6 +255,50 @@ async fn get_user_post(
         }
     }
 
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: String::from("error"),
+            message: String::from("error"),
+            data: None
+        });
+}
+
+
+/// change password
+async fn password_change(
+    _request: HttpRequest,
+    pool: web::Data<Pool>,
+    user: UserParam,
+    params: web::Json<PasswordChangeRequest>
+) -> impl Responder {
+    info!("endpoints::user::password_change()");
+
+    let u = user.to_user();
+    let user_id = u.get_id();
+
+    match pool.get().await {
+        Ok(client) => {
+            let users = Users::new(client);
+            if let Err(e) = users.set_password(
+                u.get_id(), 
+                params.password.clone()
+            ).await {
+                error!("unable to set password: {}", e);
+            } else {
+                info!("password updated");
+                return HttpResponse::Ok()
+                    .json(ApiResponse {
+                        status: String::from("success"),
+                        message: String::from("success"),
+                        data: None
+                    });
+            }
+        }
+        Err(e) => {
+            error!("unable to get database client");
+        }
+    }
+    
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
             status: String::from("error"),
