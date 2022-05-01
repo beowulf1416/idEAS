@@ -102,6 +102,22 @@
                     "email": "email@email.com",
                     "password": "thisIs1Password*"
                 }
+            },
+            "passwordRequest": {
+                "type": "object",
+                "required": [
+                    "password"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "password": "thisIsNew1Password"
+                }
             }
         },
         "securitySchemes": {
@@ -212,6 +228,54 @@
                 "requestBody": {
                     "required": false,
                     "description": "empty request body"
+                },
+                "responses": {
+                    "200": {
+                        "description": "user credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/currentUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/password": {
+            "summary": "set current user's password",
+            "description": "set current user's password",
+            "post": {
+                "summary": "POST set user password",
+                "description": "POST set user password",
+                "tags": [ "user", "password" ],
+                "operationId": "user_set_password",
+                "requestBody": {
+                    "required": true,
+                    "description": "user set password request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/passwordRequest"
+                            }
+                        }
+                    }
                 },
                 "responses": {
                     "200": {
