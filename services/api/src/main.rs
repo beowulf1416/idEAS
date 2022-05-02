@@ -27,8 +27,7 @@ use std::{fs::File, io::BufReader};
 use actix_web::{ HttpServer, App, web, HttpResponse, Responder };
 
 // use auth::auth::Auth;
-
-use users::jwt::JWT;
+// use users::jwt::JWT;
 
 
 
@@ -93,6 +92,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(crate::middleware::cors::CORS::new())
             // .wrap(crate::middleware::user::User::new(auth))
             .service(web::scope("/user").configure(crate::endpoints::user::config))
+            // .service(web::scope("/tenant").configure(crate::endpoints::tenant::admin::config))
             .route("/status", web::get().to(status))
     })
     .bind("0.0.0.0:8081")?

@@ -1,4 +1,4 @@
-/// tenant endpoints
+/// tenants endpoints
 use log::{ info, error, debug };
 
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
