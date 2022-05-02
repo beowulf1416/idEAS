@@ -345,6 +345,43 @@ impl Users {
             }
         }
     }
+
+    /// toggle user tenant status
+    pub async fn user_tenant_set_active(
+        &self,
+        user_id: Uuid,
+        tenant_id: Uuid,
+        active: bool
+    ) -> Result<(), String> {
+        info!("Users::user_tenant_set_active()");
+
+        let result_stmt = self.client.prepare_cached(
+            "call iam.user_tenants_set_active($1, $2, $3);"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                if let Err(e) = self.client.query(
+                    &stmt,
+                    &[
+                        &user_id,
+                        &tenant_id,
+                        &active
+                    ]
+                ).await {
+                    error!("unable to set user tenant: {}", e);
+
+                    return Err(String::from("unable to set user tenant"));
+                } else {
+                    return Ok(());
+                }
+            }
+            Err(e) => {
+                error!("ERROR: {:?}", e);
+                return Err(String::from("unable to prepare statement"));
+            }
+        }
+    }
 }
 
 
@@ -364,6 +401,7 @@ mod tests {
 
     use common::email::Email;
     // use crate::email::EmailAddress;
+    use tenants::tenants::Tenants;
 
     use std::sync::Once;
     static INIT: Once = Once::new();
@@ -771,6 +809,71 @@ mod tests {
                         if let Err(e) = users.set_password(
                             id.clone(), 
                             String::from("ThisIs1NewPassword")
+                        ).await {
+                            error!("error: {:?}", e);
+
+                            assert!(false);
+                        }
+                    }
+                }
+                Err(e) => {
+                    error!("error: {:?}", e);
+                    assert!(false);
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test]
+    async fn test_user_tenant_set_active() {
+        initialize();
+
+        if let Ok(url_db) = env::var("URL_DB") {
+            info!("connection string: {}", url_db);
+            match Config::from_str(&url_db) {
+                Ok(db_cfg) => {
+                    let mgr = Manager::from_config(
+                        db_cfg,
+                        NoTls,
+                        ManagerConfig {
+                            recycling_method: RecyclingMethod::Fast
+                        }
+                    );
+                    let pool = Pool::builder(mgr)
+                        .max_size(16)
+                        .build()
+                        .unwrap();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+                    
+                    let id = Uuid::new_v4();
+                    let email = Email::new(String::from(
+                        format!("email{suffix}@email.com", suffix = suffix)
+                    )).unwrap();
+                    let pw = String::from("thisIs1Password");
+
+                    let users = crate::users::Users::new(
+                        pool.get().await.unwrap()
+                    );
+
+                    let tenants = Tenants::new(
+                        pool.get().await.unwrap()
+                    );
+
+                    if let Ok(_) = users.add(
+                        id, 
+                        email.clone(), 
+                        pw.clone()
+                    ).await {
+                        let tenant_id = tenants.default_tenant_id().await.unwrap();
+
+                        if let Err(e) = users.user_tenant_set_active(
+                            id,
+                            tenant_id,
+                            true
                         ).await {
                             error!("error: {:?}", e);
 
