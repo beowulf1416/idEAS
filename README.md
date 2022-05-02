@@ -1,9 +1,11 @@
 # idEAS
 Enterprise Application Software
 
+Features
 * Multi-tenant
 * Permission and role based authorization
 
+Components
 * PostgreSQL database
 * Apache Kafka enterprise bus
 * Angular based front end
