@@ -1,29 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
-import { TitleService } from 'src/app/services/title.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { matchValidator } from 'src/app/classes/validators/match-validator';
+import { patternValidator } from 'src/app/classes/validators/pattern-validator';
+import { TitleService } from 'src/app/services/title.service';
 import { SigninService } from '../../../signin/services/signin.service';
 
-
-export function matchValidator(control1: string, control2: string): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value1 = control.get(control1)?.value;
-    const value2 = control.get(control2)?.value;
-
-    return value1 == value2 ? null : { identical: true };
-  }
-}
-
-export function patternValidator(pattern: RegExp, error: ValidationErrors): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) {
-      return null;
-    }
-
-    const valid = pattern.test(control.value);
-    return valid ? null : error;
-  }
-}
 
 @Component({
   selector: 'app-signup',
