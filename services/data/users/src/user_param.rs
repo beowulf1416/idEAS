@@ -9,21 +9,21 @@ use actix_web::{
     dev::Payload,
     http::StatusCode, 
     web, 
-    Error, 
+    // Error, 
     HttpRequest, 
-    HttpResponse,
+    // HttpResponse,
     FromRequest,
     ResponseError
 };
 
-use futures::future::{ok, err, ready, Ready};
+// use futures::future::{ok, err, ready, Ready};
 
 // use http::status::StatusCode;
 
 use std::pin::Pin;
 use futures::Future;
 
-use deadpool_postgres::{ Manager, Pool };
+use deadpool_postgres::{ Pool };
 
 use common::email::Email;
 use common::user::User;
@@ -79,7 +79,7 @@ impl FromRequest for UserParam {
     type Error = UserError;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
-    fn from_request(request: &HttpRequest, payload: &mut Payload) -> Self::Future {
+    fn from_request(request: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         debug!("users::user::UserParam::from_request()");
 
         let pool = request.app_data::<web::Data<Pool>>().unwrap().clone();

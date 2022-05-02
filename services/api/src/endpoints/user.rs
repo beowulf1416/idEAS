@@ -95,20 +95,28 @@ async fn signup_post(
 
             let users = Users::new(client);
             let id = Uuid::new_v4();
-            if let Ok(s) = users.add(
+
+            if let Err(e) = users.add(
                 id,
                 Email::new(sign_up.email.clone()).unwrap(),
                 sign_up.password.clone()
             ).await {
-                info!("user signed up");
-            }
+                error!("unable to add user: {}", e);
 
-            return HttpResponse::Ok()
-                .json(ApiResponse {
-                    status: String::from("success"),
-                    message: String::from("success"),
-                    data: None
-                });
+                return HttpResponse::InternalServerError()
+                    .json(ApiResponse {
+                        status: String::from("error"),
+                        message: format!("unable to add user: {}", e),
+                        data: None
+                    });
+            } else {
+                return HttpResponse::Ok()
+                    .json(ApiResponse {
+                        status: String::from("success"),
+                        message: String::from("success"),
+                        data: None
+                    });
+            }
         }
         Err(e) => {
             error!("error obtaining client: {:?}", e);
@@ -280,7 +288,7 @@ async fn password_change(
         Ok(client) => {
             let users = Users::new(client);
             if let Err(e) = users.set_password(
-                u.get_id(), 
+                user_id, 
                 params.password.clone()
             ).await {
                 error!("unable to set password: {}", e);
@@ -295,7 +303,7 @@ async fn password_change(
             }
         }
         Err(e) => {
-            error!("unable to get database client");
+            error!("unable to get database client: {}", e);
         }
     }
     

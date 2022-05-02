@@ -15,9 +15,9 @@ use actix_web::{
 };
 
 use http::header::{ 
-    HeaderName,
+    // HeaderName,
     HeaderValue,
-    AUTHORIZATION,
+    // AUTHORIZATION,
     ACCESS_CONTROL_ALLOW_ORIGIN,
     ACCESS_CONTROL_ALLOW_METHODS,
     ACCESS_CONTROL_ALLOW_HEADERS, 
