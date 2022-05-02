@@ -97,7 +97,6 @@ impl FromRequest for UserParam {
                                     return Box::pin(async move {
                                         if let Ok(client) = pool.get().await {
                                             let users = Users::new(client);
-                                            // let user = users.get_by_email(Email::new(String::from("email@email.com")).unwrap()).await.unwrap();
                                             let user = users.get_by_email(email).await.unwrap();
                                             return Ok(UserParam {
                                                 id: user.get_id(),
