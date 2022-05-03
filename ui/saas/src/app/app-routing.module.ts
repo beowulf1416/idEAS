@@ -23,10 +23,16 @@ const routes: Routes = [
   },
   {
     path: 'tenants',
+    data: {
+      permission: "tenants.admin"
+    },
     loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
   },
   {
     path: 'profile',
+    data: {
+      permission: "user.profile"
+    },
     loadChildren: () => import('./modules/auth/profile/profile.module').then(m => ProfileModule)
   },
   {
