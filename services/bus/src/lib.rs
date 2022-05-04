@@ -1,4 +1,5 @@
-pub mod bus;
+pub mod publisher;
+pub mod subscriber;
 
 #[cfg(test)]
 mod tests {
