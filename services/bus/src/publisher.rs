@@ -1,5 +1,5 @@
 use log::{ info, error };
-use std::fmt::Write;
+// use std::fmt::Write;
 use std::time::Duration;
 
 use kafka::producer::{ Producer, Record, RequiredAcks };
@@ -46,7 +46,7 @@ mod tests {
     static INIT: Once = Once::new();
 
     use serde_json::json;
-    use crate::bus::Publisher;
+    use crate::publisher::Publisher;
 
     fn initialize() {
         INIT.call_once( || {
@@ -58,9 +58,9 @@ mod tests {
     fn test_send() {
         initialize();
         
-        let mut publisher = Publisher::new(vec!(String::from("localhost:9092")));
+        let mut publisher = Publisher::new(vec!(String::from("127.0.0.1:9092")));
         // publisher.send("test", json!({ "key": "value" }));
-        if let Err(e) = publisher.send("test", json!({ "key": "value" })) {
+        if let Err(e) = publisher.send("my.test", json!({ "key": "value" })) {
             assert!(false);
         }
     }
