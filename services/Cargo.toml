@@ -4,5 +4,9 @@ members = [
     "data/tenants",
     "data/users",
     "data/roles",
-    "api"
+    "mailer",
+    "bus",
+    "api",
+    "echo",
+    "shout"
 ]
