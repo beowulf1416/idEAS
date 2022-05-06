@@ -24,7 +24,7 @@ fn main() {
 
         info!("{:?}", buf.as_bytes());
 
-        producer.send(&Record::from_value("my-topic", buf.as_bytes())).unwrap();
+        producer.send(&Record::from_value("test.topic", buf.as_bytes())).unwrap();
         buf.clear();
     }
 

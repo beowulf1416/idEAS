@@ -20,6 +20,7 @@ services:
       - CERT_FILE=/run/secrets/site.key
       - KEY_FILE=/run/secrets/site.key
       - JWT_SECRET_FILE=/run/secrets/jwt.txt
+      - BUS_SERVERS_CFG=/run/secrets/bus_hosts.txt
     secrets:
       - source: url_db
         target: url_db
@@ -77,3 +78,5 @@ secrets:
     file: ./secrets/site.crt
   jwt_secret:
     file: ./secrets/jwt.txt
+  bus_hosts.txt:
+    file: ./secrets/bus_hosts.txt

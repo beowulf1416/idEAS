@@ -40,3 +40,5 @@ chrono = { version = "0.4.19", features = [ "serde" ] }
 common = { path = "../common" }
 users = { path = "../data/users" }
 tenants = { path = "../data/tenants" }
+
+bus = { path = "../bus" }

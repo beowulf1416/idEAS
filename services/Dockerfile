@@ -9,7 +9,8 @@ ENV TZ=Etc/UTC \
     URL_DB=prod \
     CERT_FILE=cert.pem \
     KEY_FILE=key.pem \
-    JWT_SECRET_FILE=
+    JWT_SECRET_FILE= \
+    BUS_SERVERS_CFG= 
 
 WORKDIR /opt/erp/services
 
