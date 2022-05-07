@@ -10,3 +10,4 @@ create extension if not exists pgcrypto;
 \ir common/create_tables.sql
 \ir tenants/create_tables.sql
 \ir iam/create_tables.sql
+\ir accounting/create_tables.sql

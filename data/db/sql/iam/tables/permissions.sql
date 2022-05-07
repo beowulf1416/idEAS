@@ -19,11 +19,11 @@ comment on table permissions is 'table of permissions';
 insert into iam.permissions (id, active, name, description) values
 (1, true, 'dashboard.view', 'view dashboard'),
 (2, true, 'user.profile', 'view user profile'),
-(2, true, 'tenant.create', 'add tenant'),
-(3, true, 'tenant.view', 'view tenant information'),
-(4, true, 'tenant.users.view', 'view tenant users'),
-(5, true, 'tenant.users.add', 'add user to tenant'),
-(6, true, 'tenants.admin', 'administer tenants'),
-(7, true, 'tenants.admin.list', 'view list of tenants'),
-(8, true, 'tenants.admin.view', 'view tenant information')
+(3, true, 'tenant.create', 'add tenant'),
+(4, true, 'tenant.view', 'view tenant information'),
+(5, true, 'tenant.users.view', 'view tenant users'),
+(6, true, 'tenant.users.add', 'add user to tenant'),
+(7, true, 'tenants.admin', 'administer tenants'),
+(8, true, 'tenants.admin.list', 'view list of tenants'),
+(9, true, 'tenants.admin.view', 'view tenant information')
 ;
