@@ -13,5 +13,5 @@ create table accounts (
     constraint fk_accounts_1
         foreign key (tenant_id)
         references tenants.tenants (id)
-        on delete restrict
+        on delete restrict`
 );
