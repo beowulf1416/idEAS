@@ -2,7 +2,7 @@
  * database creation script
  */
 
-create database saas;
+create database eas;
 
 -- for gen_random_uuid()
 create extension if not exists pgcrypto;
