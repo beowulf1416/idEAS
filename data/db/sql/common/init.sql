@@ -1,5 +1,6 @@
 \copy common.countries from '../../csv/countries.csv' with csv header
 
+\copy common.currencies from '../../csv/currencies.csv' with csv header
 
 -- copy common.countries (
 --     official_name_en,
