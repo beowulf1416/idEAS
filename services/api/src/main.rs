@@ -17,6 +17,7 @@ mod data;
 mod models;
 mod utils;
 mod middleware;
+mod guards;
 mod endpoints;
 
 
@@ -88,6 +89,7 @@ async fn main() -> std::io::Result<()> {
             .configure(users::jwt::configure)
             .configure(crate::utils::bus::configure)
             .wrap(crate::middleware::cors::CORS::new())
+            .service(web::scope("/status").configure(crate::endpoints::status::config))
             .service(web::scope("/user").configure(crate::endpoints::user::config))
             // .service(web::scope("/tenant").configure(crate::endpoints::tenant::admin::config))
             .route("/status", web::get().to(status))
