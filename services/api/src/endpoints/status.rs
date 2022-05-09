@@ -3,17 +3,17 @@ use actix_web::{ web, HttpRequest, HttpResponse, Responder };
 
 use crate::endpoints::common::default_options;
 
-use crate::guards::user_guard::AuthGuard;
+use crate::guards::auth_guard::AuthGuard;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
             web::resource("/test")
                 .route(web::method(http::Method::OPTIONS))
-                    .guard(AuthGuard::new())
+                    .guard(AuthGuard::new(String::from("permission.test")))
                     .to(default_options)
                 .route(web::get()
-                    .guard(AuthGuard::new())
+                    .guard(AuthGuard::new(String::from("permission.test")))
                     .to(get_status))
         )
     ;
