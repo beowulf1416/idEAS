@@ -82,8 +82,6 @@ async fn main() -> std::io::Result<()> {
     // let config = load_tls_config();
 
     let server = HttpServer::new(move || {
-        // let auth = Auth::new();
-
         App::new()
             .configure(crate::data::db::configure)
             .configure(users::jwt::configure)
