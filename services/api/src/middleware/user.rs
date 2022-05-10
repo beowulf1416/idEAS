@@ -24,17 +24,16 @@ use futures::future::LocalBoxFuture;
 use deadpool_postgres::{ Pool };
 
 // use crate::utils::jwt::JWT;
+use users::jwt::JWT;
 // use common::user::User;
 use common::email::Email;
-use auth::auth::{ Auth, Claims };
+// use auth::auth::{ Auth, Claims };
 
 
 pub struct User {
-    auth: Auth
 }
 
 pub struct UserMiddleware<S> {
-    auth: Auth,
     service: S
 }
 
@@ -49,10 +48,8 @@ pub struct UserMiddleware<S> {
 
 impl User {
 
-    pub fn new(auth: Auth) -> Self {
-        // return User::default();
+    pub fn new() -> Self {
         return User {
-            auth: auth
         }
     }
 }
@@ -73,7 +70,7 @@ where
     fn new_transform(&self, service: S) -> Self::Future {
         info!("User::new_transform()");
         ready(Ok(UserMiddleware {
-            auth: self.auth.clone(),
+            // auth: self.auth.clone(),
             service: service
         }))
     }
@@ -105,54 +102,21 @@ where
         let mut token = String::from("");
         let mut email = String::from("");
 
-        let auth = self.auth.clone();
+        // let auth = self.auth.clone();
     
         if request.headers().contains_key(AUTHORIZATION) {
             let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap();
-            token = header_value.replace("Bearer", "");
+            let token = header_value.replace("Bearer", "").trim().to_owned();
 
-            if auth.validate(&token) {
-                debug!("authenticated");
+            debug!("UserMiddleware::call(): {:?}", token);
 
-                if let Ok(claims) = auth.claims(&token) {
-                    email = claims.get_email();
-                }
+            let jwt = request.app_data::<web::Data<JWT>>().unwrap().clone();
+            if jwt.validate(&token) {
+                debug!("UserMiddleware::call(): valid");
+
+                // request.extensions_mut().insert(val: T)
             }
-        }
-
-        // let req = request.clone();
-
-        // let empty_str = String::from("");
-        // let mut token = String::from("");
-        // if request.headers().contains_key(AUTHORIZATION) {
-        //     // debug!("AUTHORIZATION: {}", request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap());
-        //     debug!("Authorization provided");
-
-        //     let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap();
-        //     token = header_value.replace("Bearer", "");
-        // }
-
-        // let mut email = String::from("");
-        // if token.ne(&empty_str) {
-        //     if let Some(jwt) = request.app_data::<web::Data<JWT>>() {
-        //         if jwt.validate(&token) {
-        //             if let Ok(claims) = jwt.get_claims(&token) {
-        //                 email = claims.get_email();
-        //             }
-        //         }
-        //     }
-        // }
-
-        // let mut pool: Pool;
-        // if email.ne(&empty_str) {
-            // if let Some(p) = request.app_data::<web::Data<Pool>>() {
-            //     pool = *(p.get_ref());
-            // }
-        // }
-
-        // let origin = HeaderValue::from_static("*");
-
-        
+        }        
         
         let fut = self.service.call(request);
 
@@ -161,70 +125,7 @@ where
 
             info!("UserMiddleware::call() [2]");
 
-            if email.ne(&empty_str) {
-                if let Ok(user) = auth.user(Email::new(email)).await {
-                    debug!("auth.user() succeeded");
-
-                    // request.app_data(web::Data::new(User));
-                    // request.extensions_mut().insert(user);
-                }
-            }
-            
-            
-
-            // if token.ne(&empty_str) {
-            //     if let Some(jwt) = request.app_data::<web::Data<JWT>>() {
-            //         debug!("DEBUG: {:?}", jwt);
-            //         if jwt.validate(&token) {
-            //             if let Ok(claims) = jwt.get_claims(token) {
-            //                 let email = claims.get_email();
-    
-            //                 if let Some(pool) = request.app_data::<web::Data<Pool>>() {
-            //                     // if let Ok(client) = pool.get().await {
-    
-            //                     // }
-            //                 } else {
-            //                     error!("unable to retrieve database pool");
-            //                 }
-    
-            //                 // let user = User::new();
-            //             } else {
-            //                 debug!("JWT claims error");
-            //             }
-            //         } else {
-            //             debug!("JWT token not valid");
-            //         }
-            //     } else {
-            //         error!("unable to retrieve jwt");
-            //     }
-            // }
-
-            
-            // if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_ORIGIN) {
-            //     info!("modifying access_control_allow_allow_origin");
-            //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            // }
-
-            // if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_METHODS) {
-            //     info!("modifying access_control_allow_methods");
-            //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_METHODS, HeaderValue::from_static("POST, OPTIONS"));
-            // }
-
-            // if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_HEADERS) {
-            //     info!("modifying access_control_allow_headers");
-            //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_HEADERS, HeaderValue::from_static("Content-Type, Authorization"));
-            // }
-
-            // if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_CREDENTIALS) {
-            //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_CREDENTIALS, HeaderValue::from_static("false"));
-            // }
-
-            // if !res.headers().contains_key(ACCESS_CONTROL_EXPOSE_HEADERS) {
-            //     // TODO: need to tighten this
-            //     res.headers_mut().insert(ACCESS_CONTROL_EXPOSE_HEADERS, HeaderValue::from_static("*"));
-            // }
-
-            Ok(res)
+            return Ok(res);
         })
     }
 }

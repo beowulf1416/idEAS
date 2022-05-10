@@ -121,7 +121,7 @@ where
                 res.headers_mut().insert(ACCESS_CONTROL_EXPOSE_HEADERS, HeaderValue::from_static("authorization"));
             }
 
-            Ok(res)
+            return Ok(res);
         })
     }
 }

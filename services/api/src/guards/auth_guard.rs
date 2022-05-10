@@ -1,6 +1,10 @@
 use log::{ info, debug, error };
 
-use actix_web::guard::{ Guard, GuardContext };
+use actix_web::{
+    HttpRequest,
+    guard::{ Guard, GuardContext }
+};
+
 use http::header;
 
 pub struct AuthGuard {
@@ -27,8 +31,11 @@ impl Guard for AuthGuard {
                 let token_value = header_str.replace("Bearer", "");
                 if !token_value.is_empty() {
                     // TODO need to validate jwt token and retrieve claims
+                    debug!("data/extensions: {:?}", ctx.req_data());
+
+                    // let request = ctx
                 } else {
-                    error!("unable retrieve token value");
+                    error!("empty token value");
                 }
             } else {
                 error!("unable to convert to string");
