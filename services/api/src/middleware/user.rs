@@ -115,6 +115,8 @@ where
                 debug!("UserMiddleware::call(): valid");
 
                 // request.extensions_mut().insert(val: T)
+            } else {
+                debug!("UserMiddleware::call(): token is not valid");
             }
         }        
         
