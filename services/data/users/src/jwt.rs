@@ -15,6 +15,7 @@ use actix_web::{ web };
 
 use chrono::prelude::*;
 use serde_json::json;
+use uuid::Uuid;
 
 
 #[derive(Serialize, Deserialize)]
@@ -73,7 +74,8 @@ impl JWT {
     pub fn generate(
         &self,
         email: String,
-        permission_ids: Vec<i32>
+        tenant_ids: Vec<Uuid>,
+        permission_ids: Vec<i8>
     ) -> Result<String, String> {
         debug!("JWT::generate()");
 
@@ -85,6 +87,7 @@ impl JWT {
 
         // custom claims
         claims.insert("email", email);
+        claims.insert("tids", json!(tenant_ids).to_string());
         claims.insert("pids", json!(permission_ids).to_string());
 
         match claims.sign_with_key(&key) {
@@ -148,6 +151,7 @@ mod tests {
         let jwt = JWT::new(String::from("secret"));
         if let Err(e) = jwt.generate(
             String::from("email@email.com"),
+            vec!(1, 2, 3),
             vec!(1, 2, 3)
         ) {
             assert!(false);
