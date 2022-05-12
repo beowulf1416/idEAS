@@ -136,19 +136,33 @@ async fn signin_post(
 
     match data.get_pool().get().await {
         Ok(client) => {
+            let email = Email::new(sign_in.email.clone()).unwrap();
+
             let users = Users::new(client);
             if let Ok(authentic) = users.authenticate(
-                Email::new(sign_in.email.clone()).unwrap(),
+                email.clone(),
                 sign_in.password.clone()
             ).await {
                 if authentic {
+                    let user = users.get_by_email(email.clone()).await.unwrap();
+                    let user_id = user.get_id();
+
+                    // TODO retrieve tenants
+                    let tenants = users.get_tenants(user_id).await.unwrap();
+                    let tenant_ids: Vec<Uuid> = tenants.iter().map(|t| t.0).collect();
+                    
                     // TODO retrieve permissions
-                    let permissions = vec!(1, 2, 3);
+                    let permissions = users.get_user_permissions(
+                        user_id,
+                        tenant_ids[0]
+                    ).await.unwrap();
+                    let permission_ids = permissions.iter().map(|p| p.0).collect();
 
                     // generate jwt token
                     match jwt.generate(
-                        sign_in.email.clone(), 
-                        permissions
+                        sign_in.email.clone(),
+                        tenant_ids,
+                        permission_ids
                     ) {
                         Ok(token) => {
                             return HttpResponse::Ok()
