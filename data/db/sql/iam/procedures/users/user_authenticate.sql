@@ -13,7 +13,7 @@ declare
 begin
     select
         a.pw = public.crypt(p_pw, a.pw)
-        into
+        into strict
         t_authentic
     from iam.users a
     where
@@ -22,5 +22,9 @@ begin
     ;
 
     return t_authentic;
+
+    exception
+        when no_data_found then
+            return false;
 end
 $$;
