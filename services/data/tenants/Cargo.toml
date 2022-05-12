@@ -25,3 +25,4 @@ postgres-types = { version = "*", features = ["derive"] }
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
 common = { path = "../../common" }
+data = { path = "../data" }

@@ -13,6 +13,7 @@ use uuid::Uuid;
 
 use common::email::Email;
 use common::user::User;
+use data::data::Data;
 
 use crate::email::EmailAddress;
 
@@ -37,8 +38,8 @@ impl Users {
     pub async fn from_request(request: &HttpRequest) ->  Result<Self, String> {
         debug!("users::users::Users::from_request()");
 
-        if let Some(pool) = request.app_data::<web::Data<Pool>>() {
-            if let Ok(client) = pool.get().await {
+        if let Some(data) = request.app_data::<web::Data<Data>>() {
+            if let Ok(client) = data.get_pool().get().await {
                 return Ok(Users {
                     client: client
                 });
