@@ -28,7 +28,7 @@ impl Guard for AuthGuard {
         info!("AuthGuard::check(): {:?}", ctx); 
         if let Some(header_value) = ctx.head().headers().get(header::AUTHORIZATION) {
             if let Ok(header_str) = header_value.to_str() {
-                let token_value = header_str.replace("Bearer", "");
+                let token_value = String::from(header_str.replace("Bearer", "").trim());
                 if !token_value.is_empty() {
                     // TODO need to validate jwt token and retrieve claims
                     debug!("data/extensions: {:?}", ctx.req_data());

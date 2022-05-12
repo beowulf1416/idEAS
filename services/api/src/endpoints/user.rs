@@ -142,8 +142,14 @@ async fn signin_post(
                 sign_in.password.clone()
             ).await {
                 if authentic {
+                    // TODO retrieve permissions
+                    let permissions = vec!(1, 2, 3);
+
                     // generate jwt token
-                    match jwt.generate(sign_in.email.clone()) {
+                    match jwt.generate(
+                        sign_in.email.clone(), 
+                        permissions
+                    ) {
                         Ok(token) => {
                             return HttpResponse::Ok()
                                 .append_header((AUTHORIZATION, format!("Bearer {}", token)))

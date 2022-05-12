@@ -21,10 +21,10 @@ use actix_web::{
 
 use futures::future::LocalBoxFuture;
 
-// use deadpool_postgres::{ Pool };
-
-// use crate::utils::jwt::JWT;
 use users::jwt::JWT;
+// use data::data::Data;
+use users::users::Users;
+
 // use common::user::User;
 use common::email::Email;
 // use auth::auth::{ Auth, Claims };
@@ -104,6 +104,7 @@ where
 
         // let auth = self.auth.clone();
     
+        // let mut data: Data;
         if request.headers().contains_key(AUTHORIZATION) {
             let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap();
             let token = header_value.replace("Bearer", "").trim().to_owned();
@@ -113,10 +114,14 @@ where
             let jwt = request.app_data::<web::Data<JWT>>().unwrap().clone();
             if jwt.validate(&token) {
                 debug!("UserMiddleware::call(): valid");
+                if let Ok(claims) = jwt.get_claims(&token) {
+
+                } else {
+                    error!("unable to retrieve claims");
+                }
 
                 // request.extensions_mut().insert(val: T)
-
-                
+                // data = request.app_data::<web::Data<Data>>().unwrap().clone();
             } else {
                 debug!("UserMiddleware::call(): token is not valid");
             }
