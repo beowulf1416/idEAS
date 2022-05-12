@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "common",
+    "data/data",
     "data/tenants",
     "data/users",
     "data/roles",

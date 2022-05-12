@@ -11,30 +11,22 @@ use serde_json::{
 };
 
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
-// use actix_http::header::{self, HeaderMap, HeaderValue};
 
 use http::header::AUTHORIZATION;
 
 use uuid::Uuid;
-use deadpool_postgres::{ Pool };
 
 use crate::models::api_response::ApiResponse;
-// use crate::data::user::User;
 use crate::endpoints::common::default_options;
 
-// use crate::extractors::user::UserParam;
-// use users::user::User;
-
-// use json::object;
-
 use common::email::Email;
+use data::data::Data;
 use users::{
     jwt::JWT,
     users::Users,
     user_param::UserParam
 };
 
-// use crate::utils::jwt::JWT;
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -83,13 +75,13 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 /// signup endpoint
 async fn signup_post(
     _request: HttpRequest,
-    pool: web::Data<Pool>,
+    data: web::Data<Data>,
     sign_up: web::Json<SignUpRequest>
 ) -> impl Responder {
     info!("endpoints::user::signup_post()");
     info!("sign_up: {:?}", sign_up);
 
-    match pool.get().await {
+    match data.get_pool().get().await {
         Ok(client) => {
             info!("client obtained");
 
@@ -135,14 +127,14 @@ async fn signup_post(
 /// signin endpoint
 async fn signin_post(
     _request: HttpRequest,
-    pool: web::Data<Pool>,
+    data: web::Data<Data>,
     jwt: web::Data<JWT>,
     sign_in: web::Json<SignInRequest>
 ) -> impl Responder {
     info!("endpoints::user::signin_post()");
     // info!("sign_in: {:?}", sign_in);
 
-    match pool.get().await {
+    match data.get_pool().get().await {
         Ok(client) => {
             let users = Users::new(client);
             if let Ok(authentic) = users.authenticate(
@@ -205,7 +197,7 @@ async fn signin_post(
 /// get user endpoint
 async fn get_user_post(
     _request: HttpRequest,
-    pool: web::Data<Pool>,
+    data: web::Data<Data>,
     user: UserParam
 ) -> impl Responder {
     info!("endpoints::user::get_user_post()");
@@ -216,7 +208,7 @@ async fn get_user_post(
     let user_id = u.get_id();
     let user_email = u.get_email();
 
-    match pool.get().await {
+    match data.get_pool().get().await {
         Ok(client) => {
             let users = Users::new(client);
 
@@ -275,7 +267,7 @@ async fn get_user_post(
 /// change password
 async fn password_change(
     _request: HttpRequest,
-    pool: web::Data<Pool>,
+    data: web::Data<Data>,
     user: UserParam,
     params: web::Json<PasswordChangeRequest>
 ) -> impl Responder {
@@ -284,7 +276,7 @@ async fn password_change(
     let u = user.to_user();
     let user_id = u.get_id();
 
-    match pool.get().await {
+    match data.get_pool().get().await {
         Ok(client) => {
             let users = Users::new(client);
             if let Err(e) = users.set_password(

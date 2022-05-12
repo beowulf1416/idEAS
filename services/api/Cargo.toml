@@ -20,9 +20,9 @@ rustls = "*"
 rustls-pemfile = "*"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
-deadpool = "0.9.3"
-deadpool-postgres = "0.10.1"
-tokio-postgres = { version = "0.7.5", features = ["with-uuid-0_8"] }
+#deadpool = "0.9.3"
+#deadpool-postgres = "0.10.1"
+#tokio-postgres = { version = "0.7.5", features = ["with-uuid-0_8"] }
 
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
@@ -38,6 +38,7 @@ chrono = { version = "0.4.19", features = [ "serde" ] }
 
 
 common = { path = "../common" }
+data = { path = "../data/data" }
 users = { path = "../data/users" }
 tenants = { path = "../data/tenants" }
 
