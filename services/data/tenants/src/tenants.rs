@@ -10,6 +10,7 @@ use deadpool_postgres::{ Manager, Pool };
 use deadpool::managed::Object;
 
 use uuid::Uuid;
+use data::data::Data;
 
 
 pub struct Tenants {
@@ -30,8 +31,8 @@ impl Tenants {
     pub async fn from_request(request: HttpRequest) -> Result<Self, String> {
         debug!("tenants::tenants::Tenants::from_request()");
 
-        if let Some(pool) = request.app_data::<web::Data<Pool>>() {
-            if let Ok(client) = pool.get().await {
+        if let Some(data) = request.app_data::<web::Data<Data>>() {
+            if let Ok(client) = data.get_pool().get().await {
                 return Ok(Tenants {
                     client: client
                 });
