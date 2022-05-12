@@ -13,7 +13,7 @@ extern crate log;
 // };
 
 
-mod data;
+// mod data;
 mod models;
 mod utils;
 mod middleware;
@@ -83,7 +83,7 @@ async fn main() -> std::io::Result<()> {
 
     let server = HttpServer::new(move || {
         App::new()
-            .configure(crate::data::db::configure)
+            .configure(data::data::configure)
             .configure(users::jwt::configure)
             .configure(crate::utils::bus::configure)
             .wrap(crate::middleware::cors::CORS::new())

@@ -21,7 +21,7 @@ use actix_web::{
 
 use futures::future::LocalBoxFuture;
 
-use deadpool_postgres::{ Pool };
+// use deadpool_postgres::{ Pool };
 
 // use crate::utils::jwt::JWT;
 use users::jwt::JWT;
@@ -115,6 +115,8 @@ where
                 debug!("UserMiddleware::call(): valid");
 
                 // request.extensions_mut().insert(val: T)
+
+                
             } else {
                 debug!("UserMiddleware::call(): token is not valid");
             }
