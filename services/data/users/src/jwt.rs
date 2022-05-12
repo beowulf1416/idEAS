@@ -18,10 +18,10 @@ use serde_json::json;
 use uuid::Uuid;
 
 
-#[derive(Serialize, Deserialize)]
-pub struct Permissions {
-    ids: Vec<i32>
-}
+// #[derive(Serialize, Deserialize)]
+// pub struct Permissions {
+//     ids: Vec<i32>
+// }
 
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
@@ -44,7 +44,8 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
     email: String,
-    permission_ids: Option<Vec<i32>>
+    tenant_ids: Vec<Uuid>,
+    permission_ids: Vec<i64>
 }
 
 impl Claims {
@@ -75,7 +76,7 @@ impl JWT {
         &self,
         email: String,
         tenant_ids: Vec<Uuid>,
-        permission_ids: Vec<i8>
+        permission_ids: Vec<i64>
     ) -> Result<String, String> {
         debug!("JWT::generate()");
 
@@ -125,10 +126,21 @@ impl JWT {
         match result {
             Ok(claims) => {
                 debug!("JWT::get_claims(): {:?}", claims);
+                debug!("JWT::get_claims(): {:?}", claims["pids"].as_str());
+
+                let permission_ids: Vec<i64> = serde_json::from_str(claims["pids"].as_str()).unwrap();
+                let tenant_ids: Vec<Uuid> = serde_json::from_str(claims["tids"].as_str()).unwrap();
+
+
+                // let result: Result<Vec<Uuid>, String> = serde_json::from_str(claims["pids"].as_str());
+                // if let Ok(tenant_ids) = result {
+
+                // }
+
                 return Ok(Claims {
                     email: claims["email"].clone(),
-                    // TODO add permissions to token
-                    permission_ids: None
+                    tenant_ids: tenant_ids,
+                    permission_ids: permission_ids
                 });
             }
             Err(e) => {
