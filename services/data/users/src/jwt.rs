@@ -14,6 +14,13 @@ use std::fs;
 use actix_web::{ web };
 
 use chrono::prelude::*;
+use serde_json::json;
+
+
+#[derive(Serialize, Deserialize)]
+pub struct Permissions {
+    ids: Vec<i32>
+}
 
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
@@ -35,7 +42,8 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    email: String
+    email: String,
+    permission_ids: Option<Vec<i32>>
 }
 
 impl Claims {
@@ -64,16 +72,20 @@ impl JWT {
     /// generate JWT token
     pub fn generate(
         &self,
-        email: String
+        email: String,
+        permission_ids: Vec<i32>
     ) -> Result<String, String> {
         debug!("JWT::generate()");
 
         let key: Hmac<Sha256> = Hmac::new_from_slice(self.secret.as_bytes()).unwrap();
         let mut claims = BTreeMap::new();
 
-        claims.insert("email", email);
+        // standard claims
         claims.insert("iat", Utc::now().to_rfc3339());
-        // claims.insert("exp", );
+
+        // custom claims
+        claims.insert("email", email);
+        claims.insert("pids", json!(permission_ids).to_string());
 
         match claims.sign_with_key(&key) {
             Ok(token) => {
@@ -111,7 +123,9 @@ impl JWT {
             Ok(claims) => {
                 debug!("JWT::get_claims(): {:?}", claims);
                 return Ok(Claims {
-                    email: claims["email"].clone()
+                    email: claims["email"].clone(),
+                    // TODO add permissions to token
+                    permission_ids: None
                 });
             }
             Err(e) => {
@@ -132,7 +146,10 @@ mod tests {
     #[test]
     fn test_generate() {
         let jwt = JWT::new(String::from("secret"));
-        if let Err(e) = jwt.generate(String::from("email@email.com")) {
+        if let Err(e) = jwt.generate(
+            String::from("email@email.com"),
+            vec!(1, 2, 3)
+        ) {
             assert!(false);
         }
 

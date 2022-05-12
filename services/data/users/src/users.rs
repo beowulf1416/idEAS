@@ -6,7 +6,7 @@ use actix_web::{
     HttpRequest
 };
 
-use deadpool_postgres::{ Manager, Pool };
+use deadpool_postgres::{ Manager };
 use deadpool::managed::Object;
 
 use uuid::Uuid;
