@@ -22,7 +22,7 @@ impl User {
             id: id,
             active: active,
             email: email,
-            permissions: Some(vec!(String::from("test")))
+            permissions: None
         };
     }
 
@@ -38,8 +38,12 @@ impl User {
         return self.email.clone();
     }
 
+    pub fn set_permissions(&mut self, permissions: Vec<String>) {
+        self.permissions = Some(permissions);
+    }
+
     pub fn has_permission(&self, permission: String) -> bool {
-        if let Some(ps) = self.permissions.clone() {
+        if let Some(ps) = &self.permissions {
             return ps.contains(&permission);
         }
         return false;

@@ -43,23 +43,13 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    email: String,
-    tenant_ids: Vec<Uuid>,
-    permission_ids: Vec<i64>
+    email: String
 }
 
 impl Claims {
 
     pub fn get_email(&self) -> String {
         return self.email.clone();
-    }
-
-    pub fn get_tenant_ids(&self) -> Vec<Uuid> {
-        return self.tenant_ids.clone();
-    }
-
-    pub fn get_permission_ids(&self) -> Vec<i64> {
-        return self.permission_ids.clone();
     }
 }
 
@@ -82,9 +72,7 @@ impl JWT {
     /// generate JWT token
     pub fn generate(
         &self,
-        email: String,
-        tenant_ids: Vec<Uuid>,
-        permission_ids: Vec<i64>
+        email: String
     ) -> Result<String, String> {
         debug!("JWT::generate()");
 
@@ -96,8 +84,6 @@ impl JWT {
 
         // custom claims
         claims.insert("email", email);
-        claims.insert("tids", json!(tenant_ids).to_string());
-        claims.insert("pids", json!(permission_ids).to_string());
 
         match claims.sign_with_key(&key) {
             Ok(token) => {
@@ -133,16 +119,8 @@ impl JWT {
 
         match result {
             Ok(claims) => {
-                // debug!("JWT::get_claims(): {:?}", claims);
-                // debug!("JWT::get_claims(): {:?}", claims["pids"].as_str());
-
-                let permission_ids: Vec<i64> = serde_json::from_str(claims["pids"].as_str()).unwrap();
-                let tenant_ids: Vec<Uuid> = serde_json::from_str(claims["tids"].as_str()).unwrap();
-
                 return Ok(Claims {
-                    email: claims["email"].clone(),
-                    tenant_ids: tenant_ids,
-                    permission_ids: permission_ids
+                    email: claims["email"].clone()
                 });
             }
             Err(e) => {
@@ -164,9 +142,7 @@ mod tests {
     fn test_generate() {
         let jwt = JWT::new(String::from("secret"));
         if let Err(e) = jwt.generate(
-            String::from("email@email.com"),
-            vec!(1, 2, 3),
-            vec!(1, 2, 3)
+            String::from("email@email.com")
         ) {
             assert!(false);
         }
