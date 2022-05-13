@@ -133,8 +133,8 @@ impl JWT {
 
         match result {
             Ok(claims) => {
-                debug!("JWT::get_claims(): {:?}", claims);
-                debug!("JWT::get_claims(): {:?}", claims["pids"].as_str());
+                // debug!("JWT::get_claims(): {:?}", claims);
+                // debug!("JWT::get_claims(): {:?}", claims["pids"].as_str());
 
                 let permission_ids: Vec<i64> = serde_json::from_str(claims["pids"].as_str()).unwrap();
                 let tenant_ids: Vec<Uuid> = serde_json::from_str(claims["tids"].as_str()).unwrap();
