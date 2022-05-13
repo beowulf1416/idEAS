@@ -180,7 +180,6 @@ where
 
         let service = self.service.clone();
         
-        // let fut = self.service.call(request);
         return Box::pin(async move {
             if request.headers().contains_key(AUTHORIZATION) {
                 let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap().clone();
@@ -195,6 +194,7 @@ where
                         if let Ok(client) = data.get_pool().get().await {
                             let users = Users::new(client);
                             if let Ok(user) = users.get_by_email(Email::new(email).unwrap()).await {
+                                debug!("adding common::user::User to request extensions");
                                 request.extensions_mut().insert(user);
                             }
                         }
