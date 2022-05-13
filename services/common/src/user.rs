@@ -6,7 +6,8 @@ use uuid::Uuid;
 pub struct User {
     id: Uuid,
     active: bool,
-    email: Email
+    email: Email,
+    permissions: Option<Vec<String>>
 }
 
 
@@ -20,7 +21,8 @@ impl User {
         return User {
             id: id,
             active: active,
-            email: email
+            email: email,
+            permissions: Some(vec!(String::from("test")))
         };
     }
 
@@ -34,5 +36,12 @@ impl User {
 
     pub fn get_email(&self) -> Email {
         return self.email.clone();
+    }
+
+    pub fn has_permission(&self, permission: String) -> bool {
+        if let Some(ps) = self.permissions.clone() {
+            return ps.contains(&permission);
+        }
+        return false;
     }
 }
