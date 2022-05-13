@@ -7,7 +7,9 @@ as $$
 declare
     t_role_client_admin_id iam.roles.id%type;
     t_role_everybody_id iam.roles.id%type;
+
     t_permission_id iam.permissions.id%type;
+    t_permission_user_current iam.permissions.id%type;
 begin
     insert into tenants.tenants (
         id,
@@ -22,6 +24,13 @@ begin
     from iam.permissions p
     where
         p.name = 'dashboard.view'
+    ;
+
+    select
+        p.id into t_permission_user_current 
+    from iam.permissions p
+    where
+        p.name = 'user.current'
     ;
 
     -- create default roles
@@ -68,20 +77,20 @@ begin
                 id = t_role_everybody_id
             ;
 
-            -- assign 'dashboard.view' permission to 'everybody' role
+            -- assign 'user.current' permission to 'everybody' role
             insert into iam.role_permissions (
                 role_id,
                 permission_id
             ) values (
                 t_role_everybody_id,
-                t_permission_id
+                t_permission_user_current
             );
 
             update iam.role_permissions set
                 active = true
             where
                 role_id = t_role_everybody_id
-                and permission_id = t_permission_id
+                and permission_id = t_permission_user_current
             ;
         end;
     else
@@ -112,15 +121,15 @@ begin
                 true
             );
 
-            -- assign 'dashboard.view' permission to 'everybody' role
+            -- assign 'user.current' permission to 'everybody' role
             call iam.assign_permission_to_role(
                 t_role_everybody_id,
-                t_permission_id
+                t_permission_user_current
             );
 
             call iam.role_permission_set_active (
                 t_role_everybody_id,
-                t_permission_id,
+                t_permission_user_current,
                 true
             );
         end;
