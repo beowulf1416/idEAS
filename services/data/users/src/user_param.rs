@@ -3,12 +3,13 @@ use log::{ info, error, debug };
 
 use std::write;
 
-use http::header::AUTHORIZATION;
+// use http::header::AUTHORIZATION;
 
 use actix_web::{
     dev::Payload,
     http::StatusCode, 
     web, 
+    HttpMessage,
     // Error, 
     HttpRequest, 
     // HttpResponse,
@@ -20,16 +21,24 @@ use actix_web::{
 
 // use http::status::StatusCode;
 
-use std::pin::Pin;
-use futures::Future;
+// use std::pin::Pin;
+use futures::{
+    future::{
+        ok,
+        err,
+        // ready,
+        Ready
+    },
+    Future
+};
 
-use deadpool_postgres::{ Pool };
+// use deadpool_postgres::{ Pool };
 
 use common::email::Email;
 use common::user::User;
 
-use crate::jwt::JWT;
-use crate::users::Users;
+// use crate::jwt::JWT;
+// use crate::users::Users;
 
 
 #[derive(Debug)]
@@ -77,57 +86,70 @@ impl UserParam {
 //https://stackoverflow.com/questions/63308246/how-to-use-async-code-in-actix-web-extractors
 impl FromRequest for UserParam {
     type Error = UserError;
-    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+    // type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+    type Future = Ready<Result<Self, Self::Error>>;
 
     fn from_request(request: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         debug!("users::user::UserParam::from_request()");
 
-        let pool = request.app_data::<web::Data<Pool>>().unwrap().clone();
-
-        if let Some(header_value) = request.headers().get(AUTHORIZATION) {
-            if let Ok(header_str) = header_value.to_str() {
-                let token = String::from(header_str.replace("Bearer", "").trim());
-                if !token.is_empty() {
-                    if let Some(jwt) = request.app_data::<web::Data<JWT>>() {
-                        if jwt.validate(&token) {
-                            if let Ok(claims) = jwt.get_claims(&token) {
-                                let email_str = claims.get_email();
-
-                                if let Ok(email) = Email::new(String::from(email_str)) {
-                                    return Box::pin(async move {
-                                        if let Ok(client) = pool.get().await {
-                                            let users = Users::new(client);
-                                            let user = users.get_by_email(email).await.unwrap();
-                                            return Ok(UserParam {
-                                                id: user.get_id(),
-                                                active: true,
-                                                email: user.get_email()
-                                            });
-                                        } else {
-                                            return Err(UserError::InternalServerError);
-                                        }
-                                    });
-                                } else {
-                                    error!("email is not valid");
-                                }
-                            }
-                        } else {
-                            error!("token is not valid");
-                        }
-                    } else {
-                        error!("unable to obtain JWT object");
-                    }
-                } else {
-                    error!("token is empty");
-                }
+        if request.extensions().contains::<common::user::User>() {
+            if let Some(user) = request.extensions().get::<common::user::User>() {
+                return ok(UserParam {
+                    id: user.get_id(),
+                    active: user.get_active(),
+                    email: user.get_email()
+                });
             }
-        } else {
-            error!("Authorization header is empty or not provided");
         }
 
+        return err(UserError::InternalServerError);
 
-        return Box::pin(async move {
-            return Err(UserError::InternalServerError);
-        });
+        // let pool = request.app_data::<web::Data<Pool>>().unwrap().clone();
+
+        // if let Some(header_value) = request.headers().get(AUTHORIZATION) {
+        //     if let Ok(header_str) = header_value.to_str() {
+        //         let token = String::from(header_str.replace("Bearer", "").trim());
+        //         if !token.is_empty() {
+        //             if let Some(jwt) = request.app_data::<web::Data<JWT>>() {
+        //                 if jwt.validate(&token) {
+        //                     if let Ok(claims) = jwt.get_claims(&token) {
+        //                         let email_str = claims.get_email();
+
+        //                         if let Ok(email) = Email::new(String::from(email_str)) {
+        //                             return Box::pin(async move {
+        //                                 if let Ok(client) = pool.get().await {
+        //                                     let users = Users::new(client);
+        //                                     let user = users.get_by_email(email).await.unwrap();
+        //                                     return Ok(UserParam {
+        //                                         id: user.get_id(),
+        //                                         active: true,
+        //                                         email: user.get_email()
+        //                                     });
+        //                                 } else {
+        //                                     return Err(UserError::InternalServerError);
+        //                                 }
+        //                             });
+        //                         } else {
+        //                             error!("email is not valid");
+        //                         }
+        //                     }
+        //                 } else {
+        //                     error!("token is not valid");
+        //                 }
+        //             } else {
+        //                 error!("unable to obtain JWT object");
+        //             }
+        //         } else {
+        //             error!("token is empty");
+        //         }
+        //     }
+        // } else {
+        //     error!("Authorization header is empty or not provided");
+        // }
+
+
+        // return Box::pin(async move {
+        //     return Err(UserError::InternalServerError);
+        // });
     }
 }
