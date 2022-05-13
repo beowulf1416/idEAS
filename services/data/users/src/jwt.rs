@@ -53,6 +53,14 @@ impl Claims {
     pub fn get_email(&self) -> String {
         return self.email.clone();
     }
+
+    pub fn get_tenant_ids(&self) -> Vec<Uuid> {
+        return self.tenant_ids.clone();
+    }
+
+    pub fn get_permission_ids(&self) -> Vec<i64> {
+        return self.permission_ids.clone();
+    }
 }
 
 
@@ -130,12 +138,6 @@ impl JWT {
 
                 let permission_ids: Vec<i64> = serde_json::from_str(claims["pids"].as_str()).unwrap();
                 let tenant_ids: Vec<Uuid> = serde_json::from_str(claims["tids"].as_str()).unwrap();
-
-
-                // let result: Result<Vec<Uuid>, String> = serde_json::from_str(claims["pids"].as_str());
-                // if let Ok(tenant_ids) = result {
-
-                // }
 
                 return Ok(Claims {
                     email: claims["email"].clone(),

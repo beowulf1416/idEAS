@@ -9,6 +9,7 @@ use std::future::{ ready, Ready };
 // use auth::auth::Auth;
 
 use actix_web::{
+    HttpMessage,
     web,
     error::Error,
     dev::{
@@ -20,9 +21,13 @@ use actix_web::{
 };
 
 use futures::future::LocalBoxFuture;
+use futures::executor::block_on;
 
-use users::jwt::JWT;
-// use data::data::Data;
+use users::jwt::{
+    JWT,
+    Claims
+};
+use data::data::Data;
 use users::users::Users;
 
 // use common::user::User;
@@ -87,7 +92,8 @@ where
 {
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
+    // type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
+    type Future = S::Future;
 
     fn poll_ready(&self, context: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(context)
@@ -98,15 +104,10 @@ where
     fn call(&self, request: ServiceRequest) -> Self::Future {
         info!("UserMiddleware::call()");
 
-        let empty_str = String::from("");
-        let mut token = String::from("");
-        let mut email = String::from("");
+        // let service = self.service.clone();
 
-        // let auth = self.auth.clone();
-    
-        // let mut data: Data;
         if request.headers().contains_key(AUTHORIZATION) {
-            let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap();
+            let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap().clone();
             let token = header_value.replace("Bearer", "").trim().to_owned();
 
             debug!("UserMiddleware::call(): {:?}", token);
@@ -114,27 +115,58 @@ where
             let jwt = request.app_data::<web::Data<JWT>>().unwrap().clone();
             if jwt.validate(&token) {
                 debug!("UserMiddleware::call(): valid");
-                if let Ok(claims) = jwt.get_claims(&token) {
 
+                let data = request.app_data::<web::Data<Data>>().unwrap().clone();
+
+                if let Ok(claims) = jwt.get_claims(&token) {
+                    let email = claims.get_email();
+                    // let tenant_ids = claims.get_tenant_ids();
+                    // let permission_ids = claims.get_permission_ids();
+
+                    // return Box::pin(async move {
+                        // info!("UserMiddleware::call() [2]");
+                        // if let Ok(client) = data.get_pool().get().await {
+                        //     let users = Users::new(client);
+                        //     if let Ok(user) = users.get_by_email(Email::new(email).unwrap()).await {
+                        //         request.extensions_mut().insert(user);
+                        //     }
+    
+                        // }
+
+                        if let Ok(client) = block_on(data.get_pool().get()) {
+                            let users = Users::new(client);
+                            if let Ok(user) = block_on(users.get_by_email(Email::new(email).unwrap())) {
+                                debug!("adding user to extension: {:?}", user);
+                                request.extensions_mut().insert(user);
+                            }
+                        }
+
+                        // let fut = self.service.call(request);
+                        // let mut res = fut.await?;
+                        
+                        // return Ok(res);
+                    // });
                 } else {
                     error!("unable to retrieve claims");
                 }
 
                 // request.extensions_mut().insert(val: T)
                 // data = request.app_data::<web::Data<Data>>().unwrap().clone();
+
+                
             } else {
                 debug!("UserMiddleware::call(): token is not valid");
             }
         }        
-        
-        let fut = self.service.call(request);
 
-        Box::pin(async move {
-            let mut res = fut.await?;
+        // let fut = self.service.call(request);
+        // return Box::pin(async move {
+        //     let mut res = fut.await?;
 
-            info!("UserMiddleware::call() [2]");
+        //     info!("UserMiddleware::call() [2]");
 
-            return Ok(res);
-        })
+        //     return Ok(res);
+        // });
+        return self.service.call(request);
     }
 }
