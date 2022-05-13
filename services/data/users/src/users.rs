@@ -272,7 +272,7 @@ impl Users {
     pub async fn get_user_permissions(
         &self,
         user_id: Uuid,
-        tenant_id: Uuid
+        tenant_id: &Uuid
     ) -> Result<Vec<(i64, String)>, String> {
         info!("Users::get_user_permissions()");
 
