@@ -10,7 +10,13 @@ use serde_json::{
     json
 };
 
-use actix_web::{ web, HttpRequest, HttpResponse, Responder };
+use actix_web::{
+    web, 
+    HttpMessage,
+    HttpRequest,
+    HttpResponse,
+    Responder
+};
 
 use http::header::AUTHORIZATION;
 
@@ -136,7 +142,7 @@ async fn signup_post(
 
 /// signin endpoint
 async fn signin_post(
-    _request: HttpRequest,
+    request: HttpRequest,
     data: web::Data<Data>,
     jwt: web::Data<JWT>,
     sign_in: web::Json<SignInRequest>
@@ -154,46 +160,41 @@ async fn signin_post(
                 sign_in.password.clone()
             ).await {
                 if authentic {
-                    let user = users.get_by_email(email.clone()).await.unwrap();
-                    let user_id = user.get_id();
-
-                    // TODO retrieve tenants
-                    let tenants = users.get_tenants(user_id).await.unwrap();
-                    let tenant_ids: Vec<Uuid> = tenants.iter().map(|t| t.0).collect();
-                    
-                    // TODO retrieve permissions
-                    let permissions = users.get_user_permissions(
-                        user_id,
-                        tenant_ids[0]
-                    ).await.unwrap();
-                    let permission_ids = permissions.iter().map(|p| p.0).collect();
-
-                    // generate jwt token
-                    match jwt.generate(
-                        sign_in.email.clone(),
-                        tenant_ids,
-                        permission_ids
-                    ) {
-                        Ok(token) => {
-                            return HttpResponse::Ok()
-                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                                .json(ApiResponse {
-                                    status: String::from("success"),
-                                    message: String::from("success"),
-                                    data: None
-                                });
+                    // if let Some(user) = request.extensions().get::<common::user::User>() {
+                    //     let user_id = user.get_id();
+                        match jwt.generate(
+                            sign_in.email.clone()
+                        ) {
+                            Ok(token) => {
+                                return HttpResponse::Ok()
+                                    .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                    .json(ApiResponse {
+                                        status: String::from("success"),
+                                        message: String::from("success"),
+                                        data: None
+                                    });
+                            }
+                            Err(e) => {
+                                error!("unable to generate token: {}", e);
+                                
+                                return HttpResponse::Ok()
+                                    .json(ApiResponse {
+                                        status: String::from("error"),
+                                        message: format!("{}", e),
+                                        data: None
+                                    });
+                            }
                         }
-                        Err(e) => {
-                            error!("unable to generate token: {}", e);
-                            
-                            return HttpResponse::Ok()
-                                .json(ApiResponse {
-                                    status: String::from("error"),
-                                    message: format!("{}", e),
-                                    data: None
-                                });
-                        }
-                    }
+                    // } else {
+                    //     error!("no user object in request extension");
+
+                    //     return HttpResponse::Ok()
+                    //     .json(ApiResponse {
+                    //         status: String::from("error"),
+                    //         message: String::from("error"),
+                    //         data: None
+                    //     });
+                    // }
                 } else {
                     return HttpResponse::Ok()
                         .json(ApiResponse {
@@ -254,7 +255,7 @@ async fn get_user_post(
                     let default_tenant_id = default_tenant.0;
                     if let Ok(permissions) = users.get_user_permissions(
                         user_id,
-                        default_tenant_id
+                        &default_tenant_id
                     ).await {
                         debug!("permissions: {:?}", permissions);
 
