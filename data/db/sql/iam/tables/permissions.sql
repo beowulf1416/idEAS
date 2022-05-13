@@ -17,13 +17,14 @@ comment on table permissions is 'table of permissions';
 
 -- create permissions
 insert into iam.permissions (id, active, name, description) values
-(1, true, 'dashboard.view', 'view dashboard'),
+(1, true, 'user.current', 'get current user information'),
 (2, true, 'user.profile', 'view user profile'),
-(3, true, 'tenant.create', 'add tenant'),
-(4, true, 'tenant.view', 'view tenant information'),
-(5, true, 'tenant.users.view', 'view tenant users'),
-(6, true, 'tenant.users.add', 'add user to tenant'),
-(7, true, 'tenants.admin', 'administer tenants'),
-(8, true, 'tenants.admin.list', 'view list of tenants'),
-(9, true, 'tenants.admin.view', 'view tenant information')
+(3, true, 'dashboard.view', 'view dashboard'),
+(4, true, 'tenant.create', 'add tenant'),
+(5, true, 'tenant.view', 'view tenant information'),
+(6, true, 'tenant.users.view', 'view tenant users'),
+(7, true, 'tenant.users.add', 'add user to tenant'),
+(8, true, 'tenants.admin', 'administer tenants'),
+(9, true, 'tenants.admin.list', 'view list of tenants'),
+(10, true, 'tenants.admin.view', 'view tenant information')
 ;

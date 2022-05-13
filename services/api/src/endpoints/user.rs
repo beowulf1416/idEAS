@@ -76,7 +76,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(
                     web::post()
                     // TODO correct permission
-                    .guard(AuthGuard::new(String::from("permission.test")))
+                    .guard(AuthGuard::new(String::from("user.current")))
                     .to(get_user_post)
                 )
         )
