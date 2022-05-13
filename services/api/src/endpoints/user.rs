@@ -18,6 +18,7 @@ use uuid::Uuid;
 
 use crate::models::api_response::ApiResponse;
 use crate::endpoints::common::default_options;
+use crate::guards::auth_guard::AuthGuard;
 
 use common::email::Email;
 use data::data::Data;
@@ -61,8 +62,16 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         )
         .service(
             web::resource("/current")
-                .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::post().to(get_user_post))   
+                .route(
+                    web::method(http::Method::OPTIONS)
+                    // .guard(AuthGuard::new(String::from("permission.test")))
+                    .to(default_options)
+                )
+                .route(
+                    web::post()
+                    .guard(AuthGuard::new(String::from("permission.test")))
+                    .to(get_user_post)
+                )
         )
         .service(
             web::resource("/password")

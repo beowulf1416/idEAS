@@ -5,6 +5,7 @@ use http::header::AUTHORIZATION;
 
 use std::task::{ Context, Poll };
 use std::future::{ ready, Ready };
+use std::rc::Rc;
 
 // use auth::auth::Auth;
 
@@ -39,7 +40,7 @@ pub struct User {
 }
 
 pub struct UserMiddleware<S> {
-    service: S
+    service: Rc<S>
 }
 
 
@@ -64,6 +65,7 @@ impl <S, B> Transform<S, ServiceRequest> for User
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
+    S: 'static,
     B: 'static
 {
     type Response = ServiceResponse<B>;
@@ -76,7 +78,7 @@ where
         info!("User::new_transform()");
         ready(Ok(UserMiddleware {
             // auth: self.auth.clone(),
-            service: service
+            service: Rc::new(service)
         }))
     }
 }
@@ -88,12 +90,13 @@ impl <S, B> Service<ServiceRequest> for UserMiddleware<S>
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
+    S: 'static,
     B: 'static
 {
     type Response = ServiceResponse<B>;
     type Error = Error;
-    // type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
-    type Future = S::Future;
+    type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
+    // type Future = S::Future;
 
     fn poll_ready(&self, context: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(context)
@@ -101,6 +104,7 @@ where
 
     // dev::forward_ready!(service);
 
+    /*
     fn call(&self, request: ServiceRequest) -> Self::Future {
         info!("UserMiddleware::call()");
 
@@ -168,5 +172,39 @@ where
         //     return Ok(res);
         // });
         return self.service.call(request);
+    }
+    */
+
+    fn call(&self, request: ServiceRequest) -> Self::Future {
+        info!("UserMiddleware::call()");
+
+        let service = self.service.clone();
+        
+        // let fut = self.service.call(request);
+        return Box::pin(async move {
+            if request.headers().contains_key(AUTHORIZATION) {
+                let header_value = request.headers().get(AUTHORIZATION).unwrap().to_str().unwrap().clone();
+                let token = header_value.replace("Bearer", "").trim().to_owned();
+                let jwt = request.app_data::<web::Data<JWT>>().unwrap().clone();
+
+                if jwt.validate(&token) {
+                    if let Ok(claims) = jwt.get_claims(&token) {
+                        let email = claims.get_email();
+
+                        let data = request.app_data::<web::Data<Data>>().unwrap().clone();
+                        if let Ok(client) = data.get_pool().get().await {
+                            let users = Users::new(client);
+                            if let Ok(user) = users.get_by_email(Email::new(email).unwrap()).await {
+                                request.extensions_mut().insert(user);
+                            }
+                        }
+                    }
+                }
+            }
+
+            let res = service.call(request).await.unwrap();
+            return Ok(res);
+        });
+
     }
 }

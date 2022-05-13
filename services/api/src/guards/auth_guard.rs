@@ -31,7 +31,12 @@ impl Guard for AuthGuard {
                 let token_value = String::from(header_str.replace("Bearer", "").trim());
                 if !token_value.is_empty() {
                     // TODO need to validate jwt token and retrieve claims
-                    debug!("data/extensions: {:?}", ctx.req_data());
+                    // debug!("data/extensions: {:?}", ctx.req_data());
+                    let extensions = ctx.req_data();
+                    if extensions.contains::<common::user::User>() {
+                        let user = extensions.get::<common::user::User>();
+                        debug!("user: {:?}", user);
+                    }
 
                     // let request = ctx
                 } else {
