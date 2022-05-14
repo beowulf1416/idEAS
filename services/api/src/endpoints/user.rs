@@ -54,6 +54,11 @@ pub struct PasswordChangeRequest {
     pub password: String
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PermissionsRequest {
+    pub tenant_id: Uuid
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
@@ -88,15 +93,24 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .to(password_change)
                 )
         )
-        // .service(
-        //     web::resource("/tenants")
-        //         .route(web::method(http::Method::OPTIONS).to(default_options))
-        //         .route(
-        //             web::post()
-        //                 .guard(AuthGuard::new(Permissions::UserCurrent))
-        //                 .to(get_tenants_post)
-        //         )
-        // )
+        .service(
+            web::resource("/tenants")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(
+                    web::post()
+                        .guard(AuthGuard::new(Permissions::UserCurrent))
+                        .to(get_tenants_post)
+                )
+        )
+        .service(
+            web::resource("/permissions")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(
+                    web::post()
+                        .guard(AuthGuard::new(Permissions::UserCurrent))
+                        .to(get_permissions_post)
+                )
+        )
     ;
 }
 
@@ -385,3 +399,56 @@ async fn password_change(
 //             data: None
 //         });
 // }
+
+/// retrieve tenants
+async fn get_tenants_post(
+    _request: HttpRequest,
+    _data: web::Data<Data>,
+    _user_param: UserParam
+) -> impl Responder {
+    info!("endpoints::users::get_tenants_post()");
+
+    let error_msg = String::from("unable to retrieve user tenants");
+
+    // match data.get_pool().get().await {
+    //     Ok(client) => {
+    //         let users = Users::new(client);
+    //         if let Ok(permissions)
+    //     }
+    // }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        })
+}
+
+/// retrieve permissions
+async fn get_permissions_post(
+    _request: HttpRequest,
+    _data: web::Data<Data>,
+    _user_param: UserParam,
+    params: web::Json<PermissionsRequest>
+) -> impl Responder {
+    info!("endpoints::users::get_permissions_post()");
+
+    let error_msg = String::from("unable to retrieve user permissions");
+
+    debug!("params: {:?}", params);
+
+    // match data.get_pool().get().await {
+    //     Ok(client) => {
+    //         let users = Users::new(client);
+    //         if let Ok(permissions)
+    //     }
+    // }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        })
+}
