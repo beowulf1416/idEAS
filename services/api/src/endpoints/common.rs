@@ -5,7 +5,8 @@ use log::{ info };
 
 use actix_web::{ HttpResponse, Responder };
 
-use users::user_param::UserParam;
+// use users::user_param::UserParam;
+
 
 /// default OPTIONS response
 pub async fn default_options() -> impl Responder {
@@ -14,10 +15,10 @@ pub async fn default_options() -> impl Responder {
         .finish();
 }
 
-pub async fn options_permissions(
-    user_param: UserParam
-) -> impl Responder {
+// pub async fn options_permissions(
+//     _user_param: UserParam
+// ) -> impl Responder {
 
-    return HttpResponse::Ok()
-        .finish();
-}
+//     return HttpResponse::Ok()
+//         .finish();
+// }
