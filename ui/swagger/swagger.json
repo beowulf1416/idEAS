@@ -118,6 +118,22 @@
                 "example": {
                     "password": "thisIsNew1Password"
                 }
+            },
+            "permissionsRequest": {
+                "type":"object",
+                "required": [
+                    "tenant_id"
+                ],
+                "properties": {
+                    "tenant_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "tenant_id": ""
+                }
             }
         },
         "securitySchemes": {
@@ -284,6 +300,44 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/currentUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/tenants": {
+            "summary": "retrieve tenants",
+            "description": "retrieve tenants",
+            "post": {
+                "summary": "POST retrieve tenants",
+                "description": "POST retrieve tenants",
+                "tags": [ "user", "tenants" ],
+                "operationId": "user_get_tenants",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "list of tenants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
                                 }
                             }
                         }
