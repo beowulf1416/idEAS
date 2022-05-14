@@ -1,5 +1,5 @@
 /// middleware for user
-use log::{ info, error, debug };
+use log::{ info, debug };
 
 use http::header::AUTHORIZATION;
 
@@ -22,11 +22,10 @@ use actix_web::{
 };
 
 use futures::future::LocalBoxFuture;
-use futures::executor::block_on;
 
 use users::jwt::{
     JWT,
-    Claims
+    // Claims
 };
 use data::data::Data;
 use users::users::Users;
@@ -129,7 +128,7 @@ where
                                 request.extensions_mut().insert(user);
 
                                 if let Ok(tenants) = users.get_tenants(user_id).await {
-                                    let (default_tenant_id, tenant_name) = &tenants[0];
+                                    let (default_tenant_id, _tenant_name) = &tenants[0];
                                     debug!("UserMiddleware::call() default tenant id: {:?}", default_tenant_id);
                                     request.extensions_mut().insert(default_tenant_id.clone());
                                     

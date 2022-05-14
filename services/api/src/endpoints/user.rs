@@ -12,7 +12,7 @@ use serde_json::{
 
 use actix_web::{
     web, 
-    HttpMessage,
+    // HttpMessage,
     HttpRequest,
     HttpResponse,
     Responder
@@ -22,7 +22,7 @@ use http::header::AUTHORIZATION;
 
 use uuid::Uuid;
 
-use crate::models::api_response::ApiResponse;
+use crate::models::api_response::{ ApiResponse, ApiResponseStatus };
 use crate::models::permissions::Permissions;
 use crate::endpoints::common::default_options;
 use crate::guards::auth_guard::AuthGuard;
@@ -88,6 +88,15 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .to(password_change)
                 )
         )
+        // .service(
+        //     web::resource("/tenants")
+        //         .route(web::method(http::Method::OPTIONS).to(default_options))
+        //         .route(
+        //             web::post()
+        //                 .guard(AuthGuard::new(Permissions::UserCurrent))
+        //                 .to(get_tenants_post)
+        //         )
+        // )
     ;
 }
 
@@ -116,14 +125,14 @@ async fn signup_post(
 
                 return HttpResponse::InternalServerError()
                     .json(ApiResponse {
-                        status: String::from("error"),
+                        status: ApiResponseStatus::Error,
                         message: format!("unable to add user: {}", e),
                         data: None
                     });
             } else {
                 return HttpResponse::Ok()
                     .json(ApiResponse {
-                        status: String::from("success"),
+                        status: ApiResponseStatus::Success,
                         message: String::from("success"),
                         data: None
                     });
@@ -134,7 +143,7 @@ async fn signup_post(
 
             return HttpResponse::Ok()
                 .json(ApiResponse {
-                    status: String::from("error"),
+                    status: ApiResponseStatus::Error,
                     message: format!("{}", e),
                     data: None
                 });
@@ -145,7 +154,7 @@ async fn signup_post(
 
 /// signin endpoint
 async fn signin_post(
-    request: HttpRequest,
+    _request: HttpRequest,
     data: web::Data<Data>,
     jwt: web::Data<JWT>,
     sign_in: web::Json<SignInRequest>
@@ -172,7 +181,7 @@ async fn signin_post(
                                 return HttpResponse::Ok()
                                     .append_header((AUTHORIZATION, format!("Bearer {}", token)))
                                     .json(ApiResponse {
-                                        status: String::from("success"),
+                                        status: ApiResponseStatus::Success,
                                         message: String::from("success"),
                                         data: None
                                     });
@@ -182,7 +191,7 @@ async fn signin_post(
                                 
                                 return HttpResponse::Ok()
                                     .json(ApiResponse {
-                                        status: String::from("error"),
+                                        status: ApiResponseStatus::Error,
                                         message: format!("{}", e),
                                         data: None
                                     });
@@ -193,7 +202,7 @@ async fn signin_post(
 
                     //     return HttpResponse::Ok()
                     //     .json(ApiResponse {
-                    //         status: String::from("error"),
+                    //         status: ApiResponseStatus::Error,
                     //         message: String::from("error"),
                     //         data: None
                     //     });
@@ -201,7 +210,7 @@ async fn signin_post(
                 } else {
                     return HttpResponse::Ok()
                         .json(ApiResponse {
-                            status: String::from("error"),
+                            status: ApiResponseStatus::Error,
                             message: String::from("error"),
                             data: None
                         });
@@ -209,7 +218,7 @@ async fn signin_post(
             } else {
                 return HttpResponse::Ok()
                     .json(ApiResponse {
-                        status: String::from("error"),
+                        status: ApiResponseStatus::Error,
                         message: String::from("error"),
                         data: None
                     });
@@ -220,7 +229,7 @@ async fn signin_post(
 
             return HttpResponse::Ok()
                 .json(ApiResponse {
-                    status: String::from("error"),
+                    status: ApiResponseStatus::Error,
                     message: format!("{}", e),
                     data: None
                 });
@@ -264,7 +273,7 @@ async fn get_user_post(
 
                         return HttpResponse::Ok()
                             .json(ApiResponse {
-                                status: String::from("success"),
+                                status: ApiResponseStatus::Success,
                                 message: String::from("success"),
                                 data: Some(json!({
                                     "email": user_email,
@@ -291,7 +300,7 @@ async fn get_user_post(
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
-            status: String::from("error"),
+            status: ApiResponseStatus::Error,
             message: String::from("error"),
             data: None
         });
@@ -322,7 +331,7 @@ async fn password_change(
                 info!("password updated");
                 return HttpResponse::Ok()
                     .json(ApiResponse {
-                        status: String::from("success"),
+                        status: ApiResponseStatus::Success,
                         message: String::from("success"),
                         data: None
                     });
@@ -335,8 +344,44 @@ async fn password_change(
     
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
-            status: String::from("error"),
+            status: ApiResponseStatus::Error,
             message: String::from("error"),
             data: None
         });
 }
+
+// async fn get_tenants_post(
+//     _request: HttpRequest,
+//     data: web::Data<Data>,
+//     user_param: UserParam
+// ) -> impl Responder {
+//     info!("endpoints::user::get_tenants_post()");
+
+//     let user = user_param.to_user();
+//     let mut error_msg = String::from("");
+
+//     match data.get_pool().get().await {
+//         Ok(client) => {
+//             let users = Users::new(client);
+//             if let Ok(tenants) = users.get_tenants(user.get_id()).await {
+//                 return HttpResponse::Ok()
+//                     .json(ApiResponse {
+//                         status: ApiResponseStatus::Success,
+//                         message: String::from("success"),
+//                         data: Some(tenants)
+//                     });
+//             }
+//         }
+//         Err(e) => {
+//             error!("unable to obtain database client: {:?}", e);
+//             error_msg = String::from("unable to obtain database client");
+//         }
+//     }
+
+//     return HttpResponse::InternalServerError()
+//         .json(ApiResponse {
+//             status: ApiResponseStatus::Error,
+//             message: error_msg,
+//             data: None
+//         });
+// }
