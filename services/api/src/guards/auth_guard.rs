@@ -4,14 +4,18 @@ use actix_web::{
     guard::{ Guard, GuardContext }
 };
 
+use crate::models::permissions::Permissions;
+
+
+
 pub struct AuthGuard {
-    permission: String
+    permission: Permissions
 }
 
 
 impl AuthGuard {
     pub fn new(
-        permission: String
+        permission: Permissions
     ) -> Self {
         return AuthGuard {
             permission: permission
@@ -28,8 +32,9 @@ impl Guard for AuthGuard {
         if extensions.contains::<common::user::User>()
             && extensions.contains::<Vec<String>>() {
                 if let Some(permissions) = extensions.get::<Vec<String>>() {
-                    let allow = permissions.contains(&self.permission);
-                    debug!("AuthGuard::check() looking for: '{}' returning: {}", self.permission, allow);
+                    let permission = self.permission.as_str();
+                    let allow = permissions.contains(&permission);
+                    debug!("AuthGuard::check() looking for: '{}' returning: {}", permission, allow);
                     return allow;
                 }
             }

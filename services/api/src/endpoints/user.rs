@@ -23,6 +23,7 @@ use http::header::AUTHORIZATION;
 use uuid::Uuid;
 
 use crate::models::api_response::ApiResponse;
+use crate::models::permissions::Permissions;
 use crate::endpoints::common::default_options;
 use crate::guards::auth_guard::AuthGuard;
 
@@ -70,20 +71,22 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::resource("/current")
                 .route(
                     web::method(http::Method::OPTIONS)
-                    // .guard(AuthGuard::new(String::from("permission.test")))
                     .to(default_options)
                 )
                 .route(
                     web::post()
-                    // TODO correct permission
-                    .guard(AuthGuard::new(String::from("user.current")))
+                    .guard(AuthGuard::new(Permissions::UserCurrent))
                     .to(get_user_post)
                 )
         )
         .service(
             web::resource("/password")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::post().to(password_change))
+                .route(
+                    web::post()
+                    .guard(AuthGuard::new(Permissions::UserCurrent))
+                    .to(password_change)
+                )
         )
     ;
 }
