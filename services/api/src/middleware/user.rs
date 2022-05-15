@@ -127,12 +127,17 @@ where
                                 debug!("adding common::user::User to request extensions");
                                 request.extensions_mut().insert(user);
 
-                                if let Ok(tenants) = users.get_tenants(user_id).await {
+                                if let Ok(tenants) = users.get_tenants(
+                                    &user_id
+                                ).await {
                                     let (default_tenant_id, _tenant_name) = &tenants[0];
                                     debug!("UserMiddleware::call() default tenant id: {:?}", default_tenant_id);
                                     request.extensions_mut().insert(default_tenant_id.clone());
                                     
-                                    if let Ok(permissions) = users.get_user_permissions(user_id, &default_tenant_id).await {
+                                    if let Ok(permissions) = users.get_user_permissions(
+                                        &user_id,
+                                        &default_tenant_id
+                                    ).await {
                                         debug!("UserMiddleware::call() permissions: {:?}", permissions);
                                         let p: Vec<String> = permissions.clone().iter().map(|p| p.1.clone()).collect();
                                         request.extensions_mut().insert(p);

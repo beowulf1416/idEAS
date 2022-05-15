@@ -269,7 +269,8 @@ async fn get_user_post(
         Ok(client) => {
             let users = Users::new(client);
 
-            if let Ok(tenants) = users.get_tenants(u.get_id()).await {
+
+            if let Ok(tenants) = users.get_tenants(&user_id).await {
                 debug!("tenants: {:?}", tenants);
 
                 if tenants.len() > 0 {
@@ -280,7 +281,7 @@ async fn get_user_post(
                     // retrieve user permissions
                     let default_tenant_id = default_tenant.0;
                     if let Ok(permissions) = users.get_user_permissions(
-                        user_id,
+                        &user_id,
                         &default_tenant_id
                     ).await {
                         debug!("permissions: {:?}", permissions);
@@ -364,41 +365,6 @@ async fn password_change(
         });
 }
 
-// async fn get_tenants_post(
-//     _request: HttpRequest,
-//     data: web::Data<Data>,
-//     user_param: UserParam
-// ) -> impl Responder {
-//     info!("endpoints::user::get_tenants_post()");
-
-//     let user = user_param.to_user();
-//     let mut error_msg = String::from("");
-
-//     match data.get_pool().get().await {
-//         Ok(client) => {
-//             let users = Users::new(client);
-//             if let Ok(tenants) = users.get_tenants(user.get_id()).await {
-//                 return HttpResponse::Ok()
-//                     .json(ApiResponse {
-//                         status: ApiResponseStatus::Success,
-//                         message: String::from("success"),
-//                         data: Some(tenants)
-//                     });
-//             }
-//         }
-//         Err(e) => {
-//             error!("unable to obtain database client: {:?}", e);
-//             error_msg = String::from("unable to obtain database client");
-//         }
-//     }
-
-//     return HttpResponse::InternalServerError()
-//         .json(ApiResponse {
-//             status: ApiResponseStatus::Error,
-//             message: error_msg,
-//             data: None
-//         });
-// }
 
 /// retrieve tenants
 async fn get_tenants_post(
@@ -416,7 +382,7 @@ async fn get_tenants_post(
     match data.get_pool().get().await {
         Ok(client) => {
             let users = Users::new(client);
-            if let Ok(tenants) = users.get_tenants(user_id).await {
+            if let Ok(tenants) = users.get_tenants(&user_id).await {
 
                 return HttpResponse::Ok()
                     .json(ApiResponse {
@@ -442,22 +408,39 @@ async fn get_tenants_post(
 /// retrieve permissions
 async fn get_permissions_post(
     _request: HttpRequest,
-    _data: web::Data<Data>,
-    _user_param: UserParam,
+    data: web::Data<Data>,
+    user_param: UserParam,
     params: web::Json<PermissionsRequest>
 ) -> impl Responder {
     info!("endpoints::users::get_permissions_post()");
 
     let error_msg = String::from("unable to retrieve user permissions");
 
-    debug!("params: {:?}", params);
+    let user = user_param.to_user();
+    let user_id = user.get_id();
 
-    // match data.get_pool().get().await {
-    //     Ok(client) => {
-    //         let users = Users::new(client);
-    //         if let Ok(permissions)
-    //     }
-    // }
+    let tenant_id = params.tenant_id.clone();
+
+    match data.get_pool().get().await {
+        Ok(client) => {
+            let users = Users::new(client);
+            if let Ok(tenants) = users.get_user_permissions(
+                &user_id, 
+                &tenant_id
+            ).await {
+
+                return HttpResponse::Ok()
+                    .json(ApiResponse {
+                        status: ApiResponseStatus::Success,
+                        message: String::from("successfully retrieved tenants"),
+                        data: Some(serde_json::to_value(tenants).unwrap())
+                    });
+            }
+        }
+        Err(e) => {
+            error!("unable to retrieve tenants: {:?}", e);
+        }
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
