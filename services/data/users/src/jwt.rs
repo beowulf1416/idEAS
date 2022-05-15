@@ -10,6 +10,7 @@ use std::collections::BTreeMap;
 
 use std::env;
 use std::clone::Clone;
+use std::str::FromStr;
 use std::fs;
 use actix_web::{ web };
 
@@ -43,13 +44,18 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    email: String
+    email: String,
+    tenant_id: Uuid
 }
 
 impl Claims {
 
     pub fn get_email(&self) -> String {
         return self.email.clone();
+    }
+
+    pub fn get_tenant_id(&self) -> Uuid {
+        return self.tenant_id.clone();
     }
 }
 
@@ -72,7 +78,8 @@ impl JWT {
     /// generate JWT token
     pub fn generate(
         &self,
-        email: String
+        email: &String,
+        tenant_id: &Uuid
     ) -> Result<String, String> {
         debug!("JWT::generate()");
 
@@ -83,7 +90,8 @@ impl JWT {
         claims.insert("iat", Utc::now().to_rfc3339());
 
         // custom claims
-        claims.insert("email", email);
+        claims.insert("email", email.to_string());
+        claims.insert("tenant", tenant_id.to_string());
 
         match claims.sign_with_key(&key) {
             Ok(token) => {
@@ -120,7 +128,8 @@ impl JWT {
         match result {
             Ok(claims) => {
                 return Ok(Claims {
-                    email: claims["email"].clone()
+                    email: claims["email"].clone(),
+                    tenant_id: Uuid::from_str(claims["tenant"].clone().as_str()).unwrap()
                 });
             }
             Err(e) => {

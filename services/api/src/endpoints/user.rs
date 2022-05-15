@@ -34,6 +34,7 @@ use users::{
     users::Users,
     user_param::UserParam
 };
+use tenants::tenants::Tenants;
 
 
 
@@ -187,23 +188,35 @@ async fn signin_post(
                 sign_in.password.clone()
             ).await {
                 if authentic {
-                    match jwt.generate(
-                        sign_in.email.clone()
-                    ) {
-                        Ok(token) => {
-                            return HttpResponse::Ok()
-                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                                .json(ApiResponse {
-                                    status: ApiResponseStatus::Success,
-                                    message: String::from("success"),
-                                    data: None
-                                });
-                        }
-                        Err(e) => {
-                            error!("unable to generate token: {:?}", e);
-                            error_msg = format!("unable to generate token: {}", e);
+                    if let Ok(client) = data.get_pool().get().await {
+                        let tenants = Tenants::new(client);
+                        if let Ok(default_tenant_id) = tenants.default_tenant_id().await {
+                            match jwt.generate(
+                                &sign_in.email,
+                                &default_tenant_id
+                            ) {
+                                Ok(token) => {
+                                    return HttpResponse::Ok()
+                                        .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                        .json(ApiResponse {
+                                            status: ApiResponseStatus::Success,
+                                            message: String::from("success"),
+                                            data: None
+                                        });
+                                }
+                                Err(e) => {
+                                    error!("unable to generate token: {:?}", e);
+                                    error_msg = format!("unable to generate token: {}", e);
+                                }
+                            }
+                        } else {
+                            error!("unable to retrieve default tenant_id");
+                            error_msg = format!("unable to retrieve default tenant_id");
                         }
                     }
+                } else {
+                    error!("user is not valid");
+                    error_msg = format!("user failed authentication");
                 }
             }
         }

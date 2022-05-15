@@ -91,16 +91,6 @@ impl Users {
         }
     }
 
-    // pub async fn get_id(
-    //     &self,
-    //     email: Email
-    // ) -> Result<User, String> {
-    //     info!("Users::get_id()");
-
-    //     let result_stmt = self.client.prepare_cached(
-    //         "call iam.user_get_id($1);"
-    //     ).await;
-    // }
 
     /// authenticate email and password combination
     pub async fn authenticate(
