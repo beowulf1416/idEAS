@@ -403,19 +403,33 @@ async fn password_change(
 /// retrieve tenants
 async fn get_tenants_post(
     _request: HttpRequest,
-    _data: web::Data<Data>,
-    _user_param: UserParam
+    data: web::Data<Data>,
+    user_param: UserParam
 ) -> impl Responder {
     info!("endpoints::users::get_tenants_post()");
 
     let error_msg = String::from("unable to retrieve user tenants");
 
-    // match data.get_pool().get().await {
-    //     Ok(client) => {
-    //         let users = Users::new(client);
-    //         if let Ok(permissions)
-    //     }
-    // }
+    let user = user_param.to_user();
+    let user_id = user.get_id();
+
+    match data.get_pool().get().await {
+        Ok(client) => {
+            let users = Users::new(client);
+            if let Ok(tenants) = users.get_tenants(user_id).await {
+
+                return HttpResponse::Ok()
+                    .json(ApiResponse {
+                        status: ApiResponseStatus::Success,
+                        message: String::from("successfully retrieved tenants"),
+                        data: Some(serde_json::to_value(tenants).unwrap())
+                    });
+            }
+        }
+        Err(e) => {
+            error!("unable to retrieve tenants: {:?}", e);
+        }
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
