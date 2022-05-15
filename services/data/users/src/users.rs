@@ -229,7 +229,7 @@ impl Users {
     /// retrieve tenants
     pub async fn get_tenants(
         &self,
-        user_id: Uuid
+        user_id: &Uuid
     ) -> Result<Vec<(Uuid, String)>, String> {
         info!("Users::get_tenants()");
 
@@ -271,7 +271,7 @@ impl Users {
     /// retrieve user permissions
     pub async fn get_user_permissions(
         &self,
-        user_id: Uuid,
+        user_id: &Uuid,
         tenant_id: &Uuid
     ) -> Result<Vec<(i64, String)>, String> {
         info!("Users::get_user_permissions()");
@@ -690,8 +690,8 @@ mod tests {
                             pw.clone()
                         ).await {
                             if let Err(e) = users.get_user_permissions(
-                                user_id,
-                                tenant_id
+                                &user_id,
+                                &tenant_id
                             ).await {
                                 error!("error: {:?}", e);
     
