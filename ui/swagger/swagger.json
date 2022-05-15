@@ -136,7 +136,7 @@
                     }
                 },
                 "example": {
-                    "tenant_id": ""
+                    "tenant_id": "b5342573-7396-41f2-bb77-3af2bb2d4e9c"
                 }
             }
         },
@@ -334,10 +334,61 @@
                 "description": "POST retrieve tenants",
                 "tags": [ "user", "tenants" ],
                 "operationId": "user_get_tenants",
-                "requestBody": {},
+                "requestBody": {
+                    "required": false,
+                    "description": "empty request body"
+                },
                 "responses": {
                     "200": {
                         "description": "list of tenants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/permissions": {
+            "summary": "retrieve user permissions",
+            "description": "retrieve user permissions",
+            "post": {
+                "summary": "POST retrieve user permissions",
+                "description": "POST retrieve user permissions",
+                "tags": [ "user", "permissions" ],
+                "operationId": "user_get_permissions",
+                "requestBody": {
+                    "required": true,
+                    "description": "permissions request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/permissionsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "list of permissions",
                         "content": {
                             "application/json": {
                                 "schema": {
