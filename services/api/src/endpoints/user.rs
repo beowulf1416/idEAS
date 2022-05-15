@@ -174,7 +174,8 @@ async fn signin_post(
     sign_in: web::Json<SignInRequest>
 ) -> impl Responder {
     info!("endpoints::user::signin_post()");
-    // info!("sign_in: {:?}", sign_in);
+
+    let mut error_msg = String::from("unable to sign in user");
 
     match data.get_pool().get().await {
         Ok(client) => {
@@ -186,69 +187,38 @@ async fn signin_post(
                 sign_in.password.clone()
             ).await {
                 if authentic {
-                    // if let Some(user) = request.extensions().get::<common::user::User>() {
-                    //     let user_id = user.get_id();
-                        match jwt.generate(
-                            sign_in.email.clone()
-                        ) {
-                            Ok(token) => {
-                                return HttpResponse::Ok()
-                                    .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                                    .json(ApiResponse {
-                                        status: ApiResponseStatus::Success,
-                                        message: String::from("success"),
-                                        data: None
-                                    });
-                            }
-                            Err(e) => {
-                                error!("unable to generate token: {}", e);
-                                
-                                return HttpResponse::Ok()
-                                    .json(ApiResponse {
-                                        status: ApiResponseStatus::Error,
-                                        message: format!("{}", e),
-                                        data: None
-                                    });
-                            }
+                    match jwt.generate(
+                        sign_in.email.clone()
+                    ) {
+                        Ok(token) => {
+                            return HttpResponse::Ok()
+                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                .json(ApiResponse {
+                                    status: ApiResponseStatus::Success,
+                                    message: String::from("success"),
+                                    data: None
+                                });
                         }
-                    // } else {
-                    //     error!("no user object in request extension");
-
-                    //     return HttpResponse::Ok()
-                    //     .json(ApiResponse {
-                    //         status: ApiResponseStatus::Error,
-                    //         message: String::from("error"),
-                    //         data: None
-                    //     });
-                    // }
-                } else {
-                    return HttpResponse::Ok()
-                        .json(ApiResponse {
-                            status: ApiResponseStatus::Error,
-                            message: String::from("error"),
-                            data: None
-                        });
+                        Err(e) => {
+                            error!("unable to generate token: {:?}", e);
+                            error_msg = format!("unable to generate token: {}", e);
+                        }
+                    }
                 }
-            } else {
-                return HttpResponse::Ok()
-                    .json(ApiResponse {
-                        status: ApiResponseStatus::Error,
-                        message: String::from("error"),
-                        data: None
-                    });
-            }    
+            }
         }
         Err(e) => {
             error!("error obtaining client: {:?}", e);
-
-            return HttpResponse::Ok()
-                .json(ApiResponse {
-                    status: ApiResponseStatus::Error,
-                    message: format!("{}", e),
-                    data: None
-                });
+            error_msg = format!("unable to sign in user: {}", e);
         }
     }
+
+    return HttpResponse::Ok()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        });
 }
 
 /// get user endpoint
@@ -268,7 +238,6 @@ async fn get_user_post(
     match data.get_pool().get().await {
         Ok(client) => {
             let users = Users::new(client);
-
 
             if let Ok(tenants) = users.get_tenants(&user_id).await {
                 debug!("tenants: {:?}", tenants);
@@ -388,7 +357,9 @@ async fn get_tenants_post(
                     .json(ApiResponse {
                         status: ApiResponseStatus::Success,
                         message: String::from("successfully retrieved tenants"),
-                        data: Some(serde_json::to_value(tenants).unwrap())
+                        data: Some(json!({
+                            "permissions": tenants
+                        }))
                     });
             }
         }
@@ -402,7 +373,7 @@ async fn get_tenants_post(
             status: ApiResponseStatus::Error,
             message: error_msg,
             data: None
-        })
+        });
 }
 
 /// retrieve permissions
@@ -424,21 +395,25 @@ async fn get_permissions_post(
     match data.get_pool().get().await {
         Ok(client) => {
             let users = Users::new(client);
-            if let Ok(tenants) = users.get_user_permissions(
+            if let Ok(permissions) = users.get_user_permissions(
                 &user_id, 
                 &tenant_id
             ).await {
+                // return list of permission strings
+                let perms: Vec<String> = permissions.iter().map(|p| p.1.clone()).collect();
 
                 return HttpResponse::Ok()
                     .json(ApiResponse {
                         status: ApiResponseStatus::Success,
-                        message: String::from("successfully retrieved tenants"),
-                        data: Some(serde_json::to_value(tenants).unwrap())
+                        message: String::from("successfully retrieved permissions"),
+                        data: Some(json!({
+                            "permissions": perms
+                        }))
                     });
             }
         }
         Err(e) => {
-            error!("unable to retrieve tenants: {:?}", e);
+            error!("unable to retrieve permissions: {:?}", e);
         }
     }
 
@@ -447,5 +422,5 @@ async fn get_permissions_post(
             status: ApiResponseStatus::Error,
             message: error_msg,
             data: None
-        })
+        });
 }
