@@ -8,6 +8,10 @@
         {
             "url": "http://erp.com:8081",
             "description": "api server"
+        },
+        {
+            "url": "http://localhost:8081",
+            "description": "dev api server"
         }
     ],
     "components": {
