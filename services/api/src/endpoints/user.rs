@@ -12,7 +12,7 @@ use serde_json::{
 
 use actix_web::{
     web, 
-    // HttpMessage,
+    HttpMessage,
     HttpRequest,
     HttpResponse,
     Responder
@@ -236,17 +236,21 @@ async fn signin_post(
 
 /// get user endpoint
 async fn get_user_post(
-    _request: HttpRequest,
+    request: HttpRequest,
     data: web::Data<Data>,
     user: UserParam
 ) -> impl Responder {
     info!("endpoints::user::get_user_post()");
 
-    debug!("USER: {:?}", user);
+    // debug!("USER: {:?}", user);
     let u = user.to_user();
 
     let user_id = u.get_id();
     let user_email = u.get_email();
+    
+    let extensions = request.extensions();
+    let current_tenant_id = extensions.get::<Uuid>().unwrap();
+    let permissions = extensions.get::<Vec<String>>().unwrap();
 
     match data.get_pool().get().await {
         Ok(client) => {
@@ -257,16 +261,17 @@ async fn get_user_post(
 
                 if tenants.len() > 0 {
                     // get default client
-                    let default_tenant = (&tenants[0..1])[0].clone();
-                    debug!("default tenant: {:?}", default_tenant);
+                    // let default_tenant = (&tenants[0..1])[0].clone();
+                    // debug!("default tenant: {:?}", default_tenant);
 
                     // retrieve user permissions
-                    let default_tenant_id = default_tenant.0;
-                    if let Ok(permissions) = users.get_user_permissions(
-                        &user_id,
-                        &default_tenant_id
-                    ).await {
-                        debug!("permissions: {:?}", permissions);
+                    // let default_tenant_id = default_tenant.0;
+                    // if let Ok(permissions) = users.get_user_permissions(
+                    //     &user_id,
+                    //     &current_tenant_id
+                    // ).await {
+                        // debug!("permissions: {:?}", permissions);
+                        // let perms: Vec<String> = permissions.iter().map(|p| p.1.clone()).collect();
 
                         return HttpResponse::Ok()
                             .json(ApiResponse {
@@ -275,14 +280,14 @@ async fn get_user_post(
                                 data: Some(json!({
                                     "email": user_email,
                                     "tenants": tenants,
-                                    "tenant_default": default_tenant,
+                                    "tenant_current": current_tenant_id,
                                     "permissions": permissions
                                 }))
                             });
 
-                    } else {
-                        error!("unable to retrieve user permissions");
-                    }
+                    // } else {
+                    //     error!("unable to retrieve user permissions");
+                    // }
                 } else {
                     error!("user is not associated with any tenant");
                 }
