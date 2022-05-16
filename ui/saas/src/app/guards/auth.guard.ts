@@ -34,7 +34,8 @@ export class AuthGuard implements CanActivate {
         }
       } else {
         // TODO redirect to forbidden page
-        return this.router.parseUrl("/error/forbidden");
+        // return this.router.parseUrl("/error/forbidden");
+        return true;
       }
     }
   }

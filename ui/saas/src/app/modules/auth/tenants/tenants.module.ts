@@ -1,21 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TenantComponent } from './components/tenant/tenant.component';
-import { TenantsRoutingModule } from './tenants-routing.module';
-import { TenantsListComponent } from './components/tenants-list/tenants-list.component';
-import { TenantsDashboardComponent } from './components/tenants-dashboard/tenants-dashboard.component';
+
+import { TenantRoutingModule } from './tenant-routing.module';
+import { TenantSelectComponent } from './components/tenant-select/tenant-select.component';
+import { TenantCurrentComponent } from './components/tenant-current/tenant-current.component';
 
 
 
 @NgModule({
   declarations: [
-    TenantComponent,
-    TenantsListComponent,
-    TenantsDashboardComponent
+    TenantSelectComponent,
+    TenantCurrentComponent
   ],
   imports: [
     CommonModule,
-    TenantsRoutingModule
+    TenantRoutingModule
   ]
 })
 export class TenantsModule { }
