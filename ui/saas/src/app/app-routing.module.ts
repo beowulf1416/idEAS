@@ -29,7 +29,7 @@ const routes: Routes = [
   //   loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
   // },
   {
-    path: 'tenant/select',
+    path: 'tenant',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
   },

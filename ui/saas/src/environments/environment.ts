@@ -14,6 +14,7 @@ export const environment = {
   api_user_signin: '/user/signin',
   api_user_current: '/user/current',
   api_user_password: '/user/password',
+  api_user_tenants: '/user/tenants',
   api_dashboard: '/dashboard'
 };
 

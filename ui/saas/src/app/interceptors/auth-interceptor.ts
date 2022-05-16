@@ -11,9 +11,11 @@ import { environment } from 'src/environments/environment';
 export class AuthInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        console.log("AuthInterceptor::intercept()");
         const token = sessionStorage.getItem(environment.session_token_key);
 
         if (token != null) {
+            console.log("AuthInterceptor::intercept() Adding auth token");
             const authReq = req.clone({
                 setHeaders: { Authorization: `Bearer ${token}` }
             });
