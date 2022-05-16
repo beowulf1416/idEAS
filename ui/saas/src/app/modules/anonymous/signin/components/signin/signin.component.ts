@@ -80,17 +80,37 @@ export class SigninComponent implements OnInit {
         this.signinForm.get("pw")?.value
       ).subscribe(r => {
         if (r.body?.status == "success") {
-          this.formMsg = "Successfully signed in. Redirecting to home page in 3 seconds...";
+          if (this.service.isSignedIn()) {
+            this.service.getSignedInUser().subscribe(rs => {
+              console.log("user service current user",rs);
+              if (rs.status == "success") {
+                if (rs.data?.tenants?.length > 1) {
+                  console.log("//TODO redirect to tenant selection page");
+                  this.router.navigate([environment.path_tenant_select]);
+                } else {
+                  console.log("//TODO redirect to dashboard");
+                }
+              } else {
+                console.error(rs.message);
+              }
+            });
+          } else {
+            console.error(r.body?.message);
+          }
+
+          // this.formMsg = "Successfully signed in. Redirecting to home page in 3 seconds...";
           
-          let counter = 3;
-          let timer_id = setInterval(() => {
-            this.formMsg = `Successfully signed in. Redirecting to home page in ${counter} seconds...`;
-            counter--;
-          }, 1000);
-          setTimeout(() => {
-            clearInterval(timer_id);
-            this.router.navigate([environment.api_dashboard]);
-          }, 5000);  //5s
+          // let counter = 3;
+          // let timer_id = setInterval(() => {
+          //   this.formMsg = `Successfully signed in. Redirecting to home page in ${counter} seconds...`;
+          //   counter--;
+          // }, 1000);
+          // setTimeout(() => {
+          //   clearInterval(timer_id);
+          //   this.router.navigate([environment.api_dashboard]);
+          // }, 5000);  //5s
+        } else {
+          this.formErrorText = "failed authentication";
         }
       }, (error: any) => {
         console.error(error.message);

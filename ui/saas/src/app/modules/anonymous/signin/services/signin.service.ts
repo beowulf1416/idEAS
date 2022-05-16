@@ -2,8 +2,8 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { UserService } from 'src/app/services/user.service';
 
+import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
 
 
@@ -27,6 +27,7 @@ export class SigninService {
     email: string,
     password: string
   ): Observable<HttpResponse<ApiResponse>> {
+    console.log("SigninService::signin()");
     return this.http.post<ApiResponse>(
       environment.api_base_url + environment.api_user_signin,
       {
@@ -44,16 +45,26 @@ export class SigninService {
             const token = authorization?.replace("Bearer", "");
             sessionStorage.setItem(environment.session_token_key, token);
 
-            // retrieve roles
-            this.user.current_user().subscribe(r => {
-              console.log("SignService::signIn()");
-              console.log(r);
-            });
+            // // retrieve roles
+            // this.user.current_user().subscribe(r => {
+            //   console.log("SignService::signIn()");
+            //   console.log(r);
+            // });
           }
         }
       }),
       catchError(err => this.handleError(err))
     )
+  }
+
+  getSignedInUser() {
+    console.log("SigninService::getSignedInUser()");
+    return this.http.post<ApiResponse>(
+      environment.api_base_url + environment.api_user_current,
+      {}
+    ).pipe(
+      catchError(err => this.handleError(err))
+    );
   }
 
   handleError(error: HttpErrorResponse) {
@@ -70,5 +81,10 @@ export class SigninService {
         data: {}
       });
     }
+  }
+
+  isSignedIn(): boolean {
+    console.log("SigninService::isSignedIn()");
+    return sessionStorage.getItem(environment.session_token_key) != null;
   }
 }

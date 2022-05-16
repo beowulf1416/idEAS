@@ -21,11 +21,16 @@ const routes: Routes = [
     },
     loadChildren: () => import('./modules/auth/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
+  // {
+  //   path: 'tenants',
+  //   data: {
+  //     permission: "tenants.admin"
+  //   },
+  //   loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
+  // },
   {
-    path: 'tenants',
-    data: {
-      permission: "tenants.admin"
-    },
+    path: 'tenant/select',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
   },
   {

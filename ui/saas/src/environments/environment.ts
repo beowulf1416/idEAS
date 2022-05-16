@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
+
   session_token_key: "token",
+
+  path_tenant_select: '/tenant/select',
 
   api_base_url: 'http://erp.com:8081',
   api_user_signup: '/user/signup',
