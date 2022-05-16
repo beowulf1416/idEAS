@@ -61,6 +61,12 @@ pub struct PermissionsRequest {
 }
 
 
+#[derive(Serialize, Deserialize)]
+pub struct Tenant {
+    pub id: Uuid,
+    pub name: String
+}
+
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
@@ -371,12 +377,17 @@ async fn get_tenants_post(
             let users = Users::new(client);
             if let Ok(tenants) = users.get_tenants(&user_id).await {
 
+                let data_tenants: Vec<Tenant> = tenants.iter().map(|t| Tenant {
+                    id: t.0.clone(),
+                    name: t.1.clone()
+                }).collect();
+
                 return HttpResponse::Ok()
                     .json(ApiResponse {
                         status: ApiResponseStatus::Success,
                         message: String::from("successfully retrieved tenants"),
                         data: Some(json!({
-                            "permissions": tenants
+                            "tenants": data_tenants
                         }))
                     });
             }
