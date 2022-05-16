@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
       return this.router.parseUrl("/user/signin");
     } else {
       // TODO check permissions
-      console.log("AuthGuard::canActivate() check permissions");
+      console.log("AuthGuard::canActivate() check permissions: ", route.data?.permission);
       if (route.data?.permission) {
         const permissions = this.user.get_permissions();
         if (permissions.includes(route.data?.permission)){
@@ -35,6 +35,7 @@ export class AuthGuard implements CanActivate {
       } else {
         // TODO redirect to forbidden page
         // return this.router.parseUrl("/error/forbidden");
+        console.log("returning true");
         return true;
       }
     }
