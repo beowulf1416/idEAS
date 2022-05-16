@@ -1,4 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { TitleService } from 'src/app/services/title.service';
+import { TenantService } from '../../services/tenant.service';
+
+interface Tenant {
+  id: string,
+  name: string
+}
 
 @Component({
   selector: 'app-tenant-select',
@@ -7,9 +15,38 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TenantSelectComponent implements OnInit {
 
-  constructor() { }
+  tenants = [{ id: '', name: '' }];
+  tenantsForm = new FormGroup({
 
-  ngOnInit(): void {
+  });
+
+  constructor(
+    private title: TitleService,
+    private service: TenantService
+  ) { 
+    this.title.set_title("Select Tenant");
   }
 
+  ngOnInit(): void {
+    console.log("TenantSelectComponent::ngOnInit()");
+    this.service.get_tenants().subscribe(r => {
+      if (r.status == "success") {
+        // this.tenants = r.data?.tenants;
+        this.rebuildForm(r.data?.tenants);
+      } else {
+        console.error(r.message);
+      }
+    });
+  }
+
+  rebuildForm(tenants: [Tenant]) {
+    this.tenants = tenants;
+    let group: any = {};
+
+    tenants.forEach(t => {
+      group["tenant_" + t.id] = new FormControl();
+    });
+
+    this.tenantsForm = new FormGroup(group);
+  }
 }
