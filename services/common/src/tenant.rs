@@ -1,6 +1,8 @@
 /// tenant class
 use log::{ info, error, debug };
 
+use uuid::Uuid;
+
 
 #[derive(Debug)]
 pub struct Tenant {
@@ -33,6 +35,6 @@ impl Tenant {
     }
 
     pub fn get_name(&self) -> String {
-        return self.name;
+        return self.name.clone();
     }
 }
