@@ -138,6 +138,22 @@
                 "example": {
                     "tenant_id": "b5342573-7396-41f2-bb77-3af2bb2d4e9c"
                 }
+            },
+            "userTenantSelectRequest": {
+                "type":"object",
+                "required": [
+                    "tenant_id"
+                ],
+                "properties": {
+                    "tenant_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "tenant_id": "b5342573-7396-41f2-bb77-3af2bb2d4e9c"
+                }
             }
         },
         "securitySchemes": {
@@ -389,6 +405,54 @@
                 "responses": {
                     "200": {
                         "description": "list of permissions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/tenant/select": {
+            "summary": "switch to different tenant",
+            "description": "switch to different tenant",
+            "post": {
+                "summary": "POST switch to different tenant",
+                "description": "POST switch to different tenant",
+                "tags": [ "user", "tenants" ],
+                "operationId": "user_tenant_select",
+                "requestBody": {
+                    "required": true,
+                    "description": "user tenant select request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userTenantSelectRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user switched to tenant",
                         "content": {
                             "application/json": {
                                 "schema": {
