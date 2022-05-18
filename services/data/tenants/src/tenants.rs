@@ -12,6 +12,8 @@ use deadpool::managed::Object;
 use uuid::Uuid;
 use data::data::Data;
 
+use common::tenant::Tenant;
+
 
 pub struct Tenants {
     client: Object<Manager>
@@ -149,6 +151,40 @@ impl Tenants {
         }
     }
 
+    /// get tenant info
+    pub async fn get_tenant(&self, tenant_id: &Uuid) -> Result<Tenant, String> {
+        info!("tenants::tenants::Tenants::get_tenant()");
+
+        let result_stmt = self.client.prepare_cached(
+            "select * from tenants.tenant_get_by_id($1)"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                match self.client.query_one(&stmt, &[ &tenant_id]).await {
+                    Ok(row) => {
+                        let tenant_id: Uuid = row.get("id");
+                        let active: bool = row.get("active");
+                        let name: String = row.get("name");
+
+                        return Ok(Tenant::new(
+                            tenant_id,
+                            active,
+                            name
+                        ));
+                    }
+                    Err(e) => {
+                        error!("unable to retrieve tenant by id: {:?}", e);
+                        return Err(format!("unable to retrieve tenant by id: {}", e));
+                    }
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to retrieve tenant by id: {:?}", e);
+                return Err(format!("unable to prepare statement to retrieve tenant by id"));
+            }
+        }
+    }
     
 }
 
