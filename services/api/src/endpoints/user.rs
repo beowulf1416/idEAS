@@ -60,6 +60,11 @@ pub struct PermissionsRequest {
     pub tenant_id: Uuid
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct TenantSelectRequest {
+    pub tenant_id: Uuid
+}
+
 
 #[derive(Serialize, Deserialize)]
 pub struct Tenant {
@@ -116,6 +121,15 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     web::post()
                         .guard(AuthGuard::new(Permissions::UserCurrent))
                         .to(get_permissions_post)
+                )
+        )
+        .service(
+            web::resource("/tenant/select")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(
+                    web::post()
+                        .guard(AuthGuard::new(Permissions::UserCurrent))
+                        .to(tenant_select_post)
                 )
         )
     ;
@@ -266,34 +280,17 @@ async fn get_user_post(
                 debug!("tenants: {:?}", tenants);
 
                 if tenants.len() > 0 {
-                    // get default client
-                    // let default_tenant = (&tenants[0..1])[0].clone();
-                    // debug!("default tenant: {:?}", default_tenant);
-
-                    // retrieve user permissions
-                    // let default_tenant_id = default_tenant.0;
-                    // if let Ok(permissions) = users.get_user_permissions(
-                    //     &user_id,
-                    //     &current_tenant_id
-                    // ).await {
-                        // debug!("permissions: {:?}", permissions);
-                        // let perms: Vec<String> = permissions.iter().map(|p| p.1.clone()).collect();
-
-                        return HttpResponse::Ok()
-                            .json(ApiResponse {
-                                status: ApiResponseStatus::Success,
-                                message: String::from("success"),
-                                data: Some(json!({
-                                    "email": user_email,
-                                    "tenants": tenants,
-                                    "tenant_current": current_tenant_id,
-                                    "permissions": permissions
-                                }))
-                            });
-
-                    // } else {
-                    //     error!("unable to retrieve user permissions");
-                    // }
+                    return HttpResponse::Ok()
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: String::from("success"),
+                            data: Some(json!({
+                                "email": user_email,
+                                "tenants": tenants,
+                                "tenant_current": current_tenant_id,
+                                "permissions": permissions
+                            }))
+                        });
                 } else {
                     error!("user is not associated with any tenant");
                 }
@@ -445,6 +442,57 @@ async fn get_permissions_post(
             error!("unable to retrieve permissions: {:?}", e);
         }
     }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        });
+}
+
+async fn tenant_select_post(
+    _request: HttpRequest,
+    data: web::Data<Data>,
+    jwt: web::Data<JWT>,
+    user_param: UserParam,
+    params: web::Json<TenantSelectRequest>
+) -> impl Responder {
+    info!("endpoints::user::tenant_select_post()");
+
+    let mut error_msg = String::from("unable to current tenant");
+
+    let user = user_param.to_user();
+    let email = user.get_email().clone();
+
+    let tenant_id = params.tenant_id.clone();
+
+    // check if tenant_id is valid
+    if let Ok(client) = data.get_pool().get().await {
+        let tenants_db = Tenants::new(client);
+        if let Ok(_tenant) = tenants_db.get_tenant(&tenant_id).await {
+            match jwt.generate(
+                &email.get_email_str(),
+                &tenant_id
+            ) {
+                Ok(token) => {
+                    return HttpResponse::Ok()
+                        .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: String::from("success"),
+                            data: None
+                        });
+                }
+                Err(e) => {
+                    error!("unable to generate token: {:?}", e);
+                    error_msg = format!("unable to generate token: {}", e);
+                }
+            }
+        }
+    }
+
+    
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
