@@ -1,6 +1,6 @@
 <div id="tenant-select-component" class="wrapper-component">
     <div class="wrapper-form">
-        <form id="frm-tenants" [formGroup]="tenantsForm" >
+        <form id="frm-tenants" [formGroup]="tenantsForm" (ngSubmit)="select()">
             <fieldset class="fields">
                 <ul>
                     <li *ngFor="let t of tenants">
