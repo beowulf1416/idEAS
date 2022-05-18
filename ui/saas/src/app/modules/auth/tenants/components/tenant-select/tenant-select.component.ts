@@ -49,4 +49,9 @@ export class TenantSelectComponent implements OnInit {
 
     this.tenantsForm = new FormGroup(group);
   }
+
+  select() {
+    console.log("TenantSelectComponent::select()");
+
+  }
 }
