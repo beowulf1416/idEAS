@@ -11,6 +11,6 @@ export class TitleService {
   ) { }
 
   set_title(title: string) {
-    this.title.setTitle(`ERP - ${title}`);
+    this.title.setTitle(`idEAS - ${title}`);
   }
 }
