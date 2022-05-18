@@ -86,6 +86,7 @@ async fn main() -> std::io::Result<()> {
             .configure(data::data::configure)
             .configure(users::jwt::configure)
             .configure(crate::utils::bus::configure)
+            .wrap(crate::middleware::cache::Cache::new())
             .wrap(crate::middleware::cors::CORS::new())
             .wrap(crate::middleware::user::User::new())
             .service(web::scope("/status").configure(crate::endpoints::status::config))
