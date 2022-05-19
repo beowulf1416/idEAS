@@ -89,6 +89,7 @@ export class SigninComponent implements OnInit {
                   this.router.navigate([environment.path_tenant_select]);
                 } else {
                   console.log("//TODO redirect to dashboard");
+                  this.router.navigate([environment.path_dashboard]);
                 }
               } else {
                 console.error(rs.message);

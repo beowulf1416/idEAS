@@ -8,6 +8,8 @@ export const environment = {
   session_token_key: "token",
 
   path_tenant_select: '/tenant/select',
+  path_dashboard: '/dashboard',
+
   api_tenant_select: '/user/tenant/select',
 
   api_base_url: 'http://erp.com:8081',
@@ -16,7 +18,7 @@ export const environment = {
   api_user_current: '/user/current',
   api_user_password: '/user/password',
   api_user_tenants: '/user/tenants',
-  api_dashboard: '/dashboard'
+  // api_dashboard: '/dashboard'
 };
 
 /*
