@@ -44,12 +44,6 @@ export class SigninService {
           if (authorization != null) {
             const token = authorization?.replace("Bearer", "");
             sessionStorage.setItem(environment.session_token_key, token);
-
-            // // retrieve roles
-            // this.user.current_user().subscribe(r => {
-            //   console.log("SignService::signIn()");
-            //   console.log(r);
-            // });
           }
         }
       }),
