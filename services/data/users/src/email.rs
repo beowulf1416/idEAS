@@ -1,5 +1,5 @@
 /// Email address
-use log::{ info, error };
+use log::{ info };
 use std::error::Error;
 
 use postgres_types::{ ToSql, Type, IsNull, to_sql_checked };
@@ -23,7 +23,6 @@ impl ToSql for EmailAddress {
 
     fn to_sql(&self, ty: &Type, out: &mut BytesMut) -> Result<IsNull, Box<dyn Error + Sync + Send>> {
         return self.0.get_email_str().to_sql(ty, out);
-        // return self.0.get_email_str().to_sql(ty, out);
     }
 
     to_sql_checked!();
