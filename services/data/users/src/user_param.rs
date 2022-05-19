@@ -1,5 +1,5 @@
 /// user
-use log::{ info, error, debug };
+use log::{ debug };
 
 use std::write;
 
@@ -8,7 +8,7 @@ use std::write;
 use actix_web::{
     dev::Payload,
     http::StatusCode, 
-    web, 
+    // web, 
     HttpMessage,
     // Error, 
     HttpRequest, 
@@ -29,7 +29,7 @@ use futures::{
         // ready,
         Ready
     },
-    Future
+    // Future
 };
 
 // use deadpool_postgres::{ Pool };
