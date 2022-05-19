@@ -351,4 +351,45 @@ mod tests {
             assert!(false);
         }
     }
+
+    #[actix_rt::test]
+    async fn test_get_tenant() {
+        if let Ok(url_db) = env::var("URL_DB") {
+            info!("connection string: {}", url_db);
+            match Config::from_str(&url_db) {
+                Ok(db_cfg) => {
+                    let mgr = Manager::from_config(
+                        db_cfg,
+                        NoTls,
+                        ManagerConfig {
+                            recycling_method: RecyclingMethod::Fast
+                        }
+                    );
+                    let pool = Pool::builder(mgr)
+                        .max_size(16)
+                        .build()
+                        .unwrap();
+
+                    let tenants = crate::tenants::Tenants::new(pool.get().await.unwrap());
+                    if let Ok(tenant_id) = tenants.default_tenant_id().await {
+                        if let Err(e) = tenants.get_tenant(&tenant_id).await {
+                            error!("unable to retrieve tenant info: {:?}", e);
+                            assert!(false);
+                        } else {
+                            assert!(true);
+                        }
+                    } else {
+                        assert!(false);
+                    }
+                }
+                Err(e) => {
+                    error!("error: {:?}", e);
+
+                    assert!(false);
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
 }
