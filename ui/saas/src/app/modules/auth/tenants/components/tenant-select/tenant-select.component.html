@@ -2,10 +2,10 @@
     <div class="wrapper-form">
         <form id="frm-tenants" [formGroup]="tenantsForm" (ngSubmit)="select()">
             <fieldset class="fields">
-                <ul>
+                <ul class="wrapper-tenant-field">
                     <li *ngFor="let t of tenants">
-                        <input type="radio" id="{{ t.id }}" name="tenant" />
-                        <label for="{{ t.id }}">{{ t.name }}</label>
+                        <input type="radio" id="tenant_{{ t.id }}" name="tenant" value="{{ t.id }}" formControlName="tenant" />
+                        <label for="tenant_{{ t.id }}">{{ t.name }}</label>
                     </li>
                 </ul>
             </fieldset>
