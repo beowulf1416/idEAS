@@ -20,11 +20,13 @@ insert into iam.permissions (id, active, name, description) values
 (1, true, 'user.current', 'get current user information'),
 (2, true, 'user.profile', 'view user profile'),
 (3, true, 'dashboard.view', 'view dashboard'),
-(4, true, 'tenant.create', 'add tenant'),
-(5, true, 'tenant.view', 'view tenant information'),
-(6, true, 'tenant.users.view', 'view tenant users'),
-(7, true, 'tenant.users.add', 'add user to tenant'),
-(8, true, 'tenants.admin', 'administer tenants'),
-(9, true, 'tenants.admin.list', 'view list of tenants'),
-(10, true, 'tenants.admin.view', 'view tenant information')
+(4, true, 'site.admin.dashboard.view', 'view site admin dashboard'),
+(5, true, 'site.admin.tenants.view', 'view site admin tenants'),
+(6, true, 'tenant.create', 'add tenant'),
+(7, true, 'tenant.view', 'view tenant information'),
+(8, true, 'tenant.users.view', 'view tenant users'),
+(9, true, 'tenant.users.add', 'add user to tenant'),
+(10, true, 'tenants.admin', 'administer tenants'),
+(11, true, 'tenants.admin.list', 'view list of tenants'),
+(12, true, 'tenants.admin.view', 'view tenant information')
 ;
