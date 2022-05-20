@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ProfileModule } from './modules/auth/profile/profile.module';
+import { TenantAdminModule } from './modules/auth/tenant-admin/tenant-admin.module';
 
 const routes: Routes = [
   {
@@ -21,24 +22,21 @@ const routes: Routes = [
     },
     loadChildren: () => import('./modules/auth/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
-  // {
-  //   path: 'tenants',
-  //   data: {
-  //     permission: "tenants.admin"
-  //   },
-  //   loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
-  // },
   {
     path: 'tenant',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/auth/tenants/tenants.module').then(m => m.TenantsModule)
   },
   {
-    path: 'profile',
+    path: 'user/profile',
     data: {
       permission: "user.profile"
     },
     loadChildren: () => import('./modules/auth/profile/profile.module').then(m => ProfileModule)
+  },
+  {
+    path: 'tenant/admin',
+    loadChildren: () => import('./modules/auth/tenant-admin/tenant-admin.module').then(m => TenantAdminModule)
   },
   {
     path: 'error/forbidden',
