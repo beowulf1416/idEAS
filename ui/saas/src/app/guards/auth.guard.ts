@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { UserService } from '../services/user.service';
@@ -26,17 +27,16 @@ export class AuthGuard implements CanActivate {
       // TODO check permissions
       console.log("AuthGuard::canActivate() check permissions: ", route.data?.permission);
       if (route.data?.permission) {
-        const permissions = this.user.get_permissions();
-        if (permissions.includes(route.data?.permission)){
-          return true;
-        } else {
-          return this.router.parseUrl("/error/forbidden");  
-        }
+        return this.user.get_permissions().pipe(
+          map((r: string[]) => {
+            return r.includes(route.data?.permission);
+          })
+        );
       } else {
         // TODO redirect to forbidden page
-        // return this.router.parseUrl("/error/forbidden");
-        console.log("returning true");
-        return true;
+        return this.router.parseUrl("/error/forbidden");
+        // console.log("returning true");
+        // return true;
       }
     }
   }

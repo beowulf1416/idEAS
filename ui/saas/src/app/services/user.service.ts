@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { from, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
@@ -38,18 +40,16 @@ export class UserService {
     return this.get_current_user();
   }
 
-  get_permissions(): string[] {
+  get_permissions(): Observable<string[]> {
     console.log("UserService::permissions()");
-    if (this.permissions.length == 0) {
-      this.get_current_user().subscribe(r => {
-        // TODO parse permissions
-        console.log(r);
-      }, e => {
-        console.error(e);
-        this.permissions = [];
+    return this.get_current_user().pipe(
+      map((r: ApiResponse) => {
+        if (r.status == "success") {
+          return r.data?.permissions;
+        } else {
+          return[];
+        }
       })
-    }
-
-    return this.permissions;
+    );
   }
 }
