@@ -34,7 +34,7 @@ begin
     ;
 
     -- create default roles
-    t_role_client_admin_id := public.gen_random_uuid();
+    t_role_tenant_admin_id := public.gen_random_uuid();
     t_role_everybody_id := public.gen_random_uuid();
 
     if (select to_regproc('iam.role_add')) is null then
@@ -46,10 +46,10 @@ begin
                 name,
                 description
             ) values (
-                t_role_client_admin_id,
+                t_role_tenant_admin_id,
                 p_tenant_id,
-                'client administrator',
-                'client administrator'
+                'tenant administrator',
+                'tenant administrator'
             );
 
             update iam.roles set
@@ -97,10 +97,10 @@ begin
         begin
             -- client administrator role
             call iam.role_add(
-                t_role_client_admin_id,
+                t_role_tenant_admin_id,
                 p_tenant_id,
-                'client administrator',
-                'client administrator'
+                'tenant administrator',
+                'tenant administrator'
             );
 
             call iam.role_set_active(
