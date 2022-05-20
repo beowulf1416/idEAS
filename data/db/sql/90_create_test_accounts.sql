@@ -38,6 +38,23 @@ begin
         true
     );
 
+    -- assign permissions to role
+    call iam.assign_permission_to_role(
+        t_role_id,
+        1 -- user.current permission
+    );
+
+    call iam.assign_permission_to_role(
+        t_role_id,
+        2 -- user.profile permission
+    );
+
+
+    call iam.assign_permission_to_role(
+        t_role_id,
+        3 -- dashboard.view permission
+    );
+
 
     -- create user and assign to tenant
     call iam.user_add(
