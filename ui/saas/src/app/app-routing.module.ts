@@ -32,11 +32,15 @@ const routes: Routes = [
     data: {
       permission: "user.profile"
     },
-    loadChildren: () => import('./modules/auth/profile/profile.module').then(m => ProfileModule)
+    loadChildren: () => import('./modules/auth/profile/profile.module').then(m => m.ProfileModule)
   },
   {
     path: 'tenant/admin',
-    loadChildren: () => import('./modules/auth/tenant-admin/tenant-admin.module').then(m => TenantAdminModule)
+    loadChildren: () => import('./modules/auth/tenant-admin/tenant-admin.module').then(m => m.TenantAdminModule)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./modules/auth/site-admin/site-admin.module').then(m => m.SiteAdminModule)
   },
   {
     path: 'error/forbidden',
