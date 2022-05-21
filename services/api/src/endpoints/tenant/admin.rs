@@ -3,6 +3,7 @@ use log::{ info, error, debug };
 
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
 use serde::{ Serialize, Deserialize };
+use serde_json::json;
 
 use uuid::Uuid;
 
@@ -25,6 +26,13 @@ struct TenantAddRequest {
 struct TenantActiveRequest {
     pub tenant_id: Uuid,
     pub active: bool
+}
+
+#[derive(Serialize, Deserialize)]
+struct TenantsGetRequest {
+    pub filter: String,
+    pub items: i64,
+    pub page: i64
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -119,6 +127,55 @@ async fn tenant_set_active_post(
                         message: String::from("successfully set tenant active status"),
                         data: None
                     });
+            }
+        }
+        Err(e) => {
+            error!("unable to retrieve tenants object: {:?}", e);
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        });
+}
+
+
+async fn tenants_get_post(
+    request: HttpRequest,
+    params: web::Json<TenantsGetRequest>
+) -> impl Responder {
+    info!("endpoints::admin::tenants::tenants_get_post()");
+
+    let mut error_msg = String::from("unable to retrieve tenants");
+
+    match Tenants::from_request(&request).await {
+        Ok(tenants_db) => {
+            let filter = params.filter.clone();
+            let items = params.items.clone();
+            let page = params.page.clone();
+
+            match tenants_db.get_tenants(
+                &filter,
+                &items,
+                &page
+            ).await {
+                Ok(tenants) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: String::from("successfully retrieved tenants"),
+                            data: json!({
+                                tenants: tenants
+                            })
+                        });
+                }
+                Err(e) => {
+                    error!("unable to set retrieve tenants: {:?}", e);
+                    error_msg = format!("unable to retrieve tenants: {}", e);
+                }
             }
         }
         Err(e) => {
