@@ -191,6 +191,33 @@
                     "tenant_id": "b5342573-7396-41f2-bb77-3af2bb2d4e9c",
                     "active": true
                 }
+            },
+            "adminTenantsRequest": {
+                "type":"object",
+                "required": [
+                    "filter",
+                    "items",
+                    "page"
+                ],
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "items": {
+                        "type": "number",
+                        "writeOnly": true
+                    },
+                    "page": {
+                        "type": "number",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "filter": "%test%",
+                    "items": 10,
+                    "page": 0
+                }
             }
         },
         "securitySchemes": {
@@ -586,6 +613,54 @@
                 "responses": {
                     "200": {
                         "description": "admin successfully set tenant active status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "admin/tenants": {
+            "summary": "retrieve tenants",
+            "description": "retrieve tenants",
+            "post": {
+                "summary": "POST retrieve tenants",
+                "description": "POST retrieve tenants",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "admin_tenants",
+                "requestBody": {
+                    "required": true,
+                    "description": "retrieve tenants request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/adminTenantsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully retrieve list of tenants",
                         "content": {
                             "application/json": {
                                 "schema": {
