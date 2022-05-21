@@ -19,6 +19,8 @@ export const environment = {
   api_user_password: '/user/password',
   api_user_tenants: '/user/tenants',
   // api_dashboard: '/dashboard'
+
+  api_admin_tenants: '/admin/tenants'
 };
 
 /*
