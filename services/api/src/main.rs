@@ -91,7 +91,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(crate::middleware::user::User::new())
             .service(web::scope("/status").configure(crate::endpoints::status::config))
             .service(web::scope("/user").configure(crate::endpoints::user::config))
-            // .service(web::scope("/tenant").configure(crate::endpoints::tenant::admin::config))
+            .service(web::scope("/admin/tenants").configure(crate::endpoints::tenant::admin::config))
             .route("/status", web::get().to(status))
     })
     .bind("0.0.0.0:8081")?

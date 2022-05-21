@@ -492,8 +492,6 @@ async fn tenant_select_post(
         }
     }
 
-    
-
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
             status: ApiResponseStatus::Error,
