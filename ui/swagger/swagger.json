@@ -154,6 +154,43 @@
                 "example": {
                     "tenant_id": "b5342573-7396-41f2-bb77-3af2bb2d4e9c"
                 }
+            },
+            "adminTenantAddRequest": {
+                "type":"object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "name": "tenant"
+                }
+            },
+            "adminTenantActiveRequest": {
+                "type":"object",
+                "required": [
+                    "tenant_id",
+                    "active"
+                ],
+                "properties": {
+                    "tenant_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "tenant_id": "b5342573-7396-41f2-bb77-3af2bb2d4e9c",
+                    "active": true
+                }
             }
         },
         "securitySchemes": {
@@ -453,6 +490,102 @@
                 "responses": {
                     "200": {
                         "description": "user switched to tenant",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admin/tenants/add": {
+            "summary": "add a tenant",
+            "description": "add a tenant",
+            "post": {
+                "summary": "POST add a tenant",
+                "description": "POST add a tenant",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "admin_tenants_add",
+                "requestBody": {
+                    "required": true,
+                    "description": "admin tenant add request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/adminTenantAddRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "admin successfully added tenant",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "admin/tenants/active": {
+            "summary": "set tenant active status",
+            "description": "set tenant active status",
+            "post": {
+                "summary": "POST set tenant active status",
+                "description": "POST set tenant active status",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "admin_tenants_active",
+                "requestBody": {
+                    "required": true,
+                    "description": "set tenant active status request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/adminTenantActiveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "admin successfully set tenant active status",
                         "content": {
                             "application/json": {
                                 "schema": {
