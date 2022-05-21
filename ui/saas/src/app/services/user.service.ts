@@ -17,7 +17,7 @@ export interface ApiResponse {
 })
 export class UserService {
 
-  permissions: string[] = [];
+  permissions: Array<string> = [];
 
   constructor(
     private http: HttpClient
@@ -40,14 +40,16 @@ export class UserService {
     return this.get_current_user();
   }
 
-  get_permissions(): Observable<string[]> {
+  get_permissions(): Observable<Array<string>> {
     console.log("UserService::permissions()");
+
     return this.get_current_user().pipe(
       map((r: ApiResponse) => {
         if (r.status == "success") {
+          this.permissions = r.data?.permissions;
           return r.data?.permissions;
         } else {
-          return[];
+          return [];
         }
       })
     );
