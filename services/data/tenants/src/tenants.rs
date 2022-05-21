@@ -30,7 +30,7 @@ impl Tenants {
         };
     }
 
-    pub async fn from_request(request: HttpRequest) -> Result<Self, String> {
+    pub async fn from_request(request: &HttpRequest) -> Result<Self, String> {
         debug!("tenants::tenants::Tenants::from_request()");
 
         if let Some(data) = request.app_data::<web::Data<Data>>() {
@@ -53,8 +53,8 @@ impl Tenants {
     /// add tenant record
     pub async fn add(
         &self,
-        id: Uuid,
-        name: String
+        id: &Uuid,
+        name: &String
     ) -> Result<(), String> {
         info!("tenants::tenants::Tenants::add()");
 
@@ -88,8 +88,8 @@ impl Tenants {
     /// toggle tenant active status
     pub async fn active(
         &self,
-        id: Uuid, 
-        active: bool
+        id: &Uuid, 
+        active: &bool
     ) -> Result<(), String> {
         info!("tenants::tenants::Tenants::active()");
 
@@ -182,6 +182,47 @@ impl Tenants {
             Err(e) => {
                 error!("unable to prepare statement to retrieve tenant by id: {:?}", e);
                 return Err(format!("unable to prepare statement to retrieve tenant by id"));
+            }
+        }
+    }
+
+    /// retrieve tenants
+    pub async fn get_tenants(&self, filter: &String, items: &i64, page: &i64) -> Result<Vec<Tenant>, String> {
+        info!("tenants::tenants::Tenants::get_tenants()");
+
+        let result_stmt = self.client.prepare_cached(
+            "select * from tenants.tenants_get($1, $1, $3)"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                match self.client.query(&stmt, &[
+                    &filter,
+                    &items,
+                    &page
+                ]).await {
+                    Ok(rows) => {
+                        let mut tenants: Vec<Tenant> = Vec::new();
+
+                        for r in rows {
+                            let tenant_id: Uuid = r.get("id");
+                            let active: bool = r.get("active");
+                            let name: String = r.get("name");
+
+                            tenants.push(Tenant::new(tenant_id, active, name));
+                        }
+                        
+                        return Ok(tenants);
+                    }
+                    Err(e) => {
+                        error!("unable to retrieve tenants: {:?}", e);
+                        return Err(format!("unable to retrieve tenants: {}", e));
+                    }
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to retrieve tenants: {:?}", e);
+                return Err(format!("unable to prepare statement to retrieve tenants"));
             }
         }
     }

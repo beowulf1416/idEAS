@@ -7,7 +7,7 @@ use serde::{ Serialize, Deserialize };
 use uuid::Uuid;
 
 use crate::endpoints::common::default_options;
-use crate::models::api_response::ApiResponse;
+use crate::models::api_response::{ ApiResponse, ApiResponseStatus };
 
 use tenants::tenants::Tenants;
 
@@ -40,35 +40,33 @@ async fn tenant_add_post(
 ) -> Responder {
     info!("endpoints::tenants::tenant_add_post()");
 
+    let mut error_msg = String::from("unable to add tenant");
+
     if let Ok(tenants) = Tenants::from_request(request).await {
         let id = Uuid::new_v4();
         let name = tenant.name;
 
         if let Err(e) = tenants.add(id, name).await {
             error!("unable to add tenant: {:?}", e);
-
-            return HttpResponse::OK()
-                .json(ApiResponse {
-                    status: String::from("error"),
-                    message: format!("unable to add tenant: {}", e),
-                    data: None
-                });
+            error_msg = format!("unable to add tenant: {}", e);
         } else {
             return HttpResponse::Ok()
             .json(ApiResponse {
-                status: String::from("success"),
+                status: ApiResponseStatus::Success,
                 message: String::from("success"),
                 data: None
             });
         }
     } else {
-        return HttpResponse::OK()
-            .json(ApiResponse {
-                status: String::from("error"),
-                message: String::from("error"),
-                data: None
-            });
+        error!("unable to create tenantsDb");
     }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        });
 }
 
 /// toggle tenant active status
@@ -77,6 +75,8 @@ async fn tenant_active_post(
 ) -> Responder {
     info!("endpoints::tenants::tenant_active_post()");
 
+    let mut error_msg = String::from("unable to toggle tenant active status");
+
     if let Ok(tenants) = Tenants::from_request(request).await {
         return HttpResponse::Ok()
             .json(ApiResponse {
@@ -84,12 +84,12 @@ async fn tenant_active_post(
                 message: String::from("success"),
                 data: None
             });
-    } else {
-        return HttpResponse::OK()
-            .json(ApiResponse {
-                status: String::from("error"),
-                message: String::from("error"),
-                data: None
-            });
     }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        });
 }
