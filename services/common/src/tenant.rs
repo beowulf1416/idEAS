@@ -1,10 +1,11 @@
 /// tenant class
 use log::{ info, error, debug };
 
+use serde::{ Serialize, Deserialize };
 use uuid::Uuid;
 
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Tenant {
     id: Uuid,
     active: bool,

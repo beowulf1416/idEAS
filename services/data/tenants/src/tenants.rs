@@ -187,11 +187,16 @@ impl Tenants {
     }
 
     /// retrieve tenants
-    pub async fn get_tenants(&self, filter: &String, items: &i64, page: &i64) -> Result<Vec<Tenant>, String> {
+    pub async fn get_tenants(
+        &self, 
+        filter: &String, 
+        items: &i32, 
+        page: &i32
+    ) -> Result<Vec<Tenant>, String> {
         info!("tenants::tenants::Tenants::get_tenants()");
 
         let result_stmt = self.client.prepare_cached(
-            "select * from tenants.tenants_get($1, $1, $3)"
+            "select * from tenants.tenants_get($1, $2, $3)"
         ).await;
 
         match result_stmt {
@@ -426,6 +431,51 @@ mod tests {
                 Err(e) => {
                     error!("error: {:?}", e);
 
+                    assert!(false);
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test]
+    async fn test_get_tenants() {
+        if let Ok(url_db) = env::var("URL_DB") {
+            info!("connection string: {}", url_db);
+            match Config::from_str(&url_db) {
+                Ok(db_cfg) => {
+                    let mgr = Manager::from_config(
+                        db_cfg,
+                        NoTls,
+                        ManagerConfig {
+                            recycling_method: RecyclingMethod::Fast
+                        }
+                    );
+                    let pool = Pool::builder(mgr)
+                        .max_size(16)
+                        .build()
+                        .unwrap();
+
+                    let tenants = crate::tenants::Tenants::new(pool.get().await.unwrap());
+
+                    let filter = String::from("%");
+                    let items: i64 = 10;
+                    let page: i64 = 1;
+
+                    if let Err(e) = tenants.get_tenants(
+                        &filter,
+                        &items, 
+                        &page
+                    ).await {
+                        error!("unable to retrieve tenants: {:?}", e);
+                        assert!(false);
+                    }
+
+                    assert!(true);
+                }
+                Err(e) => {
+                    error!("error: {:?}", e);
                     assert!(false);
                 }
             }
