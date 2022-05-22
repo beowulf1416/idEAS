@@ -20,7 +20,7 @@ export const environment = {
   api_user_tenants: '/user/tenants',
   // api_dashboard: '/dashboard'
 
-  api_admin_tenants: '/admin/tenants'
+  api_admin_tenants: '/admin/tenants/get'
 };
 
 /*
