@@ -639,7 +639,7 @@
                 ]
             }
         },
-        "admin/tenants": {
+        "/admin/tenants/get": {
             "summary": "retrieve tenants",
             "description": "retrieve tenants",
             "post": {
