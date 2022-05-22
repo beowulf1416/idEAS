@@ -31,8 +31,8 @@ struct TenantActiveRequest {
 #[derive(Serialize, Deserialize)]
 struct TenantsGetRequest {
     pub filter: String,
-    pub items: i64,
-    pub page: i64
+    pub items: i32,
+    pub page: i32
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -53,6 +53,15 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                         .guard(AuthGuard::new(Permissions::TenantSetActive))
                         .to(tenant_set_active_post)
                 )  
+        )
+        .service(
+            web::resource("/get")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(
+                    web::post()
+                        .guard(AuthGuard::new(Permissions::TenantsList))
+                        .to(tenants_get_post)
+                )
         )
     ;
 }
@@ -167,9 +176,9 @@ async fn tenants_get_post(
                         .json(ApiResponse {
                             status: ApiResponseStatus::Success,
                             message: String::from("successfully retrieved tenants"),
-                            data: json!({
-                                tenants: tenants
-                            })
+                            data: Some(json!({
+                                "tenants": tenants
+                            }))
                         });
                 }
                 Err(e) => {

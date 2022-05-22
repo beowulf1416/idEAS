@@ -1,7 +1,8 @@
 pub enum Permissions {
     UserCurrent,
     TenantAdd,
-    TenantSetActive
+    TenantSetActive,
+    TenantsList
 }
 
 impl Permissions {
@@ -10,7 +11,8 @@ impl Permissions {
         match self {
             Permissions::UserCurrent => String::from("user.current"),
             Permissions::TenantAdd => String::from("tenant.add"),
-            Permissions::TenantSetActive => String::from("tenant.active")
+            Permissions::TenantSetActive => String::from("tenant.active"),
+            Permissions::TenantsList => String::from("tenants.list")
         }
     }
 }

@@ -425,7 +425,6 @@ async fn get_permissions_post(
                 &user_id, 
                 &tenant_id
             ).await {
-                // return list of permission strings
                 let perms: Vec<String> = permissions.iter().map(|p| p.1.clone()).collect();
 
                 return HttpResponse::Ok()
