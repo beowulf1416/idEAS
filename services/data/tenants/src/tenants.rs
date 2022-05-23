@@ -263,6 +263,40 @@ impl Tenants {
             }
         }
     }
+
+
+    /// set user-tenant active status
+    pub async fn set_active(
+        &self,
+        tenant_id: &Uuid,
+        user_id: &Uuid,
+        active: &bool
+    ) -> Result<(), String> {
+        info!("data::tenants::tenants::Tenants::set_active()");
+
+        let result_stmt = self.client.prepare_cached(
+            "select * from tenants.user_tenants_set_active($1, $2, $3)"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                if let Err(e) = self.client.query(&stmt, &[
+                    &user_id,
+                    &tenant_id,
+                    &active
+                ]).await {
+                    error!("unable to set user-tenant active status: {:?}", e);
+                    return Err(format!("unable to set user-tenant active status: {}", e));
+                } else {
+                    return Ok(());
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to set user-tenant active status: {:?}", e);
+                return Err(format!("unable to prepare statement to set user-tenant active status"));
+            }
+        }
+    }
 }
 
 
