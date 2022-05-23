@@ -267,7 +267,8 @@
                 },
                 "example": {
                     "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
-                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f"
+                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f",
+                    "active": true
                 }
             }
         },
