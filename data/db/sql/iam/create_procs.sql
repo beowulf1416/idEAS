@@ -14,6 +14,7 @@ set schema 'iam';
 \ir procedures/permissions/permissions_get.sql
 
 \ir procedures/user_tenants/assign_user_to_tenant.sql
+\ir procedures/user_tenants/revoke_user_from_tenant.sql
 \ir procedures/user_tenants/user_tenants_get.sql
 \ir procedures/user_tenants/user_tenants_set_active.sql
 
