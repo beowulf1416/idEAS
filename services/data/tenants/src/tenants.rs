@@ -232,6 +232,37 @@ impl Tenants {
         }
     }
     
+
+    /// add user to tenant
+    pub async fn add_user(
+        &self,
+        tenant_id: &Uuid,
+        user_id: &Uuid
+    ) -> Result<(), String> {
+        info!("data::tenants::tenants::Tenants::add_user()");
+
+        let result_stmt = self.client.prepare_cached(
+            "select * from tenants.assign_user_to_tenant($1, $2)"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                if let Err(e) = self.client.query(&stmt, &[
+                    &user_id,
+                    &tenant_id
+                ]).await {
+                    error!("unable to add user to tenant: {:?}", e);
+                    return Err(format!("unable to add user to tenant: {}", e));
+                } else {
+                    return Ok(());
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to retrieve tenants: {:?}", e);
+                return Err(format!("unable to prepare statement to retrieve tenants"));
+            }
+        }
+    }
 }
 
 

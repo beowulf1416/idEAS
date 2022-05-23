@@ -10,81 +10,62 @@ use crate::endpoints::common::default_options;
 use crate::models::api_response::{ ApiResponse, ApiResponseStatus };
 
 use tenants::tenants::Tenants;
+use common::email::Email;
 
 
 #[derive(Debug, Serialize, Deserialize)]
-struct TenantAddRequest {
-    pub name: String
+struct TenantAddUserRequest {
+    pub tenant_id: Uuid,
+    pub user_id: Uuid
 }
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
-            web::resource("/add")
+            web::resource("/add/user")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::post().to(tenant_add_post))
-        )
-        .service(
-            web::resource("/active")
-                .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::post().to(tenant_active_post))
+                .route(web::post().to(tenant_add_user))
         )
     ;
 }
 
-/// add tenant
-async fn tenant_add_post(
+
+// add a user to tenant
+async fn tenant_add_user(
     request: HttpRequest,
-    tenant: web::Json<TenantAddRequest>
-) -> Responder {
-    info!("endpoints::tenants::tenant_add_post()");
+    params: web::Json<TenantAddUserRequest>
+) -> impl Responder {
+    info!("endpoints::tenants::tenant_add_user");
 
-    let mut error_msg = String::from("unable to add tenant");
+    let mut error_msg = String::from("unable to add user to tenant");
 
-    if let Ok(tenants) = Tenants::from_request(request).await {
-        let id = Uuid::new_v4();
-        let name = tenant.name;
+    let user_id = params.user_id.clone();
+    let tenant_id = params.tenant_id.clone();
 
-        if let Err(e) = tenants.add(id, name).await {
-            error!("unable to add tenant: {:?}", e);
-            error_msg = format!("unable to add tenant: {}", e);
-        } else {
-            return HttpResponse::Ok()
-            .json(ApiResponse {
-                status: ApiResponseStatus::Success,
-                message: String::from("success"),
-                data: None
-            });
+    match Tenants::from_request(&request).await {
+        Ok(tenants_db) => {
+            if let Err(e) = tenants_db.add_user(
+                &user_id,
+                &tenant_id
+            ).await {
+                error!("unable to add user to tenant: {:?}", e);
+                error_msg = format!("unable to add user to tenant: {}", e);
+            } else {
+                return HttpResponse::Ok()
+                    .json(ApiResponse {
+                        status: ApiResponseStatus::Success,
+                        message: format!("successfully added user to tenant"),
+                        data: None
+                    });
+            }
         }
-    } else {
-        error!("unable to create tenantsDb");
+        Err(e) => {
+            error!("unable to retrieve tenants db object: {:?}", e);
+            error_msg = format!("unable to retrieve tenants db object: {}", e);
+        }
     }
 
-    return HttpResponse::InternalServerError()
-        .json(ApiResponse {
-            status: ApiResponseStatus::Error,
-            message: error_msg,
-            data: None
-        });
-}
-
-/// toggle tenant active status
-async fn tenant_active_post(
-    request: HttpRequest
-) -> Responder {
-    info!("endpoints::tenants::tenant_active_post()");
-
-    let mut error_msg = String::from("unable to toggle tenant active status");
-
-    if let Ok(tenants) = Tenants::from_request(request).await {
-        return HttpResponse::Ok()
-            .json(ApiResponse {
-                status: String::from("success"),
-                message: String::from("success"),
-                data: None
-            });
-    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
