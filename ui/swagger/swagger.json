@@ -218,6 +218,57 @@
                     "items": 10,
                     "page": 0
                 }
+            },
+            "tenantsAddUserRequest": {
+                "type":"object",
+                "required": [
+                    "user_id",
+                    "tenant_id"
+                ],
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    },
+                    "tenant_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
+                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f"
+                }
+            },
+            "tenantsUserActiveRequest": {
+                "type":"object",
+                "required": [
+                    "user_id",
+                    "tenant_id",
+                    "active"
+                ],
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    },
+                    "tenant_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
+                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f"
+                }
             }
         },
         "securitySchemes": {
@@ -661,6 +712,102 @@
                 "responses": {
                     "200": {
                         "description": "successfully retrieve list of tenants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/tenants/user/add": {
+            "summary": "add user to tenant",
+            "description": "add user to tenant",
+            "post": {
+                "summary": "POST add user to tenant",
+                "description": "POST add user to tenant",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "tenants_add_user",
+                "requestBody": {
+                    "required": true,
+                    "description": "add user to tenant request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/tenantsAddUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully added user to tenant",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/tenants/user/active": {
+            "summary": "set user-tenant active status",
+            "description": "set user-tenant active status",
+            "post": {
+                "summary": "POST set user-tenant active status",
+                "description": "POST set user-tenant active status",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "tenants_user_active",
+                "requestBody": {
+                    "required": true,
+                    "description": "set user-tenant active status request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/tenantsUserActiveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully set user-tenant active status",
                         "content": {
                             "application/json": {
                                 "schema": {
