@@ -10,6 +10,7 @@ use deadpool_postgres::{ Manager, Pool };
 use deadpool::managed::Object;
 
 use uuid::Uuid;
+use data::data::Data;
 
 
 pub struct Roles {
@@ -25,6 +26,23 @@ impl Roles {
         return Roles {
             client: client
         };
+    }
+
+
+    pub async fn from_request(request: &HttpRequest) -> Result<Self, String> {
+        if let Some(data) = request.app_data::<web::Data<Data>>() {
+            if let Ok(client) = data.get_pool().get().await {   
+                return Ok(Roles {
+                    client: client
+                });
+            } else {
+                error!("unable to retrieve database client");
+                return Err(format!("unable to retrieve database client"));
+            }
+        } else {
+            error!("unable to retrieve database pool");
+            return Err(format!("unable to retrieve database pool"));
+        }
     }
 
     /// add role
