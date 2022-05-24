@@ -88,8 +88,8 @@ impl Roles {
     /// toggle role active status
     pub async fn active(
         &self,
-        id: Uuid,
-        active: bool
+        id: &Uuid,
+        active: &bool
     ) -> Result<(), String> {
         info!("roles::roles::Roles::active()");
 
