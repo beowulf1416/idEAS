@@ -299,6 +299,28 @@
                     "name": "test role",
                     "description": "test role description"
                 }
+            },
+            "tenantRoleActiveRequest": {
+                "type":"object",
+                "required": [
+                    "role_id",
+                    "active"
+                ],
+                "properties": {
+                    "role_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    },
+                    "active": {
+                        "type": "bool",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "role_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
+                    "active": true
+                }
             }
         },
         "securitySchemes": {
@@ -886,6 +908,54 @@
                 "responses": {
                     "200": {
                         "description": "successfully added role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/tenants/role/active": {
+            "summary": "set role active status",
+            "description": "set role active status",
+            "post": {
+                "summary": "POST set role active status",
+                "description": "POST set role active status",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "tenant_role_active",
+                "requestBody": {
+                    "required": true,
+                    "description": "set role active status request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/tenantRoleActiveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully set role active status",
                         "content": {
                             "application/json": {
                                 "schema": {
