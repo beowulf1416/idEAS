@@ -48,10 +48,10 @@ impl Roles {
     /// add role
     pub async fn add(
         &self,
-        role_id: Uuid,
-        tenant_id: Uuid,
-        name: String,
-        description: String
+        role_id: &Uuid,
+        tenant_id: &Uuid,
+        name: &String,
+        description: &String
     ) -> Result<(), String> {
         info!("roles::roles::Roles::add()");
 
@@ -117,6 +117,42 @@ impl Roles {
                 error!("unable to prepare statement to toggle role active status: {:?}", e);
 
                 return Err(String::from("unable to prepare statement to toggle role active status"));
+            }
+        }
+    }
+
+    // assign user to role
+    pub async fn assign_user(
+        &self,
+        role_id: &Uuid,
+        user_id: &Uuid
+    ) -> Result<(), String> {
+        info!("roles::roles::Roles::assign_user()");
+
+        let result_stmt = self.client.prepare_cached(
+            "call iam.assign_user_to_role($1, $2);"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                if let Err(e) = self.client.query(
+                    &stmt,
+                    &[
+                        &user_id,
+                        &role_id
+                    ]
+                ).await {
+                    error!("unable to assign user to role: {:?}", e);
+
+                    return Err(String::from("unable to assign user to role"));
+                } else {
+                    return Ok(());
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to assign user to role: {:?}", e);
+
+                return Err(String::from("unable to prepare statement to assign user to role"));
             }
         }
     }
