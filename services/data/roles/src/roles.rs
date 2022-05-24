@@ -11,6 +11,7 @@ use deadpool::managed::Object;
 
 use uuid::Uuid;
 use data::data::Data;
+use common::role::Role;
 
 
 pub struct Roles {
@@ -121,7 +122,57 @@ impl Roles {
         }
     }
 
-    // assign user to role
+
+    /// fetch roles
+    pub async fn fetch(
+        &self,
+        tenant_id: &Uuid,
+        filter: &String,
+        items: &Option<i32>,
+        page: &Option<i32>
+    ) -> Result<Vec<Role>, String> {
+        info!("roles::roles::Roles::active()");
+
+        let result_stmt = self.client.prepare_cached(
+            "call iam.roles_get($1, $2, $3);"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                match self.client.query(
+                    &stmt,
+                    &[
+                        &tenant_id,
+                        &filter,
+                        &items,
+                        &page
+                    ]
+                ).await {
+                    Ok(rows) => {
+                        let roles = rows.iter().map(|r| Role::new(
+                            r.get("id"),
+                            r.get("active"),
+                            r.get("name"),
+                            r.get("description")
+                        )).collect();
+
+                        return Ok(roles);
+                    },
+                    Err(e) => {
+                        error!("unable to fetch roles: {:?}", e);
+                        return Err(format!("unable to fetch roles: {}", e));
+                    }
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to toggle role active status: {:?}", e);
+
+                return Err(String::from("unable to prepare statement to toggle role active status"));
+            }
+        }
+    }
+
+    /// assign user to role
     pub async fn assign_user(
         &self,
         role_id: &Uuid,

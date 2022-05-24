@@ -3,6 +3,7 @@ use log::{ info, error, debug };
 
 use actix_web::{ web, HttpRequest, HttpResponse, Responder };
 use serde::{ Serialize, Deserialize };
+use serde_json::json;
 
 use uuid::Uuid;
 
@@ -40,6 +41,14 @@ struct TenantRoleAddRequest {
 struct TenantRoleActiveRequest {
     pub role_id: Uuid,
     pub active: bool
+}
+
+
+#[derive(Serialize, Deserialize)]
+struct TenantRolesFetchRequest {
+    pub filter: String,
+    pub items: Option<i32>,
+    pub page: Option<i32>
 }
 
 
@@ -238,6 +247,59 @@ async fn tenant_role_active(
                         message: String::from("successfully set role active status"),
                         data: None
                     });
+            }
+        }
+        Err(e) => {
+            error!("unable to obtain roles database object: {:?}", e);
+            error_msg = format!("unable to obtain roles database object: {}", e);
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        })
+}
+
+
+
+/// fetch roles
+async fn tenant_roles_fetch(
+    request: HttpRequest,
+    params: web::Json<TenantRolesFetchRequest>
+) -> impl Responder {
+    info!("endpoints::tenants::tenant_roles_fetch()");
+
+    let mut error_msg = String::from("unable to fetch roles");
+
+    match Roles::from_request(&request).await {
+        Ok(roles_db) => {
+            let filter: String = params.filter.clone();
+            let items: Option<i32> = params.items.clone();
+            let page: Option<i32> = params.page.clone();
+
+            match roles_db.fetch(
+                &tenant_id,
+                &filter,
+                &items,
+                &page
+            ).await {
+                Ok(roles) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: String::from("successfully fetched roles"),
+                            data: Some(json!({
+                                "roles": roles
+                            }))
+                        });
+                }
+                Err(e) => {
+                    error!("unable to fetch roles: {:?}", e);
+                    error_msg = format!("unable to fetch roles: {}", e);
+                }
             }
         }
         Err(e) => {
