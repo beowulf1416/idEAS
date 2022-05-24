@@ -36,6 +36,13 @@ struct TenantRoleAddRequest {
 }
 
 
+#[derive(Serialize, Deserialize)]
+struct TenantRoleActiveRequest {
+    pub role_id: Uuid,
+    pub active: bool
+}
+
+
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
@@ -52,6 +59,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::resource("/role/add")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::post().to(tenant_role_add))
+        )
+        .service(
+            web::resource("/role/active")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::post().to(tenant_role_active))
         )
     ;
 }
@@ -188,7 +200,51 @@ async fn tenant_role_add(
             error_msg = format!("unable to obtain roles database object: {}", e);
         }
     }
-    
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        })
+}
+
+
+
+/// set role active status
+async fn tenant_role_active(
+    request: HttpRequest,
+    params: web::Json<TenantRoleActiveRequest>
+) -> impl Responder {
+    info!("endpoints::tenants::tenant_role_active()");
+
+    let mut error_msg = String::from("unable to set role active status");
+
+    match Roles::from_request(&request).await {
+        Ok(roles_db) => {
+            let role_id: Uuid = params.role_id.clone();
+            let active: bool = params.active.clone();
+
+            if let Err(e) = roles_db.active(
+                &role_id,
+                &active
+            ).await {
+                error!("unable to set role active status: {:?}", e);
+                error_msg = format!("unable to set role active status: {}", e);
+            } else {
+                return HttpResponse::Ok()
+                    .json(ApiResponse {
+                        status: ApiResponseStatus::Success,
+                        message: String::from("successfully set role active status"),
+                        data: None
+                    });
+            }
+        }
+        Err(e) => {
+            error!("unable to obtain roles database object: {:?}", e);
+            error_msg = format!("unable to obtain roles database object: {}", e);
+        }
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse {
