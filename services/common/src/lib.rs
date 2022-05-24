@@ -1,6 +1,7 @@
 pub mod email;
 pub mod user;
 pub mod tenant;
+pub mod role;
 
 // #[cfg(test)]
 // mod tests {
