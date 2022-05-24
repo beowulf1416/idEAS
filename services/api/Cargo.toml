@@ -35,5 +35,6 @@ common = { path = "../common" }
 data = { path = "../data/data" }
 users = { path = "../data/users" }
 tenants = { path = "../data/tenants" }
+roles = { path = "../data/roles" }
 
 bus = { path = "../bus" }
