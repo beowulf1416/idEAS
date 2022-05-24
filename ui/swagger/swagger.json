@@ -270,6 +270,35 @@
                     "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f",
                     "active": true
                 }
+            },
+            "tenantRoleAddRequest": {
+                "type":"object",
+                "required": [
+                    "tenant_id",
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "tenant_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "writeOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
+                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f",
+                    "name": "test role",
+                    "description": "test role description"
+                }
             }
         },
         "securitySchemes": {
@@ -809,6 +838,54 @@
                 "responses": {
                     "200": {
                         "description": "successfully set user-tenant active status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/tenants/role/add": {
+            "summary": "add role",
+            "description": "add role",
+            "post": {
+                "summary": "POST add role",
+                "description": "POST add role",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "tenant_role_add",
+                "requestBody": {
+                    "required": true,
+                    "description": "add role request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/tenantRoleAddRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully added role",
                         "content": {
                             "application/json": {
                                 "schema": {
