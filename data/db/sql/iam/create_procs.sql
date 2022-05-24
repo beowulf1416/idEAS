@@ -10,6 +10,7 @@ set schema 'iam';
 
 \ir procedures/roles/role_add.sql
 \ir procedures/roles/role_set_active.sql
+\ir procedures/roles/roles_get.sql
 
 \ir procedures/permissions/permissions_get.sql
 
