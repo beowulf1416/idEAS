@@ -1,8 +1,9 @@
 use crate::email::Email;
 use uuid::Uuid;
+use serde::{ Serialize, Deserialize };
 
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct User {
     id: Uuid,
     active: bool,
