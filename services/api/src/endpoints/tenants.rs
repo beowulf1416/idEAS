@@ -1,7 +1,13 @@
 /// tenants endpoints
 use log::{ info, error, debug };
 
-use actix_web::{ web, HttpRequest, HttpResponse, Responder };
+use actix_web::{ 
+    web, 
+    HttpRequest, 
+    HttpResponse, 
+    Responder,
+    HttpMessage
+};
 use serde::{ Serialize, Deserialize };
 use serde_json::json;
 
@@ -13,25 +19,26 @@ use crate::models::api_response::{ ApiResponse, ApiResponseStatus };
 use tenants::tenants::Tenants;
 use roles::roles::Roles;
 use common::email::Email;
+use users::user_param::UserParam;
 
 
 #[derive(Debug, Serialize, Deserialize)]
 struct TenantAddUserRequest {
-    pub tenant_id: Uuid,
+    // pub tenant_id: Uuid,
     pub user_id: Uuid
 }
 
 
 #[derive(Serialize, Deserialize)]
 struct TenantUserActiveRequest {
-    pub tenant_id: Uuid,
+    // pub tenant_id: Uuid,
     pub user_id: Uuid,
     pub active: bool
 }
 
 #[derive(Serialize, Deserialize)]
 struct TenantRoleAddRequest {
-    pub tenant_id: Uuid,
+    // pub tenant_id: Uuid,
     pub name: String,
     pub description: String
 }
@@ -88,29 +95,34 @@ async fn tenant_add_user(
     let mut error_msg = String::from("unable to add user to tenant");
 
     let user_id = params.user_id.clone();
-    let tenant_id = params.tenant_id.clone();
+    // let tenant_id = params.tenant_id.clone();
 
-    match Tenants::from_request(&request).await {
-        Ok(tenants_db) => {
-            if let Err(e) = tenants_db.add_user(
-                &tenant_id,
-                &user_id
-            ).await {
-                error!("unable to add user to tenant: {:?}", e);
-                error_msg = format!("unable to add user to tenant: {}", e);
-            } else {
-                return HttpResponse::Ok()
-                    .json(ApiResponse {
-                        status: ApiResponseStatus::Success,
-                        message: format!("successfully added user to tenant"),
-                        data: None
-                    });
+    if let Some(tenant_id) = request.extensions().get::<Uuid>() {
+        match Tenants::from_request(&request).await {
+            Ok(tenants_db) => {
+                if let Err(e) = tenants_db.add_user(
+                    &tenant_id,
+                    &user_id
+                ).await {
+                    error!("unable to add user to tenant: {:?}", e);
+                    error_msg = format!("unable to add user to tenant: {}", e);
+                } else {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: format!("successfully added user to tenant"),
+                            data: None
+                        });
+                }
+            }
+            Err(e) => {
+                error!("unable to retrieve tenants db object: {:?}", e);
+                error_msg = format!("unable to retrieve tenants db object: {}", e);
             }
         }
-        Err(e) => {
-            error!("unable to retrieve tenants db object: {:?}", e);
-            error_msg = format!("unable to retrieve tenants db object: {}", e);
-        }
+    } else {
+        error!("unable to retrieve tenant id");
+        error_msg = String::from("unable to retrieve tenant id");
     }
 
 
@@ -133,32 +145,37 @@ async fn tenant_user_set_active(
 
     let mut error_msg = String::from("unable to set user-tenant active status");
 
-    match Tenants::from_request(&request).await {
-        Ok(tenants_db) => {
-            let user_id = params.user_id.clone();
-            let tenant_id = params.tenant_id.clone();
-            let active = params.active.clone();
+    if let Some(tenant_id) = request.extensions().get::<Uuid>() {
+        match Tenants::from_request(&request).await {
+            Ok(tenants_db) => {
+                let user_id = params.user_id.clone();
+                // let tenant_id = params.tenant_id.clone();
+                let active = params.active.clone();
 
-            if let Err(e) = tenants_db.set_active(
-                &tenant_id,
-                &user_id,
-                &active
-            ).await {
+                if let Err(e) = tenants_db.set_active(
+                    &tenant_id,
+                    &user_id,
+                    &active
+                ).await {
+                    error!("unable to set user-tenant active status: {:?}", e);
+                    error_msg = format!("unable to set user-tenant active status: {}", e);
+                } else {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: format!("successfully set user-tenant active status"),
+                            data: None
+                        });
+                }
+            }
+            Err(e) => {
                 error!("unable to set user-tenant active status: {:?}", e);
                 error_msg = format!("unable to set user-tenant active status: {}", e);
-            } else {
-                return HttpResponse::Ok()
-                    .json(ApiResponse {
-                        status: ApiResponseStatus::Success,
-                        message: format!("successfully set user-tenant active status"),
-                        data: None
-                    });
             }
         }
-        Err(e) => {
-            error!("unable to set user-tenant active status: {:?}", e);
-            error_msg = format!("unable to set user-tenant active status: {}", e);
-        }
+    } else {
+        error!("unable to retrieve tenant id");
+        error_msg = String::from("unable to retrieve tenant id");
     }
 
 
@@ -180,34 +197,39 @@ async fn tenant_role_add(
 
     let mut error_msg = String::from("unable to add role to tenant");
 
-    match Roles::from_request(&request).await {
-        Ok(roles_db) => {
-            let role_id: Uuid = Uuid::new_v4();
-            let tenant_id: Uuid = params.tenant_id.clone();
-            let role_name: String = params.name.clone();
-            let role_description: String = params.description.clone();
+    if let Some(tenant_id) = request.extensions().get::<Uuid>() {
+        match Roles::from_request(&request).await {
+            Ok(roles_db) => {
+                let role_id: Uuid = Uuid::new_v4();
+                // let tenant_id: Uuid = params.tenant_id.clone();
+                let role_name: String = params.name.clone();
+                let role_description: String = params.description.clone();
 
-            if let Err(e) = roles_db.add(
-                &role_id,
-                &tenant_id,
-                &role_name,
-                &role_description
-            ).await {
-                error!("unable to add role: {:?}", e);
-                error_msg = format!("unable to add role: {}", e);
-            } else {
-                return HttpResponse::Ok()
-                    .json(ApiResponse {
-                        status: ApiResponseStatus::Success,
-                        message: String::from("successfully added role"),
-                        data: None
-                    });
+                if let Err(e) = roles_db.add(
+                    &role_id,
+                    &tenant_id,
+                    &role_name,
+                    &role_description
+                ).await {
+                    error!("unable to add role: {:?}", e);
+                    error_msg = format!("unable to add role: {}", e);
+                } else {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse {
+                            status: ApiResponseStatus::Success,
+                            message: String::from("successfully added role"),
+                            data: None
+                        });
+                }
+            }
+            Err(e) => {
+                error!("unable to obtain roles database object: {:?}", e);
+                error_msg = format!("unable to obtain roles database object: {}", e);
             }
         }
-        Err(e) => {
-            error!("unable to obtain roles database object: {:?}", e);
-            error_msg = format!("unable to obtain roles database object: {}", e);
-        }
+    } else {
+        error!("unable to retrieve tenant id");
+        error_msg = String::from("unable to retrieve tenant id");
     }
 
     return HttpResponse::InternalServerError()
@@ -268,6 +290,7 @@ async fn tenant_role_active(
 /// fetch roles
 async fn tenant_roles_fetch(
     request: HttpRequest,
+    user_param: UserParam,
     params: web::Json<TenantRolesFetchRequest>
 ) -> impl Responder {
     info!("endpoints::tenants::tenant_roles_fetch()");
@@ -280,26 +303,31 @@ async fn tenant_roles_fetch(
             let items: Option<i32> = params.items.clone();
             let page: Option<i32> = params.page.clone();
 
-            match roles_db.fetch(
-                &tenant_id,
-                &filter,
-                &items,
-                &page
-            ).await {
-                Ok(roles) => {
-                    return HttpResponse::Ok()
-                        .json(ApiResponse {
-                            status: ApiResponseStatus::Success,
-                            message: String::from("successfully fetched roles"),
-                            data: Some(json!({
-                                "roles": roles
-                            }))
-                        });
+            if let Some(tenant_id) = request.extensions().get::<Uuid>() {
+                match roles_db.fetch(
+                    &tenant_id,
+                    &filter,
+                    &items,
+                    &page
+                ).await {
+                    Ok(roles) => {
+                        return HttpResponse::Ok()
+                            .json(ApiResponse {
+                                status: ApiResponseStatus::Success,
+                                message: String::from("successfully fetched roles"),
+                                data: Some(json!({
+                                    "roles": roles
+                                }))
+                            });
+                    }
+                    Err(e) => {
+                        error!("unable to fetch roles: {:?}", e);
+                        error_msg = format!("unable to fetch roles: {}", e);
+                    }
                 }
-                Err(e) => {
-                    error!("unable to fetch roles: {:?}", e);
-                    error_msg = format!("unable to fetch roles: {}", e);
-                }
+            } else {
+                error!("unable to retrieve tenant id");
+                error_msg = String::from("unable to retrieve tenant id");
             }
         }
         Err(e) => {
