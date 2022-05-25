@@ -12,7 +12,11 @@ use deadpool::managed::Object;
 use uuid::Uuid;
 use data::data::Data;
 
-use common::tenant::Tenant;
+use common::{
+    email::Email,
+    user::User,
+    tenant::Tenant
+};
 
 
 pub struct Tenants {
@@ -294,6 +298,56 @@ impl Tenants {
             Err(e) => {
                 error!("unable to prepare statement to set user-tenant active status: {:?}", e);
                 return Err(format!("unable to prepare statement to set user-tenant active status"));
+            }
+        }
+    }
+
+    /// retrieve tenant users
+    pub async fn get_tenant_users(
+        &self,
+        tenant_id: &Uuid,
+        filter: &String,
+        items: &Option<i32>,
+        page: &Option<i32>
+    ) -> Result<Vec<User>, String> {
+        info!("data::tenants::tenants::Tenants::get_tenant_users()");
+
+        let result_stmt = self.client.prepare_cached(
+            "select * from tenants.user_tenants_list($1, $2, $3, $4)"
+        ).await;
+
+        match result_stmt {
+            Ok(stmt) => {
+                match self.client.query(&stmt, &[
+                    &tenant_id,
+                    &filter,
+                    &items,
+                    &page
+                ]).await {
+                    Ok(rows) => {
+                        let users = rows.iter().map(|r| 
+                            // let user_id: Uuid = r.get("user_id");
+                            // let active: bool = r.get("active");
+                            // let email: Email = Email::new(r.get("email")).unwrap();
+
+                            User::new(
+                                r.get("user_id"),
+                                r.get("active"),
+                                Email::new(r.get("email")).unwrap()
+                            )
+                        ).collect();
+
+                        return Ok(users);
+                    }
+                    Err(e) => {
+                        error!("unable to retrieve user tenants: {:?}", e);
+                        return Err(format!("unable to retrieve user tenants: {}", e));
+                    }
+                }
+            }
+            Err(e) => {
+                error!("unable to prepare statement to retrieve user tenants: {:?}", e);
+                return Err(format!("unable to prepare statement to retrieve user tenants"));
             }
         }
     }
