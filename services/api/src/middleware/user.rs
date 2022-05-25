@@ -7,8 +7,6 @@ use std::task::{ Context, Poll };
 use std::future::{ ready, Ready };
 use std::rc::Rc;
 
-// use auth::auth::Auth;
-
 use actix_web::{
     HttpMessage,
     web,
@@ -30,9 +28,7 @@ use users::jwt::{
 use data::data::Data;
 use users::users::Users;
 
-// use common::user::User;
 use common::email::Email;
-// use auth::auth::{ Auth, Claims };
 
 
 pub struct User {
