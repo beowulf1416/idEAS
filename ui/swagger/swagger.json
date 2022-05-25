@@ -222,40 +222,27 @@
             "tenantsAddUserRequest": {
                 "type":"object",
                 "required": [
-                    "user_id",
-                    "tenant_id"
+                    "user_id"
                 ],
                 "properties": {
                     "user_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "writeOnly": true
-                    },
-                    "tenant_id": {
                         "type": "string",
                         "format": "uuid",
                         "writeOnly": true
                     }
                 },
                 "example": {
-                    "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
-                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f"
+                    "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f"
                 }
             },
             "tenantsUserActiveRequest": {
                 "type":"object",
                 "required": [
                     "user_id",
-                    "tenant_id",
                     "active"
                 ],
                 "properties": {
                     "user_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "writeOnly": true
-                    },
-                    "tenant_id": {
                         "type": "string",
                         "format": "uuid",
                         "writeOnly": true
@@ -274,16 +261,10 @@
             "tenantRoleAddRequest": {
                 "type":"object",
                 "required": [
-                    "tenant_id",
                     "name",
                     "description"
                 ],
                 "properties": {
-                    "tenant_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "writeOnly": true
-                    },
                     "name": {
                         "type": "string",
                         "writeOnly": true
@@ -295,7 +276,6 @@
                 },
                 "example": {
                     "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
-                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f",
                     "name": "test role",
                     "description": "test role description"
                 }
