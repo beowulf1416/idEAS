@@ -58,6 +58,13 @@ struct TenantRolesFetchRequest {
     pub page: Option<i32>
 }
 
+#[derive(Serialize, Deserialize)]
+struct TenantUsersFetchRequest {
+    pub filter: String,
+    pub items: Option<i32>,
+    pub page: Option<i32>
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
@@ -72,6 +79,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(tenant_user_set_active))
         )
         .service(
+            web::resource("/users/fetch")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::post().to(tenant_users_fetch))
+        )
+        .service(
             web::resource("/role/add")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::post().to(tenant_role_add))
@@ -80,6 +92,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::resource("/role/active")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::post().to(tenant_role_active))
+        )
+        .service(
+            web::resource("/roles/fetch")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::post().to(tenant_roles_fetch))
         )
     ;
 }
@@ -166,6 +183,65 @@ async fn tenant_user_set_active(
                             message: format!("successfully set user-tenant active status"),
                             data: None
                         });
+                }
+            }
+            Err(e) => {
+                error!("unable to set user-tenant active status: {:?}", e);
+                error_msg = format!("unable to set user-tenant active status: {}", e);
+            }
+        }
+    } else {
+        error!("unable to retrieve tenant id");
+        error_msg = String::from("unable to retrieve tenant id");
+    }
+
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse {
+            status: ApiResponseStatus::Error,
+            message: error_msg,
+            data: None
+        });
+}
+
+
+
+// get tenant users
+async fn tenant_users_fetch(
+    request: HttpRequest,
+    params: web::Json<TenantUsersFetchRequest>
+) -> impl Responder {
+    info!("endpoints::tenants::tenant_users_fetch");
+
+    let mut error_msg = String::from("unable to retrieve tenant users");
+
+    if let Some(tenant_id) = request.extensions().get::<Uuid>() {
+        match Tenants::from_request(&request).await {
+            Ok(tenants_db) => {
+                let filter = params.filter.clone();
+                let items = params.items.clone();
+                let page = params.page.clone();
+
+                match tenants_db.get_tenant_users(
+                    &tenant_id,
+                    &filter,
+                    &items,
+                    &page
+                ).await {
+                    Ok(users) => {
+                        return HttpResponse::Ok()
+                            .json(ApiResponse {
+                                status: ApiResponseStatus::Success,
+                                message: String::from("successfully retrieve tenant users"),
+                                data: Some(json!({
+                                    "users": users
+                                }))
+                            });
+                    }
+                    Err(e) => {
+                        error!("unable to retrieve tenant users: {:?}", e);
+                        error_msg = format!("unable to retrieve tenant users: {}", e);
+                    }
                 }
             }
             Err(e) => {

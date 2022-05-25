@@ -254,8 +254,32 @@
                 },
                 "example": {
                     "user_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
-                    "tenant_id": "9c4e69ea-06e6-44f4-8a6e-0800491db79f",
                     "active": true
+                }
+            },
+            "tenantsUsersFetchRequest": {
+                "type":"object",
+                "required": [
+                    "filter"
+                ],
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "items": {
+                        "type": "number",
+                        "writeOnly": true
+                    },
+                    "page": {
+                        "type": "number",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "filter": "%com%",
+                    "items": 10,
+                    "page": 0
                 }
             },
             "tenantRoleAddRequest": {
@@ -300,6 +324,31 @@
                 "example": {
                     "role_id": "33cbf3bd-b10f-4c11-9ae5-7891aa5dc31f",
                     "active": true
+                }
+            },
+            "tenantsRolesFetchRequest": {
+                "type":"object",
+                "required": [
+                    "filter"
+                ],
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "items": {
+                        "type": "number",
+                        "writeOnly": true
+                    },
+                    "page": {
+                        "type": "number",
+                        "writeOnly": true
+                    }
+                },
+                "example": {
+                    "filter": "%com%",
+                    "items": 10,
+                    "page": 0
                 }
             }
         },
@@ -866,6 +915,54 @@
                 ]
             }
         },
+        "/tenants/users/fetch": {
+            "summary": "retrieve tenant users",
+            "description": "retrieve tenant users",
+            "post": {
+                "summary": "POST retrieve tenant users",
+                "description": "POST retrieve tenant users",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "tenants_users_fetch",
+                "requestBody": {
+                    "required": true,
+                    "description": "retrieve tenant users request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/tenantsUsersFetchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully retrieved tenant users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/tenants/role/add": {
             "summary": "add role",
             "description": "add role",
@@ -936,6 +1033,54 @@
                 "responses": {
                     "200": {
                         "description": "successfully set role active status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "there is no current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/tenants/roles/fetch": {
+            "summary": "retrieve tenant roles",
+            "description": "retrieve tenant roles",
+            "post": {
+                "summary": "POST retrieve tenant roles",
+                "description": "POST retrieve tenant roles",
+                "tags": [ "tenants", "admin" ],
+                "operationId": "tenant_roles_fetch",
+                "requestBody": {
+                    "required": true,
+                    "description": "retrieve tenant roles request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/tenantRolesFetchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully retrieved tenant roles",
                         "content": {
                             "application/json": {
                                 "schema": {
