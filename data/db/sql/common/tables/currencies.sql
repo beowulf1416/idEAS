@@ -4,7 +4,10 @@ create table currencies (
     currency_alpha_3 char(3),
     currency_numeric int,
     minor_unit varchar(50),
-    fund varchar(50)
+    fund varchar(50),
+
+    constraint pk_currencies
+        primary key (currency_alpha_3)
 );
 
 create index if not exists idx_currencies_1

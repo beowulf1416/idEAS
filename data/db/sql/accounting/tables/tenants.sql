@@ -10,8 +10,8 @@ create table tenants (
         foreign key (tenant_id)
         references tenants.tenants (id)
         on delete restrict
-    -- constraint fk_accounting_tenants_2
-    --     foreign key (currency_id)
-    --     references common.currencies (currency_numeric)
-    --     on delete restrict
+    constraint fk_accounting_tenants_2
+        foreign key (currency_alpha_3)
+        references common.currencies (currency_numeric)
+        on delete restrict
 );
