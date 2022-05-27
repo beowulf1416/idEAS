@@ -14,3 +14,9 @@ create domain email_address
 
 \ir tables/countries.sql
 \ir tables/currencies.sql
+\ir tables/dimensions.sql
+\ir tables/uom_quantity.sql
+\ir tables/uom_length.sql
+\ir tables/uom_area.sql
+\ir tables/uom_volume.sql
+\ir tables/uom_mass.sql
