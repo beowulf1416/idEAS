@@ -20,7 +20,7 @@ begin
     );
 
     call tenants.tenant_set_active(
-        t_tenant_id,
+        t_tenant_id,    
         true
     );
 
