@@ -7,10 +7,7 @@ create extension if not exists pgcrypto;
 \ir domain/tables.sql
 \ir iam/tables.sql
 
-
-\ir health/tables.sql
-
-
+\ir crm/tables.sql
 
 
 -- procs
@@ -18,5 +15,4 @@ create extension if not exists pgcrypto;
 \ir domain/procs.sql
 \ir iam/procs.sql
 
-
-\ir health/procs.sql
+\ir crm/procs.sql

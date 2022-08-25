@@ -1,0 +1,1 @@
+set schema 'people';
