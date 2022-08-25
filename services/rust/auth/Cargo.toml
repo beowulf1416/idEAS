@@ -1,0 +1,20 @@
+[package]
+name = "auth"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "*"
+env_logger = "*"
+futures = "*"
+
+serde = { version = "*", features = ["derive"] }
+serde_json = "*"
+
+http = "*"
+actix-web = { version = "4", features = ["rustls"] }
+actix-http = "*"
+
+uuid = { version = "0.8.2", features = ["v4", "serde"] }

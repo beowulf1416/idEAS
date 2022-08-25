@@ -1,4 +1,6 @@
 [workspace]
 members = [
+	"token",
+	"auth",
 	"api"
 ]
