@@ -39,16 +39,23 @@ async fn main() -> std::io::Result<()> {
     if let Ok(config) = get_config() {
         debug!("parsed config: {:?}", config);
 
+        let bind_host = config.bind_host.clone();
+        let bind_port = config.bind_port.clone();
+
+        // let config_clone = config.clone();
+
         let server = HttpServer::new(move || {
             App::new()
-                .configure(crate::services::config::configure)
+                .app_data(web::Data::new(config.clone()))
+
+                // .configure(crate::services::config::configure)
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
         })
-        .bind(format!("{}:{}", config.bind_ip, config.bind_port))?
+        .bind(format!("{}:{}", bind_host, bind_port))?
         .run();
 
-        info!("Server is listening at https://{}:{}", config.bind_ip, config.bind_port);
+        info!("Server is listening at https://{}:{}", bind_host, bind_port);
         return server.await;
     } else {
         error!("unable to retrieve configuration");
