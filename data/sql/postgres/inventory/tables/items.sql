@@ -7,8 +7,8 @@ create table items (
     name text not null,
     description text,
 
-    sku varchar(200),
-    
+    sku varchar(50),
+    upc varchar(50),
 
     perishable boolean not null default false,
 
