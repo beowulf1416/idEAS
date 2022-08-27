@@ -1,6 +1,7 @@
 extern crate log;
 
 mod classes;
+mod middleware;
 mod services;
 mod endpoints;
 
@@ -51,6 +52,7 @@ async fn main() -> std::io::Result<()> {
                 // .configure(crate::services::config::configure)
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
+                .service(web::scope("/auth").configure(crate::endpoints::auth::config))
         })
         .bind(format!("{}:{}", bind_host, bind_port))?
         .run();
