@@ -8,6 +8,8 @@ edition = "2021"
 [dependencies]
 log = "*"
 
+futures = "*"
+
 deadpool = "0.9.3"
 deadpool-postgres = "0.10.1"
 tokio-postgres = { version = "0.7", features = ["with-uuid-0_8"] }

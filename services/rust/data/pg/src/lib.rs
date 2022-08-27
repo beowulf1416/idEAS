@@ -15,6 +15,25 @@ use deadpool_postgres::{
 use tokio_postgres::NoTls;
 use tokio_postgres::config::{ Config };
 
+use actix_web:: {
+    dev::Payload,
+    http::StatusCode,
+    HttpRequest, 
+    HttpMessage,
+    FromRequest,
+    ResponseError,
+    web
+};
+
+use futures::{
+    future::{
+        ok,
+        err,
+        Ready
+    }
+};
+
+
 use config::{
     ApplicationConfig,
     ProviderType
@@ -27,7 +46,25 @@ pub enum DbError {
     DuplicateKeyError
 }
 
+impl ResponseError for DbError {
 
+    fn status_code(&self) -> StatusCode {
+        return StatusCode::INTERNAL_SERVER_ERROR;
+    }
+}
+
+impl std::fmt::Display for DbError {
+
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            DbError::ClientError => write!(f, "internal server error"),
+            _ => todo!()
+        }
+    }
+}
+
+
+#[derive(Clone)]
 pub struct Db {
     pool: Option<Pool>
 }
@@ -74,6 +111,20 @@ impl Db {
         return Self {
             pool: None
         };
+    }
+}
+
+
+//https://stackoverflow.com/questions/63308246/how-to-use-async-code-in-actix-web-extractors
+impl FromRequest for Db {
+    type Error = DbError;
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(request: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        if let Some(db) = request.app_data::<Self>() {
+            return ok(db.clone());
+        }
+        return err(DbError::ClientError);
     }
 }
 

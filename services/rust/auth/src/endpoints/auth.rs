@@ -4,6 +4,11 @@ use log::{
     error
 };
 
+use serde::{
+    Serialize,
+    Deserialize
+};
+
 use actix_web::{
     HttpResponse, 
     Responder,
@@ -13,6 +18,19 @@ use actix_web::{
 use crate::endpoints::{
     ApiResponse
 };
+
+// use crate::services::{
+//     data::Data
+// };
+
+use pg::Db;
+
+
+#[derive(Debug, Serialize, Deserialize)]
+struct AuthLoginPostRequest {
+    email: String,
+    password: String
+}
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -38,8 +56,12 @@ async fn login_get() -> impl Responder {
 }
 
 
-async fn login_post() -> impl Responder {
+async fn login_post(
+    db: web::Data<Db>,
+    params: web::Json<AuthLoginPostRequest>
+) -> impl Responder {
     info!("login_post()");
+
     return HttpResponse::Ok()
         .json(ApiResponse::new(
             false,
