@@ -1,5 +1,3 @@
-use std::marker::Copy;
-
 use serde::{
     Serialize,
     Deserialize

@@ -1,4 +1,5 @@
 pub mod status;
+pub mod auth;
 
 use serde::{
     Serialize,
@@ -12,4 +13,20 @@ pub struct ApiResponse {
     success: bool,
     message: String,
     data: Option<Value>
+}
+
+
+impl ApiResponse {
+
+    pub fn new(
+        success: bool,
+        message: String,
+        data: Option<Value>
+    ) -> Self {
+        return Self {
+            success: success,
+            message: message,
+            data: data
+        };
+    }
 }
