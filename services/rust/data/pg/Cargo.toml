@@ -1,5 +1,5 @@
 [package]
-name = "auth"
+name = "pg"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,18 +7,16 @@ edition = "2021"
 
 [dependencies]
 log = "*"
-env_logger = "*"
-futures = "*"
 
-serde = { version = "*", features = ["derive"] }
-serde_json = "*"
+deadpool = "0.9.3"
+deadpool-postgres = "0.10.1"
+tokio-postgres = { version = "0.7", features = ["with-uuid-0_8"] }
+postgres-types = { version = "*", features = ["derive"] }
 
-http = "*"
 actix-web = { version = "4", features = ["rustls"] }
-actix-http = "*"
+serde = { version = "*", features = ["derive"] }
 
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
 
-config = { path = "../config" }
-pg = { path = "../data/pg" }
+config = { path = "../../config" }
