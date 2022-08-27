@@ -23,10 +23,10 @@ use actix_web::{
     web
 };
 
-use std::env;
-use std::fs;
-
-use crate::classes::app_config::ApplicationConfig;
+use config::{
+    ApplicationConfig,
+    get_configuration
+};
 
 
 
@@ -35,21 +35,17 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
     info!("starting up");
 
-    // let mut result = ();
 
-    if let Ok(config) = get_config() {
+    if let Some(config) = get_configuration() {
         debug!("parsed config: {:?}", config);
 
         let bind_host = config.bind_host.clone();
         let bind_port = config.bind_port.clone();
 
-        // let config_clone = config.clone();
-
         let server = HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(config.clone()))
-
-                // .configure(crate::services::config::configure)
+                .app_data(web::Data::new(crate::services::data::Data::new(&config.clone())))
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
@@ -65,30 +61,4 @@ async fn main() -> std::io::Result<()> {
 
     info!("Exiting...");
     return Ok(());
-}
-
-fn get_config() -> Result<ApplicationConfig, bool> {
-    if let Ok(cfg) = env::var("CFG") {
-        match fs::read_to_string(cfg) {
-            Err(e) => {
-                error!("unable to read contents of file: {:?}", e);
-                return Err(false);
-            }
-            Ok(contents) => {
-                let result: Result<ApplicationConfig, serde_json::Error>  = serde_json::from_str(&contents);
-                match result {
-                    Err(e) => {
-                        error!("unable to parse contents: {:?}", e);
-                        return Err(false);
-                    }
-                    Ok(config) => {
-                        return Ok(config);
-                    }
-                }
-            }
-        }
-    } else {
-        error!("missing environment variable CFG");
-        return Err(false);
-    }
 }

@@ -1,6 +1,8 @@
 [workspace]
 members = [
+	"config",
 	"token",
+	"data/pg",
 	"auth",
 	"api"
 ]
