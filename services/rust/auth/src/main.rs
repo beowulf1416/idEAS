@@ -24,7 +24,7 @@ use actix_web::{
 };
 
 use config::{
-    ApplicationConfig,
+    // ApplicationConfig,
     get_configuration
 };
 
@@ -45,7 +45,9 @@ async fn main() -> std::io::Result<()> {
         let server = HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(config.clone()))
-                .app_data(web::Data::new(crate::services::data::Data::new(&config.clone())))
+                // .app_data(web::Data::new(crate::services::data::Data::new(&config.clone())))
+                // .app_data(web::Data::new(pg::Db::new(&config.clone)))
+                .app_data(pg::Db::new(&config.clone()))
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
