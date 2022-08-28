@@ -10,7 +10,20 @@ create table items (
     sku varchar(50),
     upc varchar(50),
 
+    dimension_id tinyint not null,
+    uom_id tinyint not null,
+
+    volume numeric(12, 3),
+    weight numeric(12, 3),
+    shelf_width numeric(10, 3),
+    shelf_height numeric(10, 3),
+    shelf_depth numeric(10, 3),
+
     perishable boolean not null default false,
+    stocked boolean not null default false,
+    purchased boolean not null default false,
+    sold boolean not null default false,
+    manufactured boolean not null default false,
 
     constraint pk_items
         primary key (id),
