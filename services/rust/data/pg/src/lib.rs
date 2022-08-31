@@ -1,3 +1,6 @@
+pub mod auth;
+
+
 use log::{
     info,
     error,

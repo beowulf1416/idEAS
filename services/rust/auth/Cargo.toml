@@ -21,4 +21,6 @@ uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
 
 config = { path = "../config" }
+token = { path = "../token" }
+mailer = { path = "../mailer" }
 pg = { path = "../data/pg" }
