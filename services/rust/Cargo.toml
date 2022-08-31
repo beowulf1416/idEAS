@@ -2,6 +2,7 @@
 members = [
 	"config",
 	"token",
+	"mailer",
 	"data/pg",
 	"auth",
 	"api"
