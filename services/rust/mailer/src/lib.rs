@@ -13,6 +13,7 @@ use lettre::{
 };
 
 
+#[derive(Debug)]
 pub enum MailerError {
     ConnectionError,
     SendError
@@ -64,36 +65,92 @@ impl Mailer {
         subject: &str,
         body: &str
     ) -> Result<(), MailerError> {
-        let email = Message::builder()
-            // .from("NoBody <nobody@domain.tld>".parse().unwrap())
-            // .reply_to("Yuin <yuin@domain.tld>".parse().unwrap())
-            // .to("Hei <hei@domain.tld>".parse().unwrap())
-            // .subject("Happy new year")
-            // .body(String::from("Be happy!"))
+        // if let email = Message::builder()
+        //     // .from("NoBody <nobody@domain.tld>".parse().unwrap())
+        //     // .reply_to("Yuin <yuin@domain.tld>".parse().unwrap())
+        //     // .to("Hei <hei@domain.tld>".parse().unwrap())
+        //     // .subject("Happy new year")
+        //     // .body(String::from("Be happy!"))
+        //     .from(from.parse().unwrap())
+        //     .reply_to(to.parse().unwrap())
+        //     .subject(subject)
+        //     .body(String::from(body))
+        //     .unwrap();
+
+        match Message::builder()
             .from(from.parse().unwrap())
+            .to(to.parse().unwrap())
             .reply_to(to.parse().unwrap())
             .subject(subject)
-            .body(String::from(body))
-            .unwrap();
-
-        if let Some(transport) = &self.transport {
-            match transport.send(&email) {
-                Err(e) => {
-                    error!("unable to send email: {:?}", e);
+            .body(String::from(body)) {
+            Err(e) => {
+                error!("error while building message: {:?}", e);
+                return Err(MailerError::SendError);
+            }
+            Ok(email) => {
+                if let Some(transport) = &self.transport {
+                    match transport.send(&email) {
+                        Err(e) => {
+                            error!("unable to send email: {:?}", e);
+                            return Err(MailerError::SendError);
+                        }
+                        Ok(_) => {
+                            info!("email sent");
+                            return Ok(());
+                        }
+                    }
+                } else {
+                    error!("transport is None");
                     return Err(MailerError::SendError);
                 }
-                Ok(_) => {
-                    info!("email sent");
-                    return Ok(());
-                }
             }
-        } else {
-            return Err(MailerError::SendError);
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::env;
+
+    use std::sync::Once;
+    static INIT: Once = Once::new();
+
     use super::*;
+
+
+    fn initialize() {
+        INIT.call_once( || {
+            env_logger::init();
+        });
+    }
+
+    #[test]
+    fn test_send() {
+        initialize();
+
+        let mut mailer = Mailer::new(
+            "smtp.gmail.com",
+            "beowulf1416@gmail.com",
+            // if using smtp gmail, the password below should be generated
+            // using App Passwords in Google Account Settings
+            "<google_app_password>"
+        );
+
+        if let Err(e) = mailer.connect() {
+            error!("error: {:?}", e);
+            assert!(false);
+        } else {
+            if let Err(e) = mailer.send(
+                "beowulf1416@gmail.com",
+                "ferdinand@marginfuel.com",
+                "testing",
+                "this is a test"
+            ) {
+                error!("error: {:?}", e);
+                assert!(false);
+            } else {
+                assert!(true);
+            }
+        }
+    }
 }
