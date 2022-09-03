@@ -22,13 +22,13 @@ insert into iam.permissions (id, active, name, description) values
 (2, true, 'user.profile', 'view user profile'),
 (3, true, 'dashboard.view', 'view dashboard'),
 (4, true, 'site.admin.dashboard.view', 'view site admin dashboard'),
-(5, true, 'site.admin.tenants.view', 'view site admin tenants'),
-(6, true, 'domain.add', 'add domain'),
-(7, true, 'domain.active', 'set domain active status'),
-(8, true, 'domain.view', 'view tenant information'),
-(9, true, 'domain.users.view', 'view domain users'),
-(10, true, 'domain.users.add', 'add user to domain'),
-(11, true, 'domain.admin', 'administer domain'),
-(12, true, 'domain.admin.list', 'view list of domain'),
-(13, true, 'domain.admin.view', 'view tenant information')
+(5, true, 'site.admin.clients.view', 'view site admin clients'),
+(6, true, 'client.add', 'add client'),
+(7, true, 'client.active', 'set client active status'),
+(8, true, 'client.view', 'view client information'),
+(9, true, 'client.users.view', 'view client users'),
+(10, true, 'client.users.add', 'add user to client'),
+(11, true, 'client.admin', 'administer client'),
+(12, true, 'client.admin.list', 'view list of client'),
+(13, true, 'client.admin.view', 'view tenant information')
 ;
