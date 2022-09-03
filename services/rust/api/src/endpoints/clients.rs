@@ -51,6 +51,7 @@ struct ClientSetActiveRequest {
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
+    /// base url /clients
     cfg
         .service(
             web::resource("add")
