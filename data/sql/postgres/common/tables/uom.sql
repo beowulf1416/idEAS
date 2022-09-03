@@ -17,5 +17,5 @@ create table uom (
 
 
 insert into uom (id, dimension_id, name, description, symbol) values 
-()
+(1, 1, 'piece', 'piece', 'pc')
 ;
