@@ -3,6 +3,7 @@ members = [
 	"config",
 	"token",
 	"mailer",
+	"queue",
 	"data/pg",
 	"auth",
 	"api"
