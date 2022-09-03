@@ -122,4 +122,49 @@ impl Token {
 
 #[cfg(test)]
 mod tests {
+    use std::env;
+
+    use std::sync::Once;
+    static INIT: Once = Once::new();
+
+    use super::*;
+
+
+    fn initialize() {
+        INIT.call_once( || {
+            env_logger::init();
+        });
+    }
+
+
+    #[test]
+    fn test_generate() {
+        initialize();
+
+        let token = Token::new("secret");
+        match token.generate("test@test.com") {
+            Err(e) => {
+                error!("unable to generate token: {:?}", e);
+                assert!(false);
+            }
+            Ok(sz) => {
+                if sz == "jwt_token" {
+                    assert!(true);
+                } else {
+                    error!("token is incorrect: {:?}", sz);
+                    assert!(false);
+                }
+            }
+        }
+    }
+
+    fn test_validate() {
+        initialize();
+
+        let token = Token::new("secret");
+        if !token.validate("jwt_token") {
+            error!("unable to generate token");
+            assert!(false);
+        }
+    }
 }
