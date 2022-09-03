@@ -1,0 +1,102 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "openapi document",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8081",
+            "description": "local api server"
+        }
+    ],
+    "components": {
+        "schemas":{
+            "apiResponse":{
+                "type":"object",
+                "properties":{
+                    "success":{
+                        "type":"boolean",
+                        "readOnly":true
+                    },
+                    "message":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "data":{
+                        "type":"object",
+                        "readOnly":true,
+                        "nullable":true
+                    }
+                },
+                "required":[
+                    "success",
+                    "message"
+                ]
+            },
+            "countriesFetchRequest":{
+                "type":"object",
+                "properties":{
+                    "filter":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "items":{
+                        "type":"number",
+                        "readOnly":true
+                    },
+                    "page":{
+                        "type":"number",
+                        "readOnly":true
+                    }
+                },
+                "required":[
+                    "filter",
+                    "items",
+                    "page"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "description": "Bearer authentication",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "paths":{
+        "countries/fetch":{
+            "summary":"fetch countries matching a filter",
+            "post":{
+                "summary": "POST method",
+                "tags":["countries"],
+                "operationId":"country_fetch",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/countriesFetchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "client added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
