@@ -1,0 +1,230 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "openapi document",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8081",
+            "description": "local api server"
+        }
+    ],
+    "components": {
+        "schemas":{
+            "apiResponse":{
+                "type":"object",
+                "properties":{
+                    "success":{
+                        "type":"boolean",
+                        "readOnly":true
+                    },
+                    "message":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "data":{
+                        "type":"object",
+                        "readOnly":true,
+                        "nullable":true
+                    }
+                },
+                "required":[
+                    "success",
+                    "message"
+                ]
+            },
+            "clientAddRequest":{
+                "type":"object",
+                "properties":{
+                    "id":{
+                        "type":"string",
+                        "readOnly":true,
+                        "format":"uuid"
+                    },
+                    "name":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "description":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "address":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "country_id":{
+                        "type":"number",
+                        "readOnly":true
+                    },
+                    "url":{
+                        "type":"string",
+                        "readOnly":"true",
+                        "format":"url"
+                    }
+                },
+                "required":[
+                    "id",
+                    "name",
+                    "country_id"
+                ]
+            },
+            "clientUpdateRequest":{
+                "type":"object",
+                "properties":{
+                    "id":{
+                        "type":"string",
+                        "readOnly":true,
+                        "format":"uuid"
+                    },
+                    "name":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "description":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "address":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "country_id":{
+                        "type":"number",
+                        "readOnly":true
+                    },
+                    "url":{
+                        "type":"string",
+                        "readOnly":"true",
+                        "format":"url"
+                    }
+                },
+                "required":[
+                    "id",
+                    "name",
+                    "country_id"
+                ]
+            },
+            "clientSetActiveRequest":{
+                "type":"object",
+                "properties":{
+                    "id":{
+                        "type":"string",
+                        "readOnly":true,
+                        "format":"uuid"
+                    },
+                    "active":{
+                        "type":"boolean",
+                        "readOnly":true
+                    }
+                },
+                "required":[
+                    "id",
+                    "active"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "description": "Bearer authentication",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "paths":{
+        "client/add":{
+            "summary":"add a client",
+            "post":{
+                "summary": "POST method",
+                "tags":["clients"],
+                "operationId":"client_add",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/clientAddRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "client added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "client/update":{
+            "summary":"update a client",
+            "post":{
+                "summary": "POST method",
+                "tags":["clients"],
+                "operationId":"client_update",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/clientUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "client updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "client/set/active":{
+            "summary":"set client active status",
+            "post":{
+                "summary": "POST method",
+                "tags":["clients"],
+                "operationId":"client_set_active",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/clientSetActiveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "client set active status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
