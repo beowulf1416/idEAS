@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/material/material.module';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +14,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     MaterialModule,
     AppRoutingModule
   ],
