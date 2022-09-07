@@ -54,6 +54,8 @@ pub struct ApplicationConfig {
 
 pub fn get_configuration() -> Option<ApplicationConfig> {
     if let Ok(cfg) = env::var("CFG") {
+        info!("using config file: {}", cfg);
+        // info!("absolute path: {}", fs::canonicalize(cfg.clone()).unwrap().display());
         match fs::read_to_string(cfg) {
             Err(e) => {
                 error!("unable to read contents of file: {:?}", e);
@@ -83,4 +85,33 @@ pub fn get_configuration() -> Option<ApplicationConfig> {
 mod tests {
     use super::*;
 
+    use std::env;
+
+    use std::sync::Once;
+    static INIT: Once = Once::new();
+
+    use super::*;
+
+
+    fn initialize() {
+        INIT.call_once( || {
+            env_logger::init();
+        });
+    }
+
+    #[test]
+    fn test_configuration() {
+        initialize();
+
+        match get_configuration() {
+            None => {
+                error!("configuration file not found");
+                assert!(false);
+            }
+            Some(config) => {
+                debug!("configuration loaded: {:?}", config);
+                assert!(true);
+            }
+        }
+    }
 }
