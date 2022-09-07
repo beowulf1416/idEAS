@@ -6,7 +6,7 @@ create or replace procedure client_update(
     p_country_id client.clients.country_id%type,
     p_url client.clients.url%type
 )
-language plsql
+language plpgsql
 as $$
 begin
     insert into client.clients_scd (

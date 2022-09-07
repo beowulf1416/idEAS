@@ -4,15 +4,13 @@ create extension if not exists pgcrypto;
 
 -- tables
 \ir common/tables.sql
-\ir domain/tables.sql
-\ir iam/tables.sql
-
+\ir client/tables.sql
 \ir crm/tables.sql
+\ir iam/tables.sql
 
 
 -- procs
 \ir common/procs.sql
-\ir domain/procs.sql
-\ir iam/procs.sql
-
+\ir client/procs.sql
 \ir crm/procs.sql
+\ir iam/procs.sql

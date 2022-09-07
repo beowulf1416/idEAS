@@ -2,7 +2,7 @@ create or replace procedure client_set_active(
     p_client_id client.clients.id%type,
     p_active client.clients.active%type
 )
-language plpsql
+language plpgsql
 as $$
 begin
     insert into client.clients_scd (

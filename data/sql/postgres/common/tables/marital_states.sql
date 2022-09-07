@@ -1,5 +1,5 @@
 create table marital_states (
-    id tinyint not null,
+    id smallint not null,
     name varchar(50) not null,
 
     constraint pk_marital_status
