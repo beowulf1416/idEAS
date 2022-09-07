@@ -1,5 +1,5 @@
 create table genders (
-    id tinyint not null,
+    id smallint not null,
     name varchar(20) not null,
 
     constraint pk_genders

@@ -1,5 +1,5 @@
 create table pay_rate_types (
-    id tinyint not null,
+    id smallint not null,
     name varchar(100) not null,
     description text,
 

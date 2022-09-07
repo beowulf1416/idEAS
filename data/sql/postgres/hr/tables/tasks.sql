@@ -7,7 +7,7 @@ create table tasks (
     name varchar(200) not null,
     description text,
 
-    pay_rate_type_id tinyint not null,
+    pay_rate_type_id smallint not null,
 
     
 );

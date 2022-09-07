@@ -10,8 +10,8 @@ create table items (
     sku varchar(50),
     upc varchar(50),
 
-    dimension_id tinyint not null,
-    uom_id tinyint not null,
+    dimension_id smallint not null,
+    uom_id smallint not null,
 
     volume numeric(12, 3),
     weight numeric(12, 3),

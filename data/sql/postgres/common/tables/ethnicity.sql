@@ -1,5 +1,5 @@
 create table ethnicity (
-    id tinyint not null,
+    id smallint not null,
     name varchar(30) not null,
 
     constraint pk_ethnicity

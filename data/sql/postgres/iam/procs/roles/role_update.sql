@@ -1,6 +1,6 @@
 create or replace procedure role_update(
     p_id iam.roles.id%type,
-    p_domain_id iam.roles.domain_id%type,
+    p_client_id iam.roles.client_id%type,
     p_name iam.roles.name%type,
     p_slug iam.roles.slug%type
 )
@@ -12,7 +12,7 @@ begin
         slug = p_slug
     where
         id = p_id
-        and domain_id = p_domain_id
+        and client_id = p_client_id
     ;
 end
 $$;

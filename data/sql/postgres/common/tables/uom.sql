@@ -1,6 +1,6 @@
 create table uom (
     id bigint not null,
-    dimension_id tinyint not null,
+    dimension_id smallint not null,
     name varchar(100) not null,
     description text,
     symbol varchar(10) not null,

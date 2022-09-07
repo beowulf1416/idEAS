@@ -3,7 +3,7 @@ create or replace function role_get_by_slug(
 )
 returns table (
     id iam.roles.id%type,
-    domain_id iam.roles.domain_id%type,
+    client_id iam.roles.client_id%type,
     active iam.roles.active%type,
     name iam.roles.name%type,
     slug iam.roles.slug%type
@@ -14,7 +14,7 @@ begin
     return query
     select
         a.id,
-        a.domain_id,
+        a.client_id,
         a.active,
         a.name,
         a.slug
