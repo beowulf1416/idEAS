@@ -9,7 +9,7 @@ create or replace procedure client_add(
 language plpgsql
 as $$
 begin
-    insert into clients (
+    insert into client.clients (
         id,
         active,
         name,
@@ -20,6 +20,7 @@ begin
     ) values (
         p_client_id,
         false,
+        p_name,
         p_description,
         p_address,
         p_country_id,
