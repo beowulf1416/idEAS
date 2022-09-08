@@ -40,6 +40,7 @@ impl Claims {
 }
 
 
+#[derive(Debug, PartialEq)]
 pub enum TokenError {
     SigningError,
     ClaimError
@@ -162,7 +163,7 @@ mod tests {
         initialize();
 
         let token = Token::new("secret");
-        if !token.validate("jwt_token") {
+        if !token.validate(&String::from("jwt_token")) {
             error!("unable to generate token");
             assert!(false);
         }
