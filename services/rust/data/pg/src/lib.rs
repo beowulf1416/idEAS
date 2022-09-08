@@ -1,3 +1,4 @@
+pub mod client;
 pub mod auth;
 
 
@@ -9,6 +10,7 @@ use log::{
 
 use std::str::FromStr;
 
+use deadpool::managed::Object;
 use deadpool_postgres::{ 
     Manager, 
     ManagerConfig, 
@@ -115,6 +117,22 @@ impl Db {
             pool: None
         };
     }
+
+    pub async fn get_client(&self) -> Result<Object<Manager>, DbError> {
+        if let Some(pool) = &self.pool {
+            match pool.get().await {
+                Err(e) => {
+                    error!("unable to retrieve client from pool {:?}", e);
+                    return Err(DbError::ClientError);
+                }
+                Ok(client) => {
+                    return Ok(client);
+                }
+            }
+        } else {
+            return Err(DbError::ClientError);
+        }
+    }
 }
 
 
@@ -136,4 +154,32 @@ impl FromRequest for Db {
 mod tests {
     use super::*;
 
+    use std::env;
+
+    use std::sync::Once;
+    static INIT: Once = Once::new();
+
+    use super::*;
+
+
+    fn initialize() {
+        INIT.call_once( || {
+            env_logger::init();
+        });
+    }
+
+    #[actix_rt::test] 
+    async fn test_db_new() {
+        initialize();
+
+        if let Some(config) = config::get_configuration() {
+            let db = Db::new(&config);
+            if let Err(e) = db.get_client().await {
+                error!("unable to retrieve client: {:?}", e);
+                assert!(false);
+            }
+        } else {
+            assert!(false);
+        }
+    }
 }
