@@ -18,3 +18,5 @@ actix-web = { version = "4", features = ["rustls"] }
 actix-http = "*"
 
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
+
+pg = { path = "../data/pg" }
