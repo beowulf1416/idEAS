@@ -19,7 +19,7 @@ create table clients (
 
     constraint fk_clients_2
         foreign key (country_id)
-        references common.countries (iso3166_1_numeric)
+        references common.countries (iso_3166_1_numeric)
         on delete restrict
 );
 

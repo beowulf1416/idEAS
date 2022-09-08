@@ -10,5 +10,5 @@ EXPOSE 5432
 
 
 RUN mkdir -p /docker-entrypoint-initdb.d
-# COPY ./csv /docker-entrypoint-initdb.d/
+COPY ./csv /docker-entrypoint-initdb.d/
 COPY ./sql/postgres /docker-entrypoint-initdb.d/

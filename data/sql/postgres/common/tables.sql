@@ -37,4 +37,10 @@ create domain slug_text
 \ir tables/marital_states.sql
 
 
--- procs
+-- populate
+-- https://www.postgresql.org/docs/12/app-psql.html
+-- countries
+-- \copy common.countries (official_name_en,iso_3166_1_alpha_2,iso_3166_1_alpha_3,iso_3166_1_numeric,iso_4217_currency_alphabetic_code,iso_4217_currency_country_name,iso_4217_currency_minor_unit,iso_4217_currency_name,iso_4217_currency_numeric_code) from '../countries.csv' with delimiter ',' csv header quote '"'
+
+-- currencies
+-- \copy common.currencies (currency, unit_text, symbol) from '../currencies.csv' with delimiter ',' csv header quote '"'; 
