@@ -15,6 +15,8 @@ use actix_web::{
     web
 };
 
+use pg::Db;
+
 use crate::endpoints::{
     ApiResponse
 };
@@ -61,7 +63,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("login")
                 .route(web::get().to(client_update_get))
-                .route(web::post().to(login_update_post))
+                .route(web::post().to(client_update_post))
         )
         .service(
             web::resource("login")
