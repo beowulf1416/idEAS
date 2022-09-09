@@ -9,7 +9,7 @@ edition = "2021"
 env_logger = "*"
 actix-rt = "*"
 rand = "0.8.4"
-
+ctor = "*"
 
 [dependencies]
 log = "*"

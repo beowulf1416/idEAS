@@ -155,6 +155,7 @@ mod tests {
     use super::*;
 
     use std::env;
+    use ctor::ctor;
 
     use std::sync::Once;
     static INIT: Once = Once::new();
@@ -162,6 +163,7 @@ mod tests {
     use super::*;
 
 
+    #[ctor]
     fn initialize() {
         INIT.call_once( || {
             env_logger::init();
@@ -170,7 +172,7 @@ mod tests {
 
     #[actix_rt::test] 
     async fn test_db_new() {
-        initialize();
+        // initialize();
 
         if let Some(config) = config::get_configuration() {
             let db = Db::new(&config);
