@@ -1,14 +1,11 @@
 create table currencies (
-    country_name varchar(100) not null,
-    currency varchar(100) not null,
-    currency_alpha_3 char(3),
-    currency_numeric int,
-    minor_unit varchar(50),
-    fund varchar(50),
+    currency varchar(10) not null,
+    unit_text varchar(100) not null,
+    symbol varchar(10),
 
     constraint pk_currencies
-        primary key (currency_alpha_3)
-);
+        primary key (currency),
 
-create index if not exists idx_currencies_1
-on currencies (currency_numeric);
+    constraint u_currencies_1
+        unique (unit_text)
+);
