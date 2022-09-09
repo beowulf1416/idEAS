@@ -75,8 +75,10 @@ mod tests {
 
     use std::env;
 
-    use std::sync::Once;
-    static INIT: Once = Once::new();
+    // use ctor::ctor;
+
+    // use std::sync::Once;
+    // static INIT: Once = Once::new();
 
     use super::*;
 
@@ -84,11 +86,12 @@ mod tests {
     use crate::Db;
 
 
-    fn initialize() {
-        INIT.call_once( || {
-            env_logger::init();
-        });
-    }
+    // #[ctor]
+    // fn initialize() {
+    //     INIT.call_once( || {
+    //         env_logger::init();
+    //     });
+    // }
 
     #[actix_rt::test] 
     async fn test_client_add() {
@@ -112,7 +115,7 @@ mod tests {
                     let client_name = format!("client_name_{}", suffix);
                     let description = format!("description_{}", suffix);
                     let address = format!("address_{}", suffix);
-                    let country_id: i32 = 8;
+                    let country_id: i32 = 608;
                     let url = format!("http://www.test-{}.com", suffix);
 
 
