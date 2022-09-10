@@ -1,3 +1,5 @@
+pub mod types;
+
 pub mod client;
 pub mod auth;
 
@@ -157,17 +159,15 @@ mod tests {
     use std::env;
     use ctor::ctor;
 
-    use std::sync::Once;
-    static INIT: Once = Once::new();
-
-    use super::*;
+    // use std::sync::Once;
+    // static INIT: Once = Once::new();
 
 
     #[ctor]
     fn initialize() {
-        INIT.call_once( || {
+        // INIT.call_once( || {
             env_logger::init();
-        });
+        // });
     }
 
     #[actix_rt::test] 

@@ -30,10 +30,85 @@ impl Auth {
     }
 
 
-    pub fn register(
+    pub async fn register(
         &self,
+        user_id: &uuid::Uuid,
         email: &str
     ) -> Result<(), DbError> {
-        return Ok(());
+        let sql = "call iam.user_add($1, $2);";
+        match self.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare statement: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                let t_email = crate::types::email::Email::new(email);
+
+                match self.client.execute(
+                    sql,
+                    &[
+                        &user_id,
+                        &t_email
+                    ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to execute sql: {} {:?}", sql, e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(_rows) => {
+                        return Ok(());
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use rand::Rng;
+    use crate::Db;
+
+
+    #[actix_rt::test] 
+    async fn test_register() {
+        if let Some(config) = config::get_configuration() {
+            let db = Db::new(&config);
+            match db.get_client().await {
+                Err(e) => {
+                    error!("unable to retrieve client {:?}", e);
+                    assert!(false);
+                }
+                Ok(client) => {
+                    let auth = Auth::new(client);
+
+                    let new_id = uuid::Uuid::new_v4();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+
+                    let email = format!("email_{}@test.com", suffix);
+
+                    match auth.register(
+                        &new_id,
+                        &email
+                    ).await {
+                        Err(e) => {
+                            error!("unable to register new user {:?}", e);
+                            assert!(false);
+                        }
+                        Ok(_) => {
+                            assert!(true);
+                        }
+                    }
+                }
+            }
+        } else {
+            assert!(false);
+        }
     }
 }
