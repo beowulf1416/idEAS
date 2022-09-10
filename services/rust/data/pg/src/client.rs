@@ -73,14 +73,14 @@ impl Client {
 mod tests {
     use super::*;
 
-    use std::env;
+    // use std::env;
 
     // use ctor::ctor;
 
     // use std::sync::Once;
     // static INIT: Once = Once::new();
 
-    use super::*;
+    // use super::*;
 
     use rand::Rng;
     use crate::Db;
