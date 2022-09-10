@@ -21,7 +21,5 @@ begin
         p_email,
         t_pw
     );
-
-
 end
 $$;

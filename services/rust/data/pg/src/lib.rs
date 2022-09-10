@@ -2,6 +2,7 @@ pub mod types;
 
 pub mod client;
 pub mod auth;
+pub mod user;
 
 
 use log::{

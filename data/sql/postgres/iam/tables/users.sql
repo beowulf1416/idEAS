@@ -6,7 +6,7 @@ create table users (
     email common.email_address not null,
     pw text not null,
 
-    people_id uuid not null,
+    people_id uuid,
 
     constraint pk_users
         primary key (id),
