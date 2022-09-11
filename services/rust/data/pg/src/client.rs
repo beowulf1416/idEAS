@@ -13,19 +13,18 @@ use tokio_postgres::{
     error::SqlState
 };
 
-use crate::DbError;
+use crate::{
+    DbError,
+    Dbo
+};
 
 
-pub struct Client {
-    client: Object<Manager>
-}
+pub struct Client(Dbo);
 
 
 impl Client {
     pub fn new(client: Object<Manager>) -> Self {
-        return Self {
-            client: client
-        };
+        return Self(Dbo::new(client));
     }
 
     pub async fn add(
@@ -37,34 +36,17 @@ impl Client {
         country_id: &i32,
         url: &str
     ) -> Result<(), DbError> {
-        let sql = "call client.client_add($1, $2, $3, $4, $5, $6);";
-        match self.client.prepare_cached(sql).await {
-            Err(e) => {
-                error!("unable to prepare statement: {} {:?}", sql, e);
-                return Err(DbError::ClientError);
-            }
-            Ok(stmt) => {
-                match self.client.execute(
-                    sql,
-                    &[
-                        &client_id,
-                        &name,
-                        &description,
-                        &address,
-                        &country_id,
-                        &url
-                    ]
-                ).await {
-                    Err(e) => {
-                        error!("unable to execute sql: {} {:?}", sql, e);
-                        return Err(DbError::ClientError);
-                    }
-                    Ok(_rows) => {
-                        return Ok(());
-                    }
-                }
-            }
-        }
+        return self.0.call_sp(
+            "call client.client_add($1, $2, $3, $4, $5, $6);",
+            &[
+                &client_id,
+                &name,
+                &description,
+                &address,
+                &country_id,
+                &url
+            ]
+        ).await;
     }
 }
 
@@ -73,30 +55,11 @@ impl Client {
 mod tests {
     use super::*;
 
-    // use std::env;
-
-    // use ctor::ctor;
-
-    // use std::sync::Once;
-    // static INIT: Once = Once::new();
-
-    // use super::*;
-
     use rand::Rng;
     use crate::Db;
 
-
-    // #[ctor]
-    // fn initialize() {
-    //     INIT.call_once( || {
-    //         env_logger::init();
-    //     });
-    // }
-
     #[actix_rt::test] 
     async fn test_client_add() {
-        // initialize();
-
         if let Some(config) = config::get_configuration() {
             let db = Db::new(&config);
             match db.get_client().await {
