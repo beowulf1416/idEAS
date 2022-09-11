@@ -238,7 +238,6 @@ mod tests {
                             assert!(false);
                         }
                         Ok(_) => {
-                            let active = true;
                             match clients.set_active(
                                 &client_id,
                                 &true
