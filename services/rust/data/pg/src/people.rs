@@ -12,20 +12,18 @@ use tokio_postgres::{
     error::SqlState
 };
 
-use crate::DbError;
+use crate::{
+    DbError,
+    Dbo
+};
 
 
-pub struct People {
-    client: Object<Manager>
-}
+pub struct People(Dbo);
 
 
 impl People {
-
     pub fn new(client: Object<Manager>) -> Self {
-        return Self {
-            client: client
-        };
+        return Self(Dbo::new(client));
     }
 }
 
