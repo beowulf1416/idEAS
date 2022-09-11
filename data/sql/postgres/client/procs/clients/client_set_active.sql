@@ -15,7 +15,7 @@ begin
         url
     )
     select
-        client_id,
+        id,
         active,
         name,
         description,
@@ -24,13 +24,13 @@ begin
         url
     from client.clients
     where
-        client_id = p_client_id
+        id = p_client_id
     ;
 
     update client.clients set
         active = p_active
     where
-        client_id = p_client_id
+        id = p_client_id
     ;
 end
 $$;
