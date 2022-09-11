@@ -13,20 +13,17 @@ use tokio_postgres::{
     error::SqlState
 };
 
-use crate::DbError;
+use crate::{
+    DbError,
+    Dbo
+};
 
 
-pub struct User {
-    client: Object<Manager>
-}
-
+pub struct User(Dbo);
 
 impl User {
-
     pub fn new(client: Object<Manager>) -> Self {
-        return Self {
-            client: client
-        };
+        return Self(Dbo::new(client));
     }
 
     pub async fn set_active(
@@ -34,62 +31,27 @@ impl User {
         user_id: &uuid::Uuid,
         active: &bool
     ) -> Result<(), DbError> {
-        let sql = "call iam.user_set_active($1, $2);";
-        match self.client.prepare_cached(sql).await {
-            Err(e) => {
-                error!("unable to prepare statement: {} {:?}", sql, e);
-                return Err(DbError::ClientError);
-            }
-            Ok(stmt) => {
-                match self.client.execute(
-                    sql,
-                    &[
-                        &user_id,
-                        &active
-                    ]
-                ).await {
-                    Err(e) => {
-                        error!("unable to execute sql: {} {:?}", sql, e);
-                        return Err(DbError::ClientError);
-                    }
-                    Ok(_rows) => {
-                        return Ok(());
-                    }
-                }
-            }
-        }
+        return self.0.call_sp(
+            "call iam.user_set_active($1, $2);",
+            &[
+                &user_id,
+                &active
+            ]
+        ).await;
     }
-
 
     pub async fn set_password(
         &self,
         user_id: &uuid::Uuid,
         password: &str
     ) -> Result<(), DbError> {
-        let sql = "call iam.user_set_password($1, $2);";
-        match self.client.prepare_cached(sql).await {
-            Err(e) => {
-                error!("unable to prepare statement: {} {:?}", sql, e);
-                return Err(DbError::ClientError);
-            }
-            Ok(stmt) => {
-                match self.client.execute(
-                    sql,
-                    &[
-                        &user_id,
-                        &password
-                    ]
-                ).await {
-                    Err(e) => {
-                        error!("unable to execute sql: {} {:?}", sql, e);
-                        return Err(DbError::ClientError);
-                    }
-                    Ok(_rows) => {
-                        return Ok(());
-                    }
-                }
-            }
-        }
+        return self.0.call_sp(
+            "call iam.user_set_password($1, $2);",
+            &[
+                &user_id,
+                &password
+            ]
+        ).await;
     }
 }
 
