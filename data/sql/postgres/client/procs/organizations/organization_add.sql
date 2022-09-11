@@ -16,6 +16,7 @@ begin
     ) values (
         p_organization_id,
         p_client_id,
+        false,
         p_name,
         p_description
     );

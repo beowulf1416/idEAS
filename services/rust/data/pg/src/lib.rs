@@ -1,8 +1,10 @@
 pub mod types;
 
 pub mod client;
+pub mod organization;
 pub mod auth;
 pub mod user;
+pub mod people;
 
 
 use log::{
