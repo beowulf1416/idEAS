@@ -13,20 +13,103 @@ use tokio_postgres::{
     error::SqlState
 };
 
-use crate::DbError;
+use crate::{
+    DbError,
+    Dbo
+};
 
 
-pub struct Auth {
-    client: Object<Manager>
-}
+// pub struct Auth {
+//     client: Object<Manager>
+// }
+
+
+// impl Auth {
+
+//     pub fn new(client: Object<Manager>) -> Self {
+//         return Self {
+//             client: client
+//         };
+//     }
+
+
+//     pub async fn register(
+//         &self,
+//         user_id: &uuid::Uuid,
+//         email: &str
+//     ) -> Result<(), DbError> {
+//         let sql = "call iam.user_add($1, $2);";
+//         match self.client.prepare_cached(sql).await {
+//             Err(e) => {
+//                 error!("unable to prepare statement: {} {:?}", sql, e);
+//                 return Err(DbError::ClientError);
+//             }
+//             Ok(stmt) => {
+//                 let t_email = crate::types::email::Email::new(email);
+
+//                 match self.client.execute(
+//                     &stmt,
+//                     &[
+//                         &user_id,
+//                         &t_email
+//                     ]
+//                 ).await {
+//                     Err(e) => {
+//                         error!("unable to execute sql: {} {:?}", sql, e);
+//                         return Err(DbError::ClientError);
+//                     }
+//                     Ok(_rows) => {
+//                         return Ok(());
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+
+//     pub async fn authenticate(
+//         &self,
+//         email: &str,
+//         password: &str
+//     ) -> Result<bool, DbError> {
+//         let sql = "select * from iam.user_authenticate($1, $2);";
+//         match self.client.prepare_cached(sql).await {
+//             Err(e) => {
+//                 error!("unable to prepare statement: {} {:?}", sql, e);
+//                 return Err(DbError::ClientError);
+//             }
+//             Ok(stmt) => {
+//                 let t_email = crate::types::email::Email::new(email);
+
+//                 match self.client.query_one(
+//                     &stmt,
+//                     &[
+//                         &t_email,
+//                         &password
+//                     ]
+//                 ).await {
+//                     Err(e) => {
+//                         error!("unable to execute sql: {} {:?}", sql, e);
+//                         return Err(DbError::ClientError);
+//                     }
+//                     Ok(r) => {
+//                         let authentic: bool = r.get("user_authenticate");
+//                         return Ok(authentic);
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
+pub struct Auth(Dbo);
 
 
 impl Auth {
 
     pub fn new(client: Object<Manager>) -> Self {
-        return Self {
-            client: client
-        };
+        return Self(Dbo::new(client));
     }
 
 
@@ -35,34 +118,15 @@ impl Auth {
         user_id: &uuid::Uuid,
         email: &str
     ) -> Result<(), DbError> {
-        let sql = "call iam.user_add($1, $2);";
-        match self.client.prepare_cached(sql).await {
-            Err(e) => {
-                error!("unable to prepare statement: {} {:?}", sql, e);
-                return Err(DbError::ClientError);
-            }
-            Ok(stmt) => {
-                let t_email = crate::types::email::Email::new(email);
-
-                match self.client.execute(
-                    sql,
-                    &[
-                        &user_id,
-                        &t_email
-                    ]
-                ).await {
-                    Err(e) => {
-                        error!("unable to execute sql: {} {:?}", sql, e);
-                        return Err(DbError::ClientError);
-                    }
-                    Ok(_rows) => {
-                        return Ok(());
-                    }
-                }
-            }
-        }
+        let t_email = crate::types::email::Email::new(email);
+        return self.0.call_sp(
+            "call iam.user_add($1, $2);",
+            &[
+                &user_id,
+                &t_email
+            ]
+        ).await;
     }
-
 
     pub async fn authenticate(
         &self,
@@ -70,7 +134,7 @@ impl Auth {
         password: &str
     ) -> Result<bool, DbError> {
         let sql = "select * from iam.user_authenticate($1, $2);";
-        match self.client.prepare_cached(sql).await {
+        match self.0.get_client().prepare_cached(sql).await {
             Err(e) => {
                 error!("unable to prepare statement: {} {:?}", sql, e);
                 return Err(DbError::ClientError);
@@ -78,8 +142,8 @@ impl Auth {
             Ok(stmt) => {
                 let t_email = crate::types::email::Email::new(email);
 
-                match self.client.query_one(
-                    sql,
+                match self.0.get_client().query_one(
+                    &stmt,
                     &[
                         &t_email,
                         &password
@@ -195,17 +259,29 @@ mod tests {
                                             assert!(false);
                                         }
                                         Ok(_) => {
-                                            match auth.authenticate(
-                                                &email,
-                                                &password
+                                            let active = true;
+                                            match user.set_active(
+                                                &user_id,
+                                                &active
                                             ).await {
                                                 Err(e) => {
-                                                    error!("unable to authenticate {:?}", e);
+                                                    error!("unable to set user active status {:?}", e);
                                                     assert!(false);
                                                 }
-                                                Ok(authentic) => {
-                                                    debug!("authenticate result: {:?}", authentic);
-                                                    assert!(true);
+                                                Ok(_) => {
+                                                    match auth.authenticate(
+                                                        &email,
+                                                        &password
+                                                    ).await {
+                                                        Err(e) => {
+                                                            error!("unable to authenticate {:?}", e);
+                                                            assert!(false);
+                                                        }
+                                                        Ok(authentic) => {
+                                                            debug!("authenticate result: {:?}", authentic);
+                                                            assert!(true);
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

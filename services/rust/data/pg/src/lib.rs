@@ -13,6 +13,9 @@ use log::{
 
 use std::str::FromStr;
 
+use postgres_types::{ 
+    ToSql
+};
 use deadpool::managed::Object;
 use deadpool_postgres::{ 
     Manager, 
@@ -149,6 +152,56 @@ impl FromRequest for Db {
             return ok(db.clone());
         }
         return err(DbError::ClientError);
+    }
+}
+
+
+
+pub struct Dbo {
+    client: Object<Manager>
+}
+
+
+impl Dbo {
+
+    pub fn new(client: Object<Manager>) -> Self {
+        return Self {
+            client: client
+        };
+    }
+
+    pub fn get_client(
+        &self
+    ) -> &Object<Manager> {
+        return &self.client;
+    }
+
+
+    pub async fn call_sp(
+        &self,
+        sql: &str,
+        params: &[&(dyn ToSql + Sync)]
+    ) -> Result<(), DbError> {
+        match &self.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match &self.client.execute(
+                    stmt,
+                    &params
+                ).await {
+                    Err(e) => {
+                        error!("unable to execute query: {} {:?}", sql, e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(_) => {
+                        return Ok(());
+                    }
+                }
+            }
+        }
     }
 }
 
