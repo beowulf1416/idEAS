@@ -18,6 +18,10 @@ use crate::{
     Dbo
 };
 
+use common::{
+    country::Country
+};
+
 
 pub struct Countries(Dbo);
 
@@ -28,17 +32,8 @@ impl Countries {
 
     pub async fn fetch(
         &self
-    ) -> Result<Vec<common::country::Country, DbError> {
+    ) -> Result<Vec<Country>, DbError> {
         let sql = "select * from common.countries_fetch();";
-        // match self.0.get_client().await {
-        //     Err(e) => {
-        //         error!("unable to retrieve client: {:?}", e);
-        //         return Err(DbError::ClientError);
-        //     }
-        //     Ok(client) => {
-        //         match client.
-        //     }
-        // }
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
                 error!("unable to prepare query: {} {:?}", sql, e);
@@ -46,7 +41,7 @@ impl Countries {
             }
             Ok(stmt) => {
                 match self.0.client.query(
-                    stmt,
+                    &stmt,
                     &[]
                 ).await {
                     Err(e) => {
@@ -56,10 +51,11 @@ impl Countries {
                     Ok(rows) => {
                         let results = rows.iter().map(|r| Country {
                             id: r.get("id"),
-                            name: r.get("official_name_en"),
+                            name: r.get("name"),
                             alpha_2: r.get("iso_3166_1_alpha_2"),
                             alpha_3: r.get("iso_3166_1_alpha_3")
-                        });
+                        })
+                        .collect();
                         return Ok(results);
                     }
                 }
