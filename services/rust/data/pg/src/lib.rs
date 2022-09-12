@@ -25,7 +25,10 @@ use deadpool_postgres::{
     Pool, 
     RecyclingMethod 
 };
-use tokio_postgres::NoTls;
+use tokio_postgres::{
+    NoTls,
+    row::Row
+};
 use tokio_postgres::config::{ Config };
 
 use actix_web:: {
@@ -205,6 +208,35 @@ impl Dbo {
             }
         }
     }
+
+
+    // pub async fn fetch(
+    //     &self,
+    //     sql: &str,
+    //     params: &[&(dyn ToSql + Sync)]
+    // ) -> Result<std::iter::Iterator, DbError> {
+    //     match &self.client.prepare_cached(sql).await {
+    //         Err(e) => {
+    //             error!("unable to prepare query: {} {:?}", sql, e);
+    //             return Err(DbError::ClientError);
+    //         }
+    //         Ok(stmt) => {
+    //             match &self.client.query(
+    //                 stmt,
+    //                 &params
+    //             ).await {
+    //                 Err(e) => {
+    //                     error!("unable to retrieve records: {} {:?}", sql, e);
+    //                     return Err(DbError::ClientError);
+    //                 }
+    //                 Ok(rows) => {
+    //                     // debug!("rows: {:?}", rows);
+    //                     return Ok(rows.iter());
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 

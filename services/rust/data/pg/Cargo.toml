@@ -28,3 +28,4 @@ uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
 
 config = { path = "../../config" }
+common = { path = "../../common" }
