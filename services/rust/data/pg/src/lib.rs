@@ -1,5 +1,6 @@
 pub mod types;
 
+pub mod countries;
 pub mod client;
 pub mod organization;
 pub mod auth;
