@@ -89,7 +89,7 @@ mod tests {
                             assert!(false);
                         }
                         Ok(records) => {
-                            debug!("records: {:?}", records);
+                            // debug!("records: {:?}", records);
                             assert!(true);
                         }
                     }
