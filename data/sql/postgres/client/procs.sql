@@ -9,3 +9,4 @@ set schema 'client';
 -- organizations
 \ir procs/organizations/organization_add.sql
 \ir procs/organizations/organization_update.sql
+\ir procs/organizations/organization_set_active.sql
