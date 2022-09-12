@@ -4,6 +4,7 @@ members = [
 	"token",
 	"mailer",
 	"queue",
+	"common",
 	"data/pg",
 	"auth",
 	"api"
