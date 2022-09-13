@@ -2,6 +2,7 @@ pub mod types;
 
 pub mod countries;
 pub mod currencies;
+pub mod uom;
 pub mod client;
 pub mod organization;
 pub mod auth;
@@ -37,10 +38,10 @@ use actix_web:: {
     dev::Payload,
     http::StatusCode,
     HttpRequest, 
-    HttpMessage,
+    // HttpMessage,
     FromRequest,
     ResponseError,
-    web
+    // web
 };
 
 use futures::{
@@ -210,35 +211,6 @@ impl Dbo {
             }
         }
     }
-
-
-    // pub async fn fetch(
-    //     &self,
-    //     sql: &str,
-    //     params: &[&(dyn ToSql + Sync)]
-    // ) -> Result<std::iter::Iterator, DbError> {
-    //     match &self.client.prepare_cached(sql).await {
-    //         Err(e) => {
-    //             error!("unable to prepare query: {} {:?}", sql, e);
-    //             return Err(DbError::ClientError);
-    //         }
-    //         Ok(stmt) => {
-    //             match &self.client.query(
-    //                 stmt,
-    //                 &params
-    //             ).await {
-    //                 Err(e) => {
-    //                     error!("unable to retrieve records: {} {:?}", sql, e);
-    //                     return Err(DbError::ClientError);
-    //                 }
-    //                 Ok(rows) => {
-    //                     // debug!("rows: {:?}", rows);
-    //                     return Ok(rows.iter());
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 }
 
 
@@ -246,7 +218,7 @@ impl Dbo {
 mod tests {
     use super::*;
 
-    use std::env;
+    // use std::env;
     use ctor::ctor;
 
     // use std::sync::Once;
