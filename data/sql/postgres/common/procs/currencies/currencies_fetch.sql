@@ -9,10 +9,10 @@ as $$
 begin
     return query
     select
-        a.country,
+        a.currency,
         a.unit_text,
         a.symbol
-    from common.countries a
+    from common.currencies a
     ;
 end
 $$;

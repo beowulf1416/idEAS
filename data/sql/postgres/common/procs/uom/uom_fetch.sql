@@ -17,6 +17,8 @@ begin
         a.description,
         a.symbol
     from common.uom a
+    where
+        a.dimension_id = p_dimension_id
     ;
 end
 $$;
