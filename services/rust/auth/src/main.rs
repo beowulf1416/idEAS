@@ -39,8 +39,10 @@ async fn main() -> std::io::Result<()> {
     if let Some(config) = get_configuration() {
         debug!("parsed config: {:?}", config);
 
-        let bind_host = config.bind_host.clone();
-        let bind_port = config.bind_port.clone();
+        // let bind_host = config.bind_host.clone();
+        // let bind_port = config.bind_port.clone();
+        let bind_host = config.auth.bind_host.clone();
+        let bind_port = config.auth.bind_port.clone();
 
         let server = HttpServer::new(move || {
             App::new()
@@ -48,6 +50,8 @@ async fn main() -> std::io::Result<()> {
                 // .app_data(web::Data::new(crate::services::data::Data::new(&config.clone())))
                 // .app_data(web::Data::new(pg::Db::new(&config.clone)))
                 .app_data(pg::Db::new(&config.clone()))
+
+                .wrap(crate::middleware::cors::CORS::new())
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
