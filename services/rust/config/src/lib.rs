@@ -32,6 +32,24 @@ pub struct Provider {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Auth {
+    #[serde(rename = "bindHost")]
+    pub bind_host: String,
+    
+    #[serde(rename = "bindPort")]
+    pub bind_port: i32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Api {
+    #[serde(rename = "bindHost")]
+    pub bind_host: String,
+    
+    #[serde(rename = "bindPort")]
+    pub bind_port: i32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Mailer {
     pub host: String,
     pub user: String,
@@ -41,13 +59,8 @@ pub struct Mailer {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ApplicationConfig { 
-    #[serde(rename = "bindHost")]
-    pub bind_host: String,
-    
-    #[serde(rename = "bindPort")]
-    pub bind_port: i32,
-    pub providers: Vec<Provider>,
-
+    pub auth: Auth,
+    pub api: Api,
     pub mailer: Mailer
 }
 
