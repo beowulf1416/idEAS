@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -8,12 +8,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
 
-  registerForm = new FormGroup({
-    email: new FormControl('', [
+  registerForm = new UntypedFormGroup({
+    email: new UntypedFormControl('', [
       Validators.required,
       Validators.email
     ]),
-    confirm_email: new FormControl('', [
+    confirm_email: new UntypedFormControl('', [
       Validators.required
     ])
   });
