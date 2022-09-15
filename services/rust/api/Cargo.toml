@@ -19,4 +19,5 @@ actix-http = "*"
 
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
+config = { path = "../config" }
 pg = { path = "../data/pg" }

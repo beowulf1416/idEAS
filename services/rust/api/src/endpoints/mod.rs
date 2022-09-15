@@ -1,4 +1,6 @@
+pub mod countries;
 pub mod clients;
+pub mod user;
 
 
 use serde::{
