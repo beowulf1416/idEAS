@@ -19,11 +19,10 @@ use crate::endpoints::{
     ApiResponse
 };
 
-// use crate::services::{
-//     data::Data
-// };
-
-use pg::Db;
+use pg::{
+    Db,
+    DbError
+};
 
 
 #[derive(Debug, Serialize, Deserialize)]
