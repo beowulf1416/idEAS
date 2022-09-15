@@ -6,8 +6,8 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8081",
-            "description": "local api server"
+            "url": "http://localhost:8082",
+            "description": "local auth server"
         }
     ],
     "components": {
