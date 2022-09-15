@@ -15,6 +15,8 @@ use actix_web::{
     web
 };
 
+use pg::Db;
+
 use crate::endpoints::{
     ApiResponse
 };
@@ -78,7 +80,7 @@ async fn countries_get_get() -> impl Responder {
 }
 
 
-async fn countries_fetch_post(
+async fn countries_get_post(
     db: web::Data<Db>,
     params: web::Json<CountriesFetchRequest>
 ) -> impl Responder {
