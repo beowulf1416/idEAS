@@ -61,7 +61,9 @@ pub struct Mailer {
 pub struct ApplicationConfig { 
     pub auth: Auth,
     pub api: Api,
-    pub mailer: Mailer
+    pub mailer: Mailer,
+
+    pub providers: Vec<Provider>
 }
 
 
