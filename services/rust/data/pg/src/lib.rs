@@ -9,6 +9,8 @@ pub mod auth;
 pub mod user;
 pub mod people;
 
+pub mod inventory;
+
 
 use log::{
     info,
