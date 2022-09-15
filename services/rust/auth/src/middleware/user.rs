@@ -112,6 +112,7 @@ where
                                         Some(user_id),
                                         email
                                     );
+                                    debug!("result: {:?}", result);
                                 }
                             }
                         }
