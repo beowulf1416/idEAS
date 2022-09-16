@@ -10,3 +10,4 @@ set schema 'client';
 \ir procs/organizations/organization_add.sql
 \ir procs/organizations/organization_update.sql
 \ir procs/organizations/organization_set_active.sql
+\ir procs/organizations/organization_set_parent.sql
