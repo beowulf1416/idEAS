@@ -6,12 +6,12 @@ import { RegisterComponent } from './components/register/register.component';
 
 const routes: Routes = [
   {
-    path: "register",
-    component: RegisterComponent
+    path: "complete/:token",
+    component: CompleteComponent
   },
   {
-    path: "register/complete/:token",
-    component: CompleteComponent
+    path: "register",
+    component: RegisterComponent
   }
 ];
 
