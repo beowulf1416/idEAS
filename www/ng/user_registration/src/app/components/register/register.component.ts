@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'app-register',
@@ -18,9 +19,12 @@ export class RegisterComponent implements OnInit {
     ])
   });
 
-  constructor() { }
+  constructor(
+    private title: TitleService
+  ) { }
 
   ngOnInit(): void {
+    this.title.set_title("Sign Up");
   }
 
   get email() {
