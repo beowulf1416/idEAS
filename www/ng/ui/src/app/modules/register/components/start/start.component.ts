@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from 'src/app/services/title.service';
 import { RegistrationService } from '../../services/registration.service';
 
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-start',
@@ -42,8 +42,9 @@ export class StartComponent implements OnInit {
     console.log('StartComponent::submit()');
     if (this.registerForm.valid) {
       this.flag_submitting = true;
+
       this.register_service.register(
-        uuid(),
+        uuidv4(),
         this.registerForm.get('email')?.value || ''
       ).subscribe(r => {
         console.log(r);
