@@ -1,11 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WorkspaceComponent } from './components/workspace/workspace.component';
+
+import { HomeComponent } from './components/home/home.component';
+// import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 const routes: Routes = [
   {
+    path: "auth",
+    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: "register",
+    loadChildren: () => import('./modules/register/register.module').then(m => m.RegisterModule)
+  },
+  {
     path: "dashboard",
-    component: WorkspaceComponent
+    loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  {
+    path: "",
+    component: HomeComponent
   }
 ];
 
