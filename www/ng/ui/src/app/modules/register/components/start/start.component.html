@@ -1,1 +1,26 @@
-<p>start works!</p>
+<div id="component-register-start" class="wrapper-component">
+    <div class="wrapper-form">
+        <form class="form-register" method="post" action="" [formGroup]="registerForm" (ngSubmit)="submit()">
+            <fieldset>
+                <h4>An email will sent to the email address provided to complete the registration.</h4>
+            </fieldset>
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>Email Address</mat-label>
+                    <input type="email" id="email" name="email" class="field-email" placeholder="Email Address" required matInput formControlName="email" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter email address</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Confirm Email Address</mat-label>
+                    <input type="email" id="confirm_email" name="confirm_email" class="field-email-confirm" placeholder="Confirm Email Address" required matInput formControlName="confirm_email" >
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter email address</mat-hint>
+                </mat-form-field>
+            </fieldset>
+            <fieldset class="actions">
+                <button mat-raised-button color="primary" [disabled]="registerForm.invalid">Register</button>
+            </fieldset>
+        </form>
+    </div><!-- .wrapper-form -->
+</div><!-- .wrapper-component -->
