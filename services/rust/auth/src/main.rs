@@ -43,7 +43,7 @@ async fn main() -> std::io::Result<()> {
         let bind_port = config.auth.bind_port.clone();
 
         let server = HttpServer::new(move || {
-            let token = token::Token::new(config.token.secret);
+            let token = token::Token::new(&config.token.secret);
 
             App::new()
                 .app_data(web::Data::new(config.clone()))
