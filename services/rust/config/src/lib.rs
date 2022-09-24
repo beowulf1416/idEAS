@@ -56,12 +56,17 @@ pub struct Mailer {
     pub password: String
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Token {
+    pub secret: String
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ApplicationConfig { 
     pub auth: Auth,
     pub api: Api,
     pub mailer: Mailer,
+    pub token: Token,
 
     pub providers: Vec<Provider>
 }
