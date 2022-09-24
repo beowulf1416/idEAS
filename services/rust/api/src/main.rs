@@ -13,7 +13,8 @@ use log::{
 
 use actix_web::{
     App,
-    HttpServer
+    HttpServer,
+    web
 };
 
 use config::{
