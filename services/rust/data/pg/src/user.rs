@@ -81,9 +81,9 @@ impl User {
                     }
                     Ok(r) => {
                         return Ok(common::user::User::new(
-                            id: r.get("id"),
-                            active: r.get("active"),
-                            email: r.get("email")
+                            Some(r.get("id")),
+                            r.get("active"),
+                            r.get("email")
                         ));
                     }
                 }
