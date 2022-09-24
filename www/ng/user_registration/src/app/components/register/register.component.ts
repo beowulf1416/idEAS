@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TitleService } from 'src/app/services/title.service';
 
+import { uuid } from 'uuidv4';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
