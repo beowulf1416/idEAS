@@ -24,8 +24,10 @@ use http::header::{
 };
 
 use token::Token;
+use common::user::User as UserObject;
 use pg::{
     Db,
+    DbError,
     user::User as UserDbo
 };
 
@@ -97,8 +99,9 @@ where
         return Box::pin(async move {
             debug!("here 2");
 
-            let mut result = crate::models::user::User::new(
+            let mut result = UserObject::new(
                 None,
+                false,
                 String::from("")
             );
 
@@ -107,7 +110,7 @@ where
 
                 let token = self.token;
                 if self.token.validate(&token_value) {
-                    match token.claims() {
+                    match token.claims(&token_value) {
                         Err(e) => {
                             error!("unable to retrieve claims: {:?}", e);
                         }
@@ -118,13 +121,14 @@ where
                             if let Some(db) = request.app_data::<web::Data<Db>>() {
                                 if let Ok(client) = db.get_client().await {
                                     let users = UserDbo::new(client);
-                                    match users.get_by_email(email) {
+                                    match users.get_by_email(&email).await {
                                         Err(e) => {
                                             error!("unable to retrieve user: {:?}", e);
                                             return Err(DbError::ClientError);
                                         }
                                         Ok(u) => {
-                                            debug!("//TODO result: {:?}", e);
+                                            debug!("//TODO result: {:?}", u);
+                                            result = u.clone();
                                         }
                                     }
                                 } else {
