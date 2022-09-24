@@ -73,7 +73,7 @@ impl Item {
     }
 }
 
-
+#[cfg(test)]
 mod tests {
     use super::*;
 
