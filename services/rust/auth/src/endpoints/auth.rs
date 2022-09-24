@@ -51,7 +51,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(login_post))
         )
         .service(
-            web::resource("login")
+            web::resource("logout")
                 .route(web::get().to(logout_get))
                 .route(web::post().to(logout_post))
         )

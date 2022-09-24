@@ -23,22 +23,31 @@ use http::header::{
     AUTHORIZATION
 };
 
-use token::JWT;
-use postgres::{
+use token::Token;
+use pg::{
     Db,
-    users::Users
+    user::User as UserDbo
 };
 
 
-pub struct User {}
+pub struct User {
+    token: Token
+}
 
 pub struct UserMiddleware<S> {
+    token: Token,
     service: Rc<S>
 }
 
 impl User {
-    pub fn new() -> Self {
-        return Self {};
+    pub fn new(token: Token) -> Self {
+        return Self {
+            token: token
+        };
+    }
+
+    pub fn token(&self) -> Token {
+        return self.token;
     }
 }
 
@@ -58,6 +67,7 @@ where
 
     fn new_transform(&self, service: S) -> Self::Future {
         return ready(Ok(UserMiddleware {
+            token: self.token(),
             service: Rc::new(service)
         }));
     }
@@ -93,33 +103,77 @@ where
             );
 
             if let Some(header_value) = request.headers().get(AUTHORIZATION) {
-                let token = header_value.to_str().unwrap().replace("Bearer", "").trim().to_owned();
-                
-                let jwt = request.app_data::<web::Data<JWT>>().unwrap().clone();
-                if jwt.validate(&token) {
-                    debug!("token valid");
+                let token_value = header_value.to_str().unwrap().replace("Bearer", "").trim().to_owned();
 
-                    if let Ok(claims) = jwt.claims(&token) {
-                        let email = claims.email();
+                let token = self.token;
+                if self.token.validate(&token_value) {
+                    match token.claims() {
+                        Err(e) => {
+                            error!("unable to retrieve claims: {:?}", e);
+                        }
+                        Ok(claims) => {
+                            let email = claims.email();
+                            let issued  = claims.issued();
 
-                        if let Some(db) = request.app_data::<web::Data<Db>>() {
-                            if let Ok(client) = db.pool().get().await {
-                                let users = Users::new(client);
-                                if let Ok(user) = users.get_by_email(&email).await {
-                                    let user_id = user.id;
-
-                                    result = crate::models::user::User::new(
-                                        Some(user_id),
-                                        email
-                                    );
-                                    debug!("result: {:?}", result);
+                            if let Some(db) = request.app_data::<web::Data<Db>>() {
+                                if let Ok(client) = db.get_client().await {
+                                    let users = UserDbo::new(client);
+                                    match users.get_by_email(email) {
+                                        Err(e) => {
+                                            error!("unable to retrieve user: {:?}", e);
+                                            return Err(DbError::ClientError);
+                                        }
+                                        Ok(u) => {
+                                            debug!("//TODO result: {:?}", e);
+                                        }
+                                    }
+                                } else {
+                                    error!("unable to retrieve client object");
                                 }
+                            } else {
+                                error!("unable to retrieve instance of Db object");
                             }
                         }
                     }
                 } else {
-                    debug!("token invalid");
+                    error!("unable to validate token: {:?}", token_value);
                 }
+                
+                // match token.validate(&token) {
+                //     Err(e) => {
+                //         error!("unable to validate token: {:?}", e);
+                //     }
+                //     Ok(result) => {
+                //         debug!("token validation result: {:?}", result);
+                //     }
+                // }
+                
+                // let jwt = request.app_data::<web::Data<JWT>>().unwrap().clone();
+                // if jwt.validate(&token) {
+                //     debug!("token valid");
+
+                //     if let Ok(claims) = jwt.claims(&token) {
+                //         let email = claims.email();
+
+                //         if let Some(db) = request.app_data::<web::Data<Db>>() {
+                //             if let Ok(client) = db.get_client().await {
+                //                 let user = UserDbo::new(client);
+
+                //                 if let Ok(user) = users.get_by_email(&email).await {
+                //                     let user_id = user.id;
+
+                //                     result = crate::models::user::User::new(
+                //                         Some(user_id),
+                //                         email
+                //                     );
+                //                     debug!("result: {:?}", result);
+                //                 }
+                //             }
+                //         }
+                //     }
+                // } else {
+                //     debug!("token invalid");
+                // }
             } else {
                 debug!("no authorization header found");
             }
