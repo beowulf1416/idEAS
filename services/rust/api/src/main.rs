@@ -6,7 +6,9 @@ mod endpoints;
 
 
 use log::{
-    info
+    info,
+    debug,
+    error
 };
 
 use actix_web::{
