@@ -1,6 +1,6 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct User {
-    id: uuid::Uuid,
+    id: Option<uuid::Uuid>,
     active: bool,
     email: String
 }
@@ -8,7 +8,7 @@ pub struct User {
 impl User {
 
     pub fn new(
-        id: uuid::Uuid,
+        id: Option<uuid::Uuid>,
         active: bool,
         email: String
     ) -> Self {
@@ -17,5 +17,23 @@ impl User {
             active: active,
             email: email
         };
+    }
+
+    pub fn is_authenticated(
+        &self
+    ) -> bool {
+        return self.id.is_none();
+    }
+
+    pub fn id(&self) -> Option<uuid::Uuid> {
+        return self.id;
+    }
+
+    pub fn active(&self) -> bool {
+        return self.active;
+    }
+
+    pub fn email(&self) -> String {
+        return format!("{}", self.email);
     }
 }
