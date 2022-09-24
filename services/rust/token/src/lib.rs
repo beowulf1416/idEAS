@@ -47,6 +47,7 @@ pub enum TokenError {
 }
 
 
+#[derive(Clone)]
 pub struct Token {
     secret: String
 }
