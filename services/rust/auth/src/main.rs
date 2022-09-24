@@ -43,12 +43,15 @@ async fn main() -> std::io::Result<()> {
         let bind_port = config.auth.bind_port.clone();
 
         let server = HttpServer::new(move || {
+            let token = token::Token::new(config.token.secret);
+
             App::new()
                 .app_data(web::Data::new(config.clone()))
                 .app_data(pg::Db::new(&config.clone()))
+                .app_data(web::Data::new(crate::services::auth_token::AuthToken(token.clone())))
 
                 .wrap(crate::middleware::cors::CORS::new())
-                .wrap(crate::middleware::user::User::new())
+                .wrap(crate::middleware::user::User::new(token.clone()))
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
