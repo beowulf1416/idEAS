@@ -18,6 +18,8 @@ use crate::{
     Dbo
 };
 
+// use common::user::User;
+
 
 pub struct User(Dbo);
 
@@ -52,6 +54,41 @@ impl User {
                 &password
             ]
         ).await;
+    }
+
+
+    pub async fn get_by_email(
+        &self,
+        email: &str
+    ) -> Result<common::user::User, DbError> {
+        let sql = "select * from iam.user_get_by_email($1);";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare sql: {:?}", e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                let t_email = crate::types::email::Email::new(email);
+                match self.0.client.query_one(
+                    &stmt,
+                    &[
+                        &t_email
+                    ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve user: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        return Ok(common::user::User::new(
+                            id: r.get("id"),
+                            active: r.get("active"),
+                            email: r.get("email")
+                        ));
+                    }
+                }
+            }
+        }
     }
 }
 

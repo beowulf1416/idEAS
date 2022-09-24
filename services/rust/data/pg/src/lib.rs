@@ -186,6 +186,13 @@ impl Dbo {
         return &self.client;
     }
 
+    // pub fn get_stmt(
+    //     &self,
+    //     sql: &sql
+    // ) -> Result<Statement, DbError> {
+
+    // }
+
 
     pub async fn call_sp(
         &self,
