@@ -16,6 +16,7 @@ use config::{
 use token::Token;
 
 
+#[derive(Clone)]
 pub struct AuthToken {
     token: Token
 }
@@ -29,7 +30,7 @@ impl AuthToken {
         };
     }
 
-    pub fn get_token(&self) -> Token {
-        return self.token;
+    pub fn get_token(&self) -> &Token {
+        return &self.token;
     }
 }
