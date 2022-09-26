@@ -19,7 +19,10 @@ use serde::{
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum ProviderType {
     #[serde(rename = "postgres")]
-    Postgres
+    Postgres,
+
+    #[serde(rename = "kafka")]
+    Kafka
 }
 
 
