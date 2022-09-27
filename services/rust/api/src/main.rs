@@ -1,6 +1,7 @@
 extern crate log;
 
 mod classes;
+mod services;
 mod middleware;
 mod endpoints;
 
