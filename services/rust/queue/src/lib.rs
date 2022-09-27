@@ -43,8 +43,8 @@ impl Queue {
 
         debug!("hosts: {:?}", hosts);
 
-        let client = KafkaClient::new(hosts);
-        // client.load_metadata_all().unwrap();
+        let mut client = KafkaClient::new(hosts);
+        client.load_metadata_all().unwrap();
 
         // let producer = Producer::from_client(client)
         //     .create()
@@ -86,7 +86,7 @@ impl Queue {
                 Duration::from_millis(1000),
                 vec!(
                     // ProduceMessage::new(name, 0, None, Some("test".as_bytes()))
-                    ProduceMessage::new(name, 0, None, Some(data.as_bytes()))
+                    ProduceMessage::new(name, 0, None, Some(data.to_string().as_bytes()))
                 )
             );
             debug!("response: {:?}", response);
@@ -99,6 +99,8 @@ impl Queue {
 mod tests {
     use super::*;
     use ctor::ctor;
+
+    use serde_json::json;
 
     #[ctor]
     fn initialize() {
@@ -119,7 +121,7 @@ mod tests {
     fn test_send() {
         if let Some(config) = config::get_configuration() {
             let mut queue = Queue::new(&config, "queue");
-            queue.send("test");
+            queue.send("test1", json!({ "test":"more tests", "test_1": "one more test" }));
             // debug!("topics: {:?}", topics);
         }  else {
             error!("unable to create queue");
