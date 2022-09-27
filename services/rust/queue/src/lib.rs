@@ -16,6 +16,11 @@ use kafka::{
     },
     producer::{
         Producer
+    },
+    consumer::{
+        Consumer, 
+        FetchOffset, 
+        GroupOffsetStorage
     }
 };
 
@@ -28,6 +33,7 @@ use config::{
 
 
 pub struct Queue {
+    hosts: Vec<String>,
     client: KafkaClient,
     // producer: Producer
 }
@@ -43,7 +49,7 @@ impl Queue {
 
         debug!("hosts: {:?}", hosts);
 
-        let mut client = KafkaClient::new(hosts);
+        let mut client = KafkaClient::new(hosts.to_owned());
         client.load_metadata_all().unwrap();
 
         // let producer = Producer::from_client(client)
@@ -51,6 +57,7 @@ impl Queue {
         //     .unwrap();
 
         return Self {
+            hosts: hosts,
             client: client,
             // producer: producer
         };
@@ -92,6 +99,24 @@ impl Queue {
             debug!("response: {:?}", response);
         // }
     }
+
+    pub fn create_consumer(
+        &self,
+        topic: &str
+    ) -> Result<Consumer, bool> {
+        match Consumer::from_hosts(self.hosts.to_owned())
+            .with_topic_partitions(topic.to_owned(), &[0])
+            .with_fallback_offset(FetchOffset::Earliest)
+            .create() {
+                Err(e) => {
+                    error!("unable to create consumer: {:?}", e);
+                    return Err(false);
+                }
+                Ok(consumer) => {
+                    return Ok(consumer);
+                }
+            }
+    }
 }
 
 
@@ -122,6 +147,18 @@ mod tests {
         if let Some(config) = config::get_configuration() {
             let mut queue = Queue::new(&config, "queue");
             queue.send("test1", json!({ "test":"more tests", "test_1": "one more test" }));
+            // debug!("topics: {:?}", topics);
+        }  else {
+            error!("unable to create queue");
+            assert!(false);
+        }
+    }
+
+    #[test]
+    fn test_create_consumer() {
+        if let Some(config) = config::get_configuration() {
+            let queue = Queue::new(&config, "queue");
+            let consumer = queue.create_consumer("test");
             // debug!("topics: {:?}", topics);
         }  else {
             error!("unable to create queue");
