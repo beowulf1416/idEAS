@@ -6,6 +6,8 @@ use log::{
 
 use std::time::Duration;
 
+use serde_json::Value;
+
 use kafka::{
     client::{
         KafkaClient,
@@ -75,14 +77,16 @@ impl Queue {
 
     pub fn send(
         &mut self,
-        name: &str
+        name: &str,
+        data: Value
     ) {
         // if self.client.topics().contains(&name) {
             let response = self.client.produce_messages(
                 RequiredAcks::One,
                 Duration::from_millis(1000),
                 vec!(
-                    ProduceMessage::new(name, 0, None, Some("test".as_bytes()))
+                    // ProduceMessage::new(name, 0, None, Some("test".as_bytes()))
+                    ProduceMessage::new(name, 0, None, Some(data.as_bytes()))
                 )
             );
             debug!("response: {:?}", response);
