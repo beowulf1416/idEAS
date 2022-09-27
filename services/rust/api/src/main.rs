@@ -25,21 +25,30 @@ use config::{
 #[actix_web::main]
 async fn main()  -> std::io::Result<()> {
     env_logger::init();
-    info!("starting up ...");
+    info!("starting up");
 
 
     if let Some(config) = get_configuration() {
         debug!("parsed config: {:?}", config);
 
-        // let bind_host = config.bind_host.clone();
-        // let bind_port = config.bind_port.clone();
-        let bind_host = config.api.bind_host.clone();
-        let bind_port = config.api.bind_port.clone();
+        let bind_host = config.auth.bind_host.clone();
+        let bind_port = config.auth.bind_port.clone();
 
         let server = HttpServer::new(move || {
+            let token = token::Token::new(&config.token.secret);
+
             App::new()
                 .app_data(web::Data::new(config.clone()))
                 .app_data(pg::Db::new(&config.clone()))
+
+                // .app_data(web::Data::new(crate::services::auth_token::AuthToken::new(token.clone())))
+                .app_data(web::Data::new(token.clone()))
+
+                .wrap(crate::middleware::cors::CORS::new())
+                .wrap(crate::middleware::user::User::new(token.clone()))
+
+                .service(web::scope("/status").configure(crate::endpoints::status::config))
+                .service(web::scope("/auth").configure(crate::endpoints::auth::config))
         })
         .bind(format!("{}:{}", bind_host, bind_port))?
         .run();
