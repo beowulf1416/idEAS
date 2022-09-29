@@ -4,6 +4,7 @@ use log::{
     debug
 };
 
+use std::str;
 use std::time::Duration;
 
 use serde_json::Value;
@@ -102,10 +103,13 @@ impl Queue {
 
     pub fn create_consumer(
         &self,
-        topic: &str
+        topic: &str,
+        group: &str
     ) -> Result<Consumer, bool> {
         match Consumer::from_hosts(self.hosts.to_owned())
-            .with_topic_partitions(topic.to_owned(), &[0])
+            .with_topic(topic.to_owned())
+            .with_group(group.to_owned())
+            // .with_topic_partitions(topic.to_owned(), &[0])
             .with_fallback_offset(FetchOffset::Earliest)
             .create() {
                 Err(e) => {
@@ -158,8 +162,39 @@ mod tests {
     fn test_create_consumer() {
         if let Some(config) = config::get_configuration() {
             let queue = Queue::new(&config, "queue");
-            let consumer = queue.create_consumer("test");
+            let consumer = queue.create_consumer("test1");
             // debug!("topics: {:?}", topics);
+        }  else {
+            error!("unable to create queue");
+            assert!(false);
+        }
+    }
+
+    #[test]
+    fn test_consume() {
+        if let Some(config) = config::get_configuration() {
+            let queue = Queue::new(&config, "queue");
+            if let Ok(mut consumer) = queue.create_consumer("test1", "test") {
+            
+                for ms in consumer.poll().unwrap().iter() {
+                    for m in ms.messages() {
+                        // debug!("message: {:?}", m);
+                        // debug!("message: {:?}", str::from_utf8(m.value))
+
+                        if let Ok(sz) = str::from_utf8(m.value) {
+                            let v: Value = serde_json::from_str(sz).unwrap();
+                            debug!("message json: {:?}", v);
+                        } else {
+                            debug!("unknown message: {:?}", m);
+                        }
+                    }
+                    consumer.consume_messageset(ms);
+                }
+                consumer.commit_consumed().unwrap();
+            } else {
+                error!("unable to get consumer");
+                assert!(false);
+            }
         }  else {
             error!("unable to create queue");
             assert!(false);
