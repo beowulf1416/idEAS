@@ -86,7 +86,7 @@ impl Queue {
     pub fn send(
         &mut self,
         name: &str,
-        data: Value
+        data: String
     ) {
         // if self.client.topics().contains(&name) {
             let response = self.client.produce_messages(
@@ -94,7 +94,7 @@ impl Queue {
                 Duration::from_millis(1000),
                 vec!(
                     // ProduceMessage::new(name, 0, None, Some("test".as_bytes()))
-                    ProduceMessage::new(name, 0, None, Some(data.to_string().as_bytes()))
+                    ProduceMessage::new(name, 0, None, Some(data.as_bytes()))
                 )
             );
             debug!("response: {:?}", response);
@@ -131,6 +131,8 @@ mod tests {
 
     use serde_json::json;
 
+    use common::mail::Mail;
+
     #[ctor]
     fn initialize() {
         env_logger::init();
@@ -150,7 +152,29 @@ mod tests {
     fn test_send() {
         if let Some(config) = config::get_configuration() {
             let mut queue = Queue::new(&config, "queue");
-            queue.send("test1", json!({ "test":"more tests", "test_1": "one more test" }));
+            let data = json!({ "test":"more tests", "test_1": "one more test" });
+            queue.send("test1", data.to_string());
+            // queue.send("mailer", json!({ "test":"more tests", "test_1": "one more test" }));
+            // debug!("topics: {:?}", topics);
+        }  else {
+            error!("unable to create queue");
+            assert!(false);
+        }
+    }
+
+    #[test]
+    fn test_send_mailer() {
+        if let Some(config) = config::get_configuration() {
+            let mut queue = Queue::new(&config, "queue");
+
+            let m: Mail = Mail {
+                to: "ferdinand@marginfuel.com".to_owned(),
+                subject: "test mailer".to_owned(),
+                body: "<h1>this is a test</h1>".to_owned()
+            };
+            queue.send("mailer", serde_json::to_string(&m).unwrap());
+
+            // queue.send("mailer", json!({ "test":"more tests", "test_1": "one more test" }));
             // debug!("topics: {:?}", topics);
         }  else {
             error!("unable to create queue");
@@ -162,7 +186,7 @@ mod tests {
     fn test_create_consumer() {
         if let Some(config) = config::get_configuration() {
             let queue = Queue::new(&config, "queue");
-            let consumer = queue.create_consumer("test1");
+            let consumer = queue.create_consumer("test1", "test");
             // debug!("topics: {:?}", topics);
         }  else {
             error!("unable to create queue");
