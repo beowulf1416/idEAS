@@ -9,6 +9,8 @@ edition = "2021"
 env_logger = "*"
 ctor = "*"
 
+common = { path = "../common" }
+
 [dependencies]
 log = "*"
 kafka = "0.9"
