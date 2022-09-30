@@ -7,5 +7,6 @@ members = [
 	"common",
 	"data/pg",
 	"auth",
-	"api"
+	"api",
+	"consumers/qmailer"
 ]
