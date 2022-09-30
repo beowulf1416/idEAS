@@ -23,6 +23,10 @@ use config::{
     get_configuration
 };
 
+use common::mail::Mail;
+
+use mailer::Mailer;
+
 
 const QUEUE_NAME: &str = "queue";
 const TOPIC: &str = "mailer";
@@ -33,9 +37,19 @@ fn main() {
     env_logger::init();
 
 
-    println!("Hello, world!");
+    println!("started qmailer consumer");
 
     if let Some(cfg) = get_configuration() {
+        let mut mailer = Mailer::new(
+            &cfg.mailer.host,
+            &cfg.mailer.user,
+            &cfg.mailer.password
+        );
+
+        if let Err(e) = mailer.connect() {
+            error!("unable to connect to smtp server: {:?}", e);
+        }
+
         let hosts: Vec<String> = cfg.providers.iter()
             .filter(|x| matches!(x.provider_type, ProviderType::Kafka) && x.name == QUEUE_NAME)
             .map(|r| r.url.clone())
@@ -54,11 +68,27 @@ fn main() {
                     loop {
                         for ms in consumer.poll().unwrap().iter() {
                             for m in ms.messages() {
-                                // debug!("message: {:?}", m);
-        
                                 if let Ok(sz) = str::from_utf8(m.value) {
-                                    let v: Value = serde_json::from_str(sz).unwrap();
-                                    debug!("message json: {:?}", v);
+                                    // let v: Value = serde_json::from_str(sz).unwrap();
+                                    match serde_json::from_str::<Mail>(sz) {
+                                        Err(e) => {
+                                            error!("unable to parse mail data: {:?}", sz);
+                                        }
+                                        Ok(mail) => {
+                                            debug!("mail data: {:?}", mail);
+
+                                            if let Err(e) = mailer.send(
+                                                &cfg.mailer.user,
+                                                &mail.to,
+                                                &mail.subject,
+                                                &mail.body
+                                            ) {
+                                                error!("unable to send email: {:?}", e);
+                                            } else {
+                                                info!("email sent!");
+                                            }
+                                        }
+                                    }
                                 } else {
                                     debug!("unknown message: {:?}", m);
                                 }

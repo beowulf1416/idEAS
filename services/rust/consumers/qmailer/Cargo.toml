@@ -15,4 +15,6 @@ serde_json = "*"
 kafka = "0.9"
 
 
+common = { path = "../../common" }
 config = { path = "../../config" }
+mailer = { path = "../../mailer" }
