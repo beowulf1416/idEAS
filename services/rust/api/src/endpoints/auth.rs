@@ -21,12 +21,14 @@ use crate::endpoints::{
 
 use pg::{
     Db,
-    DbError
+    DbError,
+    Auth
 };
 
 
 #[derive(Debug, Serialize, Deserialize)]
 struct AuthRegisterPostRequest {
+    id: uuid::Uuid,
     email: String
 }
 
@@ -72,9 +74,36 @@ async fn register_post(
 ) -> impl Responder {
     info!("register_post()");
 
-    
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client: {:?}", e);
+        }
+        Ok(client) => {
+            let auth = Auth::new(client);
+            let id = params.id;
+            let email = params.email;
 
-    return HttpResponse::Ok()
+            match auth.register(
+                &id,
+                &email
+            ).await {
+                Err(e) => {
+                    error!("unable to register email address");
+                }
+                Ok(_) => {
+                    info!("email registered");
+                    return HttpResponse::Created()
+                        .json(ApiResponse::new(
+                            false,
+                            String::from("Successfully registered email address"),
+                            None
+                        ));
+                }
+            } 
+        }
+    }
+
+    return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
             String::from("Service is up. version: 1.0.0.0.dev"),
