@@ -94,12 +94,12 @@ where
     }
 
     fn call(&self, request: ServiceRequest) -> Self::Future {
-        debug!("here 1");
+        debug!("UserMiddleware::call() 1");
 
         let service = self.service.clone();
 
         return Box::pin(async move {
-            debug!("here 2");
+            debug!("UserMiddleware::call() 2");
 
             let mut result = UserObject::new(
                 None,
@@ -151,6 +151,8 @@ where
                 debug!("no authorization header found");
             }
 
+
+            debug!("user: {:?}", result);
             request.extensions_mut().insert(result);
 
             let fut = service.call(request);
