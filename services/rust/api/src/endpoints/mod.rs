@@ -11,6 +11,11 @@ use serde::{
 };
 use serde_json::Value;
 
+use actix_web::{
+    HttpResponse, 
+    Responder
+};
+
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiResponse {
@@ -33,4 +38,11 @@ impl ApiResponse {
             data: data
         };
     }
+}
+
+
+pub async fn default_options() -> impl Responder {
+    // info!("endpoints::common::default_options()");
+    return HttpResponse::Ok()
+        .finish();
 }
