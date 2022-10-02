@@ -39,10 +39,10 @@ async fn main()  -> std::io::Result<()> {
 
             App::new()
                 .app_data(web::Data::new(config.clone()))
-                .app_data(pg::Db::new(&config.clone()))
+                .app_data(web::Data::new(pg::Db::new(&config.clone())))
 
                 // .app_data(web::Data::new(crate::services::auth_token::AuthToken::new(token.clone())))
-                .app_data(web::Data::new(token.clone()))
+                // .app_data(web::Data::new(token.clone()))
 
                 .wrap(crate::middleware::cors::CORS::new())
                 .wrap(crate::middleware::user::User::new(token.clone()))
