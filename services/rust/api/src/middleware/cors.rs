@@ -1,7 +1,8 @@
-// use log::{
-//     // info,
-//     debug
-// };
+use log::{
+    info,
+    error,
+    debug
+};
 
 use std::task::{ Context, Poll };
 use std::future::{ ready, Ready };
@@ -24,7 +25,7 @@ use http::header::{
     ACCESS_CONTROL_ALLOW_ORIGIN,
     ACCESS_CONTROL_ALLOW_METHODS,
     ACCESS_CONTROL_ALLOW_HEADERS, 
-    // ACCESS_CONTROL_ALLOW_CREDENTIALS,
+    ACCESS_CONTROL_ALLOW_CREDENTIALS,
     ACCESS_CONTROL_EXPOSE_HEADERS
 };
 
@@ -82,8 +83,11 @@ where
     fn call(&self, request: ServiceRequest) -> Self::Future {
         let origin = HeaderValue::from_static("*");
         let fut = self.service.call(request);
+        debug!("CORSMiddleware::call() 1");
 
         return Box::pin(async move {
+            debug!("CORSMiddleware::call() 2");
+
             let mut res = fut.await?;
             
             if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_ORIGIN) {
@@ -99,7 +103,7 @@ where
             }
 
             // if !res.headers().contains_key(ACCESS_CONTROL_ALLOW_CREDENTIALS) {
-            //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_CREDENTIALS, HeaderValue::from_static("false"));
+            //     res.headers_mut().insert(ACCESS_CONTROL_ALLOW_CREDENTIALS, HeaderValue::from_static("true"));
             // }
 
             if !res.headers().contains_key(ACCESS_CONTROL_EXPOSE_HEADERS) {
