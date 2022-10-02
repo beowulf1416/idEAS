@@ -9,7 +9,12 @@ use lettre::{
     Message, 
     SmtpTransport, 
     Transport,
-    transport::smtp::authentication::Credentials
+    transport::smtp::authentication::Credentials,
+    message::{
+        header,
+        MultiPart,
+        SinglePart
+    }
 };
 
 
@@ -65,24 +70,25 @@ impl Mailer {
         subject: &str,
         body: &str
     ) -> Result<(), MailerError> {
-        // if let email = Message::builder()
-        //     // .from("NoBody <nobody@domain.tld>".parse().unwrap())
-        //     // .reply_to("Yuin <yuin@domain.tld>".parse().unwrap())
-        //     // .to("Hei <hei@domain.tld>".parse().unwrap())
-        //     // .subject("Happy new year")
-        //     // .body(String::from("Be happy!"))
-        //     .from(from.parse().unwrap())
-        //     .reply_to(to.parse().unwrap())
-        //     .subject(subject)
-        //     .body(String::from(body))
-        //     .unwrap();
-
         match Message::builder()
             .from(from.parse().unwrap())
             .to(to.parse().unwrap())
             .reply_to(to.parse().unwrap())
             .subject(subject)
-            .body(String::from(body)) {
+            .multipart(
+                MultiPart::alternative()
+                    .singlepart(
+                        SinglePart::builder()
+                            .header(header::ContentType::TEXT_PLAIN)
+                            .body(String::from(body))
+                    )
+                    .singlepart(
+                        SinglePart::builder()
+                            .header(header::ContentType::TEXT_HTML)
+                            .body(String::from(body))
+                    )
+            ) {
+            // .body(String::from(body)) {
             Err(e) => {
                 error!("error while building message: {:?}", e);
                 return Err(MailerError::SendError);
