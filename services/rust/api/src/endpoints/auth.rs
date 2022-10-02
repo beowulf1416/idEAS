@@ -16,27 +16,28 @@ use actix_web::{
 };
 
 use crate::endpoints::{
-    ApiResponse
+    ApiResponse,
+    default_options
 };
 
 use pg::{
     Db,
     DbError,
-    Auth
+    auth::Auth
 };
 
 
 #[derive(Debug, Serialize, Deserialize)]
 struct AuthRegisterPostRequest {
-    id: uuid::Uuid,
-    email: String
+    pub id: uuid::Uuid,
+    pub email: String
 }
 
 
 #[derive(Debug, Serialize, Deserialize)]
 struct AuthLoginPostRequest {
-    email: String,
-    password: String
+    pub email: String,
+    pub password: String
 }
 
 
@@ -44,6 +45,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
             web::resource("register")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(register_get))
                 .route(web::post().to(register_post))
         )
@@ -80,8 +82,8 @@ async fn register_post(
         }
         Ok(client) => {
             let auth = Auth::new(client);
-            let id = params.id;
-            let email = params.email;
+            let id = &params.id;
+            let email = &params.email;
 
             match auth.register(
                 &id,
