@@ -9,6 +9,7 @@ services:
       - "zookeeper_data:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+
   kafka:
     image: docker.io/bitnami/kafka:3.2
     ports:
@@ -26,6 +27,13 @@ services:
     depends_on:
       - zookeeper
 
+  db:
+    build:
+      context: data/sql
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+      
 volumes:
   zookeeper_data:
     driver: local
