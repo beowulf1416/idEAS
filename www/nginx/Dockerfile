@@ -1,4 +1,3 @@
-
 FROM alpine:latest
 LABEL maintainer="Ferd Tomale<beowulf1416@gmail.com>"
 
@@ -16,7 +15,7 @@ RUN sed -i 's/error_log \/var\/log\/nginx\/error.log warn;/error_log \/dev\/stde
 RUN sed -i 's/access_log \/var\/log\/nginx\/access.log warn;/access_log \/dev\/stdout main;/' /etc/nginx/nginx.conf
 
 COPY ./content/ui/* /var/www/html/ideas/ui/
-COPY ./conf/ideas_ui.conf /etc/nginx/http.d/ideas_ui.conf
+COPY ./conf/ideas_ui.conf /etc/nginx/http.d/default.conf
 
 EXPOSE 80/udp
 EXPOSE 80/tcp
