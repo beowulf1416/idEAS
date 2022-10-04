@@ -29,7 +29,7 @@ services:
 
   db:
     build:
-      context: data/sql
+      context: data
       dockerfile: Dockerfile
     ports:
       - "5432:5432"
