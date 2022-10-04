@@ -46,4 +46,15 @@ export class RegistrationService {
       }
     );
   }
+
+  get(
+    token: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_registration_base + environment.api_registration_info,
+      {
+        token: token
+      }
+    );
+  }
 }
