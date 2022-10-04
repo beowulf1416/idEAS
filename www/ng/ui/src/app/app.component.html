@@ -1,19 +1,23 @@
 <div id="component-app" class="wrapper-component">
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #$nav mode="side" position="end">
-      Right content
+    <mat-sidenav class="navleft" #$navleft mode="over" position="start">
+      left content
+    </mat-sidenav>
+
+    <mat-sidenav #$navright mode="over" position="end">
+      right content
     </mat-sidenav>
 
     <mat-sidenav-content>
 
       <mat-toolbar class="tb-app" color="primary">
-        <button mat-icon-button (click)="$nav.toggle()">
+        <button mat-icon-button (click)="$navleft.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
         <h1>idEAS</h1>
         <span class="spacer"></span>
-        <button mat-icon-button class="notifications" aria-label="Notifications" (click)="$nav.toggle()">
-          <mat-icon>share</mat-icon>
+        <button mat-icon-button class="notifications" aria-label="Notifications" (click)="$navright.toggle()">
+          <mat-icon>notifications</mat-icon>
         </button>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Settings">
           <mat-icon>more_vert</mat-icon>
@@ -35,9 +39,19 @@
         </mat-menu>
       </mat-toolbar>
 
-      Content
-      
-      <router-outlet></router-outlet>
+      <div class="wrapper-content">
+        <div class="wrapper-tb-content">
+          <button mat-icon-button>
+            <mat-icon>notifications</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>notifications</mat-icon>
+          </button>
+        </div>
+        <div class="wrapper-content-main">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
       
     </mat-sidenav-content>
   </mat-sidenav-container>

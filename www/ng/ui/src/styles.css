@@ -1,2 +1,33 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+#component-app,
+.sidenav-container {
+    height: 100%;
+}
+
+#component-app .spacer {
+    flex: 1 1 auto;
+}
+
+#compoent-app .navleft {
+    width: 8em;
+}
+
+.wrapper-content {
+    display: flex;
+    flex-flow: row wrap;
+    height: 100%;
+}
+
+.wrapper-content > .wrapper-tb-content {
+    width: 3em;
+    height: 100%;
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(82,82,173,1) 0%, rgba(0,212,255,1) 100%); 
+}
+
+.wrapper-content > .wrapper-content-main {
+    margin: auto;
+    height: 100%;
+}
