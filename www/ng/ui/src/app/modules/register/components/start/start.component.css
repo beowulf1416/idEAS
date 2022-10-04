@@ -1,0 +1,7 @@
+#component-register-start {
+    padding: 1em;
+}
+
+mat-form-field {
+    display: block;
+}
