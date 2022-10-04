@@ -21,7 +21,7 @@ create table organization_tree (
         foreign key (org_id)
         references client.organizations (id)
         on delete restrict,
-    constraint fk_organization_tree_2
+    constraint fk_organization_tree_3
         foreign key (parent_org_id)
         references client.organizations (id)
         on delete restrict
