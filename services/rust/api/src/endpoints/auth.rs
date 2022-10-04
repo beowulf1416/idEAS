@@ -50,6 +50,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(register_post))
         )
         .service(
+            web::resource("register/info")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(register_info_get))
+                .route(web::post().to(register_info_post))
+        )
+        .service(
             web::resource("login")
                 .route(web::get().to(login_get))
                 .route(web::post().to(login_post))
@@ -106,6 +112,27 @@ async fn register_post(
     }
 
     return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from("Service is up. version: 1.0.0.0.dev"),
+            None
+        ));
+}
+
+
+async fn register_info_get() -> impl Responder {
+    info!("register_info_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn register_info_post(
+    db: web::Data<Db>,
+    params: web::Json<AuthLoginPostRequest>
+) -> impl Responder {
+    info!("register_info_post()");
+
+    return HttpResponse::Ok()
         .json(ApiResponse::new(
             false,
             String::from("Service is up. version: 1.0.0.0.dev"),
