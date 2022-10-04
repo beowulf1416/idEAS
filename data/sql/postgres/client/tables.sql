@@ -6,3 +6,4 @@ set schema 'client';
 \ir tables/defaults.sql
 
 \ir tables/organizations.sql
+\ir tables/organization_tree.sql
