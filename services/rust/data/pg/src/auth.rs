@@ -32,13 +32,15 @@ impl Auth {
     pub async fn register(
         &self,
         user_id: &uuid::Uuid,
+        token: &str,
         email: &str
     ) -> Result<(), DbError> {
         let t_email = crate::types::email::Email::new(email);
         return self.0.call_sp(
-            "call iam.user_add($1, $2);",
+            "call iam.user_register($1, $2, $3);",
             &[
                 &user_id,
+                &token,
                 &t_email
             ]
         ).await;
@@ -108,10 +110,12 @@ mod tests {
                     let mut rng = rand::thread_rng();
                     let suffix: u8 = rng.gen();
 
+                    let token = format!("token_{}", suffix);
                     let email = format!("email_{}@test.com", suffix);
 
                     match auth.register(
                         &new_id,
+                        &token,
                         &email
                     ).await {
                         Err(e) => {
