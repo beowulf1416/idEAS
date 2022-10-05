@@ -7,6 +7,7 @@ set schema 'iam';
 \ir procs/users/user_fetch.sql
 \ir procs/users/user_get.sql
 \ir procs/users/user_get_by_email.sql
+\ir procs/users/user_register.sql
 
 \ir procs/roles/role_add.sql
 \ir procs/roles/role_fetch.sql
