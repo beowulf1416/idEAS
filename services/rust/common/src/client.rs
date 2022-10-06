@@ -1,6 +1,6 @@
 #[derive(Debug)]
 pub struct Client {
-    pub id: String,
+    pub id: uuid::Uuid,
     pub active: bool,
     pub name: String,
     pub description: String,
