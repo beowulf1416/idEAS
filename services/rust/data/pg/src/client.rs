@@ -84,6 +84,24 @@ impl Client {
             ]
         ).await;
     }
+
+    pub async fn fetch(
+        &self,
+        &filter: &str,
+        &active: &bool,
+        &items: &i32,
+        &page: &i32
+    ) -> Result<Vec<common::Client>, DbError> {
+        return self.0.call_sp(
+            "select * from client.client_fetch($1, $2, $3, $4)",
+            &[
+                &filter,
+                &active,
+                &items,
+                &page
+            ]
+        ).await;
+    }
 }
 
 
