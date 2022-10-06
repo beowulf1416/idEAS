@@ -87,20 +87,47 @@ impl Client {
 
     pub async fn fetch(
         &self,
-        &filter: &str,
-        &active: &bool,
-        &items: &i32,
-        &page: &i32
-    ) -> Result<Vec<common::Client>, DbError> {
-        return self.0.call_sp(
-            "select * from client.client_fetch($1, $2, $3, $4)",
-            &[
-                &filter,
-                &active,
-                &items,
-                &page
-            ]
-        ).await;
+        filter: &str,
+        active: &bool,
+        items: &i32,
+        page: &i32
+    ) -> Result<Vec<common::client::Client>, DbError> {
+        let sql = "select * from client.client_fetch($1, $2, $3, $4)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query(
+                        &stmt,
+                        &[
+                            &filter,
+                            &active,
+                            &items,
+                            &page
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(rows) => {
+                        let results = rows.iter().map(|r| common::client::Client {
+                            id: r.get("id"),
+                            active: r.get("active"),
+                            name: r.get("name"),
+                            description: r.get("description"),
+                            address: r.get("address"),
+                            country_id: r.get("country_id"),
+                            url: r.get("url")
+                        })
+                        .collect();
+                        return Ok(results);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -266,6 +293,65 @@ mod tests {
                                 }
                                 Ok(_) => {
                                     assert!(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test]
+    async fn test_client_fetch() {
+        if let Some(config) = config::get_configuration() {
+            let db = Db::new(&config);
+            match db.get_client().await {
+                Err(e) => {
+                    error!("unable to retrieve client {:?}", e);
+                    assert!(false);
+                }
+                Ok(client) => {
+                    let clients = Client::new(client);
+
+                    let client_id = uuid::Uuid::new_v4();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+                    
+                    let client_name = format!("client_name_{}", suffix);
+                    let description = format!("description_{}", suffix);
+                    let address = format!("address_{}", suffix);
+                    let country_id: i32 = 608;
+                    let url = format!("http://www.test-{}.com", suffix);
+
+                    match clients.add(
+                        &client_id,
+                        &client_name,
+                        &description,
+                        &address,
+                        &country_id,
+                        &url
+                    ).await {
+                        Err(e) => {
+                            error!("unable to add client {:?}", e);
+                            assert!(false);
+                        }
+                        Ok(_) => {
+                            match clients.fetch(
+                                &"%",
+                                &false,
+                                &10,
+                                &0
+                            ).await {
+                                Err(e) => {
+                                    error!("unable to fetch clients: {:?}", e);
+                                    assert!(false);
+                                }
+                                Ok(clients) => {
+                                    debug!("clients: {:?}", clients);
                                 }
                             }
                         }
