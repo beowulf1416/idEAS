@@ -6,7 +6,7 @@ create or replace function client_fetch(
 )
 returns table (
     id client.clients.id%type,
-    active client.clients.id%type,
+    active client.clients.active%type,
     name client.clients.name%type,
     description client.clients.description%type,
     address client.clients.address%type,
@@ -20,58 +20,59 @@ begin
         if p_active = true then
             return query
             select
-                id,
-                active,
-                name,
-                description,
-                address,
-                country_id,
-                url
-            from client.clients
+                a.id,
+                a.active,
+                a.name,
+                a.description,
+                a.address,
+                a.country_id,
+                a.url
+            from client.clients a
             where
-                active = true
+                a.active = true
             ;
         else
             return query
             select
-                id,
-                active,
-                name,
-                description,
-                address,
-                country_id,
-                url
-            from client.clients
+                a.id,
+                a.active,
+                a.name,
+                a.description,
+                a.address,
+                a.country_id,
+                a.url
+            from client.clients a
             ;
         end if;
     else
         if p_active = true then
             return query
             select
-                id,
-                active,
-                name,
-                description,
-                address,
-                country_id,
-                url
-            from client.clients
+                a.id,
+                a.active,
+                a.name,
+                a.description,
+                a.address,
+                a.country_id,
+                a.url
+            from client.clients a
             where
-                active = true
-                and name like p_filter
+                a.active = true
+                and a.name like p_filter
             ;
         else
             return query
             select
-                id,
-                active,
-                name,
-                description,
-                address,
-                country_id,
-                url
-            from client.clients
-                name like p_filter
+                a.id,
+                a.active,
+                a.name,
+                a.description,
+                a.address,
+                a.country_id,
+                a.url
+            from client.clients a
+            where
+                a.name like p_filter
             ;
         end if;
     end if;

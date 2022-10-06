@@ -7,7 +7,7 @@ create or replace procedure organization_update(
 language plpgsql
 as $$
 begin
-    insert into client.organizations (
+    insert into client.organizations_scd (
         org_id,
         active,
         name,
@@ -18,7 +18,7 @@ begin
         a.active,
         a.name,
         a.description
-    from client.organizations_scd a
+    from client.organizations a
     where
         id = p_organization_id
     ;
