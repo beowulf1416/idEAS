@@ -1,6 +1,5 @@
 create or replace procedure user_register_complete(
     p_id iam.user_registration.id%type,
-    p_email iam.user_registration.email%type,
     p_given_name crm.people.given_name%type,
     p_middle_name crm.people.middle_name%type,
     p_family_name crm.people.family_name%type,
@@ -9,12 +8,14 @@ create or replace procedure user_register_complete(
 )
 language plpgsql
 as $$
+declare
+    t_email iam.user_registration.email%type;
 begin
-    update iam.user_registration set
-        completed = now() at time zone 'utc'
+    select
+        a.email into t_email
+    from iam.user_registration a
     where
-        id = p_id
-        and email = p_email
+        a.id = p_id
     ;
 
     insert into crm.people (
@@ -36,5 +37,11 @@ begin
         p_prefix,
         p_suffix
     );
+
+    update iam.user_registration set
+        completed = now() at time zone 'utc'
+    where
+        id = p_id
+    ;
 end
 $$;
