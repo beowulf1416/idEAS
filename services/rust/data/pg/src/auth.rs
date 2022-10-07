@@ -44,6 +44,28 @@ impl Auth {
         ).await;
     }
 
+    pub async fn registration_complete(
+        &self,
+        id: &uuid::Uuid,
+        given_name: &str,
+        middle_name: &str,
+        family_name: &str,
+        prefix: &str,
+        suffix: &str
+    ) -> Result<(), DbError> {
+        return self.0.call_sp(
+            "call iam.user_register_complete($1, $2, $3, $4, $5, $6);",
+            &[
+                &id,
+                &given_name,
+                &middle_name,
+                &last_name,
+                &prefix,
+                &suffix
+            ]
+        ).await;
+    }
+
     pub async fn authenticate(
         &self,
         email: &str,
@@ -120,6 +142,60 @@ mod tests {
                         }
                         Ok(_) => {
                             assert!(true);
+                        }
+                    }
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+
+    #[actix_rt::test] 
+    async fn test_register_complete() {
+        if let Some(config) = config::get_configuration() {
+            let db = Db::new(&config);
+            match db.get_client().await {
+                Err(e) => {
+                    error!("unable to retrieve client {:?}", e);
+                    assert!(false);
+                }
+                Ok(client) => {
+                    let auth = Auth::new(client);
+
+                    let new_id = uuid::Uuid::new_v4();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+
+                    let email = format!("email_{}@test.com", suffix);
+
+                    match auth.register(
+                        &new_id,
+                        &email
+                    ).await {
+                        Err(e) => {
+                            error!("unable to register new user {:?}", e);
+                            assert!(false);
+                        }
+                        Ok(_) => {
+                            match auth.register_complete(
+                                &new_id,
+                                &given_name,
+                                &middle_name,
+                                &family_name,
+                                &prefix,
+                                &suffix
+                            ).await {
+                                Err(e) => {
+                                    error!("unable to complete registration: {:?}", e);
+                                    assert!(false);
+                                }
+                                Ok(_) => {
+                                    assert!(true);
+                                }
+                            }                            
                         }
                     }
                 }
