@@ -30,7 +30,7 @@ use pg::{
 #[derive(Debug, Serialize, Deserialize)]
 struct AuthRegisterPostRequest {
     pub id: uuid::Uuid,
-    pub token: String,
+    // pub token: String,
     pub email: String
 }
 
@@ -90,12 +90,12 @@ async fn register_post(
         Ok(client) => {
             let auth = Auth::new(client);
             let id = &params.id;
-            let token = &params.token;
+            // let token = &params.token;
             let email = &params.email;
 
             match auth.register(
                 &id,
-                &token,
+                // &token,
                 &email
             ).await {
                 Err(e) => {
