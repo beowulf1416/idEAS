@@ -16,7 +16,8 @@ use actix_web::{
 };
 
 use crate::endpoints::{
-    ApiResponse
+    ApiResponse,
+    default_options
 };
 
 use pg::{
