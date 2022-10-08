@@ -44,6 +44,37 @@ impl Auth {
         ).await;
     }
 
+    pub async fn register_get(
+        &self,
+        id: &uuid::Uuid
+    ) -> Result<(), DbError> {
+        /// retrieve user registration info
+        let sql = "select * from iam.user_register_get($1);";
+        match self.0.get_client().prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare statement: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.get_client().query_one(
+                    &stmt,
+                    &[
+                        &id
+                    ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to execute sql: {} {:?}", sql, e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        debug!("result: {:?}", r);
+                        return Ok(());
+                    }
+                }
+            }
+        }
+    }
+
     pub async fn register_complete(
         &self,
         id: &uuid::Uuid,
@@ -53,6 +84,7 @@ impl Auth {
         prefix: &str,
         suffix: &str
     ) -> Result<(), DbError> {
+        /// flags the registration record as completed
         return self.0.call_sp(
             "call iam.user_register_complete($1, $2, $3, $4, $5, $6);",
             &[
@@ -142,6 +174,54 @@ mod tests {
                         }
                         Ok(_) => {
                             assert!(true);
+                        }
+                    }
+                }
+            }
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[actix_rt::test] 
+    async fn test_register_get() {
+        if let Some(config) = config::get_configuration() {
+            let db = Db::new(&config);
+            match db.get_client().await {
+                Err(e) => {
+                    error!("unable to retrieve client {:?}", e);
+                    assert!(false);
+                }
+                Ok(client) => {
+                    let auth = Auth::new(client);
+
+                    let new_id = uuid::Uuid::new_v4();
+
+                    let mut rng = rand::thread_rng();
+                    let suffix: u8 = rng.gen();
+
+                    let email = format!("email_{}@test.com", suffix);
+
+                    match auth.register(
+                        &new_id,
+                        &email
+                    ).await {
+                        Err(e) => {
+                            error!("unable to register new user {:?}", e);
+                            assert!(false);
+                        }
+                        Ok(_) => {
+                            match auth.register_get(
+                                &new_id
+                            ).await {
+                                Err(e) => {
+                                    error!("unable to retrieve registration info: {:?}", e);
+                                }
+                                Ok(r) => {
+                                    debug!("register info: {:?}", r);
+                                    assert!(true);
+                                }
+                            }
                         }
                     }
                 }
