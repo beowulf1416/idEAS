@@ -6,15 +6,19 @@ import { MaterialModule } from 'src/material/material.module';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
+import { httpInterceptorProviders } from './interceptors';
+
 import { AppComponent } from './app.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { HomeComponent } from './components/home/home.component';
+import { ClientSelectComponent } from './components/client-select/client-select.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WorkspaceComponent,
-    HomeComponent
+    HomeComponent,
+    ClientSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +28,9 @@ import { HomeComponent } from './components/home/home.component';
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    httpInterceptorProviders
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

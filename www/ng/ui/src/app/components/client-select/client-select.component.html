@@ -1,0 +1,8 @@
+<div class="component-wrapper">
+    <div class="wrapper-clients">
+        <h3>Clients</h3>
+        <ul>
+            <li *ngFor="let client of clients" title="{{ client.name }}" routerLink="{{ client.id }}">{{ client.name }}</li>
+        </ul>
+    </div><!-- .wrapper-form -->
+</div><!-- .component-wrapper -->
