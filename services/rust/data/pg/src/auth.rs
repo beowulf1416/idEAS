@@ -34,6 +34,7 @@ impl Auth {
         user_id: &uuid::Uuid,
         email: &str
     ) -> Result<(), DbError> {
+        /// register a user
         let t_email = crate::types::email::Email::new(email);
         return self.0.call_sp(
             "call iam.user_register($1, $2);",
@@ -47,7 +48,7 @@ impl Auth {
     pub async fn register_get(
         &self,
         id: &uuid::Uuid
-    ) -> Result<(), DbError> {
+    ) -> Result<common::auth::registration::Registration, DbError> {
         /// retrieve user registration info
         let sql = "select * from iam.user_register_get($1);";
         match self.0.get_client().prepare_cached(sql).await {
@@ -68,7 +69,10 @@ impl Auth {
                     }
                     Ok(r) => {
                         debug!("result: {:?}", r);
-                        return Ok(());
+                        return Ok(common::auth::registration::Registration {
+                            id: r.get("id"),
+                            email: r.get("email")
+                        });
                     }
                 }
             }
@@ -216,6 +220,7 @@ mod tests {
                             ).await {
                                 Err(e) => {
                                     error!("unable to retrieve registration info: {:?}", e);
+                                    assert!(false);
                                 }
                                 Ok(r) => {
                                     debug!("register info: {:?}", r);
