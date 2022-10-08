@@ -34,6 +34,10 @@ struct AuthRegisterPostRequest {
     pub email: String
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct AuthRegisterInfoPostRequest {
+    pub id: uuid::Uuid
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct AuthLoginPostRequest {
@@ -117,7 +121,7 @@ async fn register_post(
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from("An error occured while trying to register"),
             None
         ));
 }
@@ -131,14 +135,41 @@ async fn register_info_get() -> impl Responder {
 
 async fn register_info_post(
     db: web::Data<Db>,
-    params: web::Json<AuthLoginPostRequest>
+    params: web::Json<AuthRegisterInfoPostRequest>
 ) -> impl Responder {
     info!("register_info_post()");
 
-    return HttpResponse::Ok()
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client: {:?}", e);
+        }
+        Ok(client) => {
+            let auth = Auth::new(client);
+
+            let id = &params.id;
+
+            match auth.register_get(
+                &id
+            ).await {
+                Err(e) => {
+                    error!("unable to complete registration: {:?}", e);
+                }
+                Ok(r) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            false,
+                            String::from("Successfully retrieved intial registration info"),
+                            Some(r)
+                        ));
+                }
+            } 
+        }
+    }
+
+    return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from("An error occured while trying to complete the registration"),
             None
         ));
 }
