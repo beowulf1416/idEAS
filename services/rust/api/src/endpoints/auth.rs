@@ -99,7 +99,7 @@ async fn register_post(
                 &email
             ).await {
                 Err(e) => {
-                    error!("unable to register email address");
+                    error!("unable to register email address: {:?}", e);
                 }
                 Ok(_) => {
                     info!("email registered");
