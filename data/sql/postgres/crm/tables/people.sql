@@ -1,6 +1,5 @@
 create table people (
     id uuid not null,
-    client_id uuid not null,
     active boolean not null default false,
     created timestamp without time zone not null default(now() at time zone 'utc'),
 
@@ -12,12 +11,7 @@ create table people (
     suffix varchar(100),
 
     constraint pk_people
-        primary key (id),
-
-    constraint fk_people_1
-        foreign key (client_id)
-        references client.clients (id)
-        on delete restrict
+        primary key (id)
 );
 
 
