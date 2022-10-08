@@ -7,3 +7,5 @@ pub mod mail;
 
 pub mod client;
 pub mod user;
+
+pub mod auth;
