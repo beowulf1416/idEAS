@@ -32,7 +32,7 @@ use deadpool_postgres::{
 };
 use tokio_postgres::{
     NoTls,
-    row::Row
+    // row::Row
 };
 use tokio_postgres::config::{ Config };
 
