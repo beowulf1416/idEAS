@@ -18,7 +18,7 @@ export class RegistrationService {
     email: string
   ): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(
-      environment.api_url_registration_base + environment.api_register_start,
+      environment.api_url_base + environment.api_register_start,
       {
         register_id: register_id,
         email: email
@@ -35,7 +35,7 @@ export class RegistrationService {
     family_name: string
   ): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(
-      environment.api_url_registration_base + environment.api_register_complete,
+      environment.api_url_base + environment.api_register_complete,
       {
         register_id: register_id,
         prefix: prefix,
@@ -51,7 +51,7 @@ export class RegistrationService {
     token: string
   ): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(
-      environment.api_url_registration_base + environment.api_registration_info,
+      environment.api_url_base + environment.api_registration_info,
       {
         token: token
       }
