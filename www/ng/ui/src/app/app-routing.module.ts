@@ -23,8 +23,16 @@ const routes: Routes = [
     loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
   },
   {
+    path: "accounting",
+    loadChildren: () => import('./modules/accounting/accounting.module').then(m => m.AccountingModule)
+  },
+  {
     path: "inventory",
     loadChildren: () => import('./modules/inventory/inventory.module').then(m => m.InventoryModule)
+  },
+  {
+    path: "crm",
+    loadChildren: () => import('./modules/crm/crm.module').then(m => m.CrmModule)
   },
   {
     path: "client/join",

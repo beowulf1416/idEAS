@@ -8,6 +8,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/client/client.module').then(m => m.ClientModule)
   },
   {
+    path: "roles",
+    loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
+  },
+  {
     path: "",
     component: DashboardComponent
   }

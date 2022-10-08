@@ -1,0 +1,42 @@
+<div class="wrapper-component">
+    <div class="wrapper-form">
+        <form class="form-client" method="post" action="" [formGroup]="clientForm" (ngSubmit)="submit()">
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput formControlName="name" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter client name</mat-hint>
+                </mat-form-field>
+                <mat-checkbox class="field-active">Active</mat-checkbox>
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <input type="text" id="description" name="description" class="field-description" placeholder="Description" required matInput formControlName="description" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter client description</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address</mat-label>
+                    <input type="text" id="address" name="address" class="field-address" placeholder="Address" required matInput formControlName="address" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter client address</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Country</mat-label>
+                    <input type="text" id="country" name="country" class="field-country" placeholder="Country" required matInput formControlName="country" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please select country</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>URL</mat-label>
+                    <input type="url" id="url" name="url" class="field-url" placeholder="URL" required matInput formControlName="url" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter client url</mat-hint>
+                </mat-form-field>
+            </fieldset>
+            <fieldset>
+                <button mat-raised-button color="primary">Save</button>
+            </fieldset>
+        </form>
+    </div><!-- .wrapper-form -->
+</div><!-- .wrapper-component -->
