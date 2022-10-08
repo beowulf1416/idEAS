@@ -44,7 +44,7 @@ impl Auth {
         ).await;
     }
 
-    pub async fn registration_complete(
+    pub async fn register_complete(
         &self,
         id: &uuid::Uuid,
         given_name: &str,
@@ -59,7 +59,7 @@ impl Auth {
                 &id,
                 &given_name,
                 &middle_name,
-                &last_name,
+                &family_name,
                 &prefix,
                 &suffix
             ]
@@ -182,11 +182,11 @@ mod tests {
                         Ok(_) => {
                             match auth.register_complete(
                                 &new_id,
-                                &given_name,
-                                &middle_name,
-                                &family_name,
-                                &prefix,
-                                &suffix
+                                &"test_given_name",
+                                &"test_middle_name",
+                                &"test_family_name",
+                                &"test_prefix",
+                                &"test_suffix"
                             ).await {
                                 Err(e) => {
                                     error!("unable to complete registration: {:?}", e);
