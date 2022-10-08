@@ -20,7 +20,6 @@ begin
 
     insert into crm.people (
         id,
-        client_id,
         active,
         given_name,
         middle_name,
@@ -29,7 +28,6 @@ begin
         suffix
     ) values (
         p_id,
-        p_client_id,
         true,
         p_given_name,
         p_middle_name,
