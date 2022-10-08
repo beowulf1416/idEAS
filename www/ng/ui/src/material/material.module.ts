@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -22,6 +23,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
   exports: [
       MatFormFieldModule,
       MatInputModule,
+      MatCheckboxModule,
       MatButtonModule,
       MatIconModule,
       MatToolbarModule,
