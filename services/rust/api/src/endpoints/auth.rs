@@ -4,6 +4,8 @@ use log::{
     error
 };
 
+use std::sync::{ Mutex };
+
 use serde::{
     Serialize,
     Deserialize
@@ -13,6 +15,12 @@ use actix_web::{
     HttpResponse, 
     Responder,
     web
+};
+
+use kafka::producer::{
+    Producer, 
+    Record, 
+    RequiredAcks
 };
 
 use crate::endpoints::{
@@ -83,9 +91,13 @@ async fn register_get() -> impl Responder {
 
 async fn register_post(
     db: web::Data<Db>,
+    // queue: web::Data<Mutex<queue::Queue>>,
+    producer: web::Data<Mutex<Producer>>,
     params: web::Json<AuthRegisterPostRequest>
 ) -> impl Responder {
     info!("register_post()");
+
+    let id = uuid::Uuid::new_v4();
 
     match db.get_client().await {
         Err(e) => {
@@ -93,13 +105,11 @@ async fn register_post(
         }
         Ok(client) => {
             let auth = Auth::new(client);
-            let id = &params.id;
-            // let token = &params.token;
+            // let id = &params.id;
             let email = &params.email;
 
             match auth.register(
                 &id,
-                // &token,
                 &email
             ).await {
                 Err(e) => {
@@ -107,6 +117,28 @@ async fn register_post(
                 }
                 Ok(_) => {
                     info!("email registered");
+
+                    let body = format!(r#"
+<h1>this is a test</h1>
+<a title="Click here" href="/auth/register/complete/{}
+"#, id);
+
+                    let mail = common::mail::Mail {
+                        to: "ferdinand@marginfuel.com".to_owned(),
+                        subject: "test mailer".to_owned(),
+                        body: body.to_owned()
+                    };
+                    
+                    let mut p = producer.lock().unwrap();
+                    match p.send(&Record::from_value("mailer", serde_json::to_string(&mail).unwrap())) {
+                        Err(e) => {
+                            error!("an error occured while trying to add to queue");
+                        }
+                        Ok(result) => {
+                            debug!("result: {:?}", result);
+                        }
+                    }
+
                     return HttpResponse::Created()
                         .json(ApiResponse::new(
                             false,
@@ -159,7 +191,7 @@ async fn register_info_post(
                         .json(ApiResponse::new(
                             false,
                             String::from("Successfully retrieved intial registration info"),
-                            Some(r)
+                            Some(serde_json::to_string(&r).unwrap())
                         ));
                 }
             } 
