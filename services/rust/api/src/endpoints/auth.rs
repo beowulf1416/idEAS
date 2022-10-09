@@ -28,6 +28,10 @@ use crate::endpoints::{
     default_options
 };
 
+use config::{
+    ApplicationConfig
+};
+
 use pg::{
     Db,
     DbError,
@@ -90,6 +94,7 @@ async fn register_get() -> impl Responder {
 
 
 async fn register_post(
+    cfg: web::Data<ApplicationConfig>,
     db: web::Data<Db>,
     // queue: web::Data<Mutex<queue::Queue>>,
     producer: web::Data<Mutex<Producer>>,
@@ -120,15 +125,18 @@ async fn register_post(
 
                     let body = format!(r#"
 <h1>this is a test</h1>
-<a title="Click here" href="/auth/register/complete/{}
-"#, id);
+<p>Click <a title="Click here" href="/auth/register/complete/{token}">{base_url}/auth/register/complete/{token}</a> to continue registration</p>
+"#,
+token = id,
+base_url = cfg.base_url
+);
 
                     let mail = common::mail::Mail {
-                        to: "ferdinand@marginfuel.com".to_owned(),
-                        subject: "test mailer".to_owned(),
+                        to: email.to_string(),
+                        subject: "registration".to_owned(),
                         body: body.to_owned()
                     };
-                    
+
                     let mut p = producer.lock().unwrap();
                     match p.send(&Record::from_value("mailer", serde_json::to_string(&mail).unwrap())) {
                         Err(e) => {
