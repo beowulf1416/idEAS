@@ -41,12 +41,8 @@ async fn main()  -> std::io::Result<()> {
     if let Some(config) = get_configuration() {
         debug!("parsed config: {:?}", config);
 
-        let bind_host = config.auth.bind_host.clone();
-        let bind_port = config.auth.bind_port.clone();
-
-        
-
-        
+        let bind_host = config.api.bind_host.clone();
+        let bind_port = config.api.bind_port.clone();
 
         let server = HttpServer::new(move || {
             let token = token::Token::new(&config.token.secret);
@@ -73,7 +69,8 @@ async fn main()  -> std::io::Result<()> {
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
-                .service(web::scope("/countries").configure(crate::endpoints::countries::config))
+                .service(web::scope("/countries").configure(crate::endpoints::common::countries::config))
+                .service(web::scope("/currencies").configure(crate::endpoints::common::currencies::config))
                 .service(web::scope("/clients").configure(crate::endpoints::clients::config))
         })
         .workers(2) // for testing only

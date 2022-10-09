@@ -125,7 +125,7 @@ async fn register_post(
 
                     let body = format!(r#"
 <h1>this is a test</h1>
-<p>Click <a title="Click here" href="/auth/register/complete/{token}">{base_url}/auth/register/complete/{token}</a> to continue registration</p>
+<p>Click <a title="Click here" href="{base_url}/auth/register/complete/{token}">{base_url}/auth/register/complete/{token}</a> to continue registration</p>
 "#,
 token = id,
 base_url = cfg.base_url
@@ -138,13 +138,8 @@ base_url = cfg.base_url
                     };
 
                     let mut p = producer.lock().unwrap();
-                    match p.send(&Record::from_value("mailer", serde_json::to_string(&mail).unwrap())) {
-                        Err(e) => {
-                            error!("an error occured while trying to add to queue");
-                        }
-                        Ok(result) => {
-                            debug!("result: {:?}", result);
-                        }
+                    if let Err(e) = p.send(&Record::from_value("mailer", serde_json::to_string(&mail).unwrap())) {
+                        error!("an error occured while trying to add to queue: {:?}", e);
                     }
 
                     return HttpResponse::Created()
