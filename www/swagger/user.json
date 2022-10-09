@@ -7,7 +7,7 @@
     "servers": [
         {
             "url": "http://localhost:8080",
-            "description": "local auth server"
+            "description": "local api server"
         }
     ],
     "components": {
@@ -34,27 +34,10 @@
                     "message"
                 ]
             },
-            "countriesFetchRequest":{
+            "currentUserRequest":{
                 "type":"object",
-                "properties":{
-                    "filter":{
-                        "type":"string",
-                        "readOnly":true
-                    },
-                    "items":{
-                        "type":"number",
-                        "readOnly":true
-                    },
-                    "page":{
-                        "type":"number",
-                        "readOnly":true
-                    }
-                },
-                "required":[
-                    "filter",
-                    "items",
-                    "page"
-                ]
+                "properties":{},
+                "required":[]
             }
         },
         "securitySchemes": {
@@ -68,25 +51,25 @@
         }
     },
     "paths":{
-        "countries/fetch":{
-            "summary":"fetch countries matching a filter",
+        "/user/current":{
+            "summary":"get current user",
             "post":{
                 "summary": "POST method",
-                "tags":["countries"],
-                "operationId":"country_fetch",
+                "tags":["user"],
+                "operationId":"user_current",
                 "requestBody":{
                     "required":true,
                     "content":{
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/countriesFetchRequest"
+                                "$ref": "#/components/schemas/currentUserRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "client added",
+                        "description": "user registered",
                         "content": {
                             "application/json": {
                                 "schema": {
