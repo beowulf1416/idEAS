@@ -1,5 +1,6 @@
 pub mod status;
-pub mod countries;
+pub mod common;
+// pub mod countries;
 pub mod clients;
 pub mod auth;
 pub mod user;
