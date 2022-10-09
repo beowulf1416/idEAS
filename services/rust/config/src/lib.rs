@@ -34,14 +34,14 @@ pub struct Provider {
     pub url: Vec<String>
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Auth {
-    #[serde(rename = "bindHost")]
-    pub bind_host: String,
+// #[derive(Debug, Serialize, Deserialize, Clone)]
+// pub struct Auth {
+//     #[serde(rename = "bindHost")]
+//     pub bind_host: String,
     
-    #[serde(rename = "bindPort")]
-    pub bind_port: i32,
-}
+//     #[serde(rename = "bindPort")]
+//     pub bind_port: i32,
+// }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Api {
@@ -66,7 +66,8 @@ pub struct Token {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ApplicationConfig { 
-    pub auth: Auth,
+    pub base_url: String,
+    // pub auth: Auth,
     pub api: Api,
     pub mailer: Mailer,
     pub token: Token,
