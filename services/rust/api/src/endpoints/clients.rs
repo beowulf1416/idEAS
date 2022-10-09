@@ -61,12 +61,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(client_add_post))
         )
         .service(
-            web::resource("login")
+            web::resource("update")
                 .route(web::get().to(client_update_get))
                 .route(web::post().to(client_update_post))
         )
         .service(
-            web::resource("login")
+            web::resource("set/active")
                 .route(web::get().to(client_set_active_get))
                 .route(web::post().to(client_set_active_post))
         )

@@ -4,12 +4,15 @@ pub mod clients;
 pub mod auth;
 pub mod user;
 
+pub mod admin;
+pub mod inventory;
+
 
 use serde::{
     Serialize,
     Deserialize
 };
-use serde_json::Value;
+// use serde_json::Value;
 
 use actix_web::{
     HttpResponse, 
@@ -21,7 +24,8 @@ use actix_web::{
 pub struct ApiResponse {
     success: bool,
     message: String,
-    data: Option<Value>
+    // data: Option<Value>
+    data: Option<String>
 }
 
 
@@ -30,7 +34,7 @@ impl ApiResponse {
     pub fn new(
         success: bool,
         message: String,
-        data: Option<Value>
+        data: Option<String>
     ) -> Self {
         return Self {
             success: success,
