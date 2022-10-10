@@ -5,6 +5,7 @@ set schema 'client';
 \ir procs/clients/client_update.sql
 \ir procs/clients/client_set_active.sql
 \ir procs/clients/client_fetch.sql
+\ir procs/clients/client_default_id.sql
 
 
 -- organizations
