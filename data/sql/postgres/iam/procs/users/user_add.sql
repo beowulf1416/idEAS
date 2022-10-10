@@ -35,5 +35,15 @@ begin
         p_id,
         t_default_client_id
     );
+
+    -- create a record in crm.people table
+    call crm.people_add(
+        p_id,
+        '',
+        '',
+        '',
+        '',
+        ''
+    );
 end
 $$;
