@@ -3,6 +3,8 @@ export const environment = {
 
   app_name: "idEAS",
 
+  session_token_key: "token",
+
   api_url_base: "http://localhost:8081",
 
   api_register_start: "/auth/register",
