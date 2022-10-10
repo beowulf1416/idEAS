@@ -14,6 +14,7 @@ set schema 'iam';
 
 \ir procs/user_clients/user_client_add.sql
 \ir procs/user_clients/user_client_set_active.sql
+\ir procs/user_clients/user_client_fetch.sql
 
 \ir procs/roles/role_add.sql
 \ir procs/roles/role_fetch.sql

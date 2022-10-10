@@ -6,11 +6,9 @@ language plpgsql
 as $$
 begin
     insert into iam.user_clients (
-        active,
         user_id,
         client_id
     ) values (
-        true,
         p_user_id,
         p_client_id
     )
