@@ -12,6 +12,9 @@ set schema 'iam';
 \ir procs/users/user_register_complete.sql
 \ir procs/users/user_register_get.sql
 
+\ir procs/user_clients/user_client_add.sql
+\ir procs/user_clients/user_client_set_active.sql
+
 \ir procs/roles/role_add.sql
 \ir procs/roles/role_fetch.sql
 \ir procs/roles/role_get.sql
