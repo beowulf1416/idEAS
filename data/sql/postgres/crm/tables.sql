@@ -6,4 +6,8 @@ set schema 'crm';
 \ir tables/people.sql
 \ir tables/identifiers.sql
 
+\ir tables/contact_emails.sql
+
 \ir tables/client_people.sql
+
+\ir tables/user_people.sql
