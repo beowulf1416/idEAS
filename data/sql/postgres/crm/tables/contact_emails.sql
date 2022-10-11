@@ -2,10 +2,11 @@ create table contact_emails(
     id uuid not null,
     active boolean not null default true,
     created timestamp without time zone not null default(now() at time zone 'utc'),
+    verified timestamp without time zone,
+    
     people_id uuid not null,
 
     email common.email_address not null,
-    verified boolean not null default false,
 
     constraint pk_contact_email
         primary key (id),
