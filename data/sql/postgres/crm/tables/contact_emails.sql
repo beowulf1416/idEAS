@@ -3,7 +3,7 @@ create table contact_emails(
     active boolean not null default true,
     created timestamp without time zone not null default(now() at time zone 'utc'),
     verified timestamp without time zone,
-    
+
     people_id uuid not null,
 
     email common.email_address not null,
@@ -16,6 +16,6 @@ create table contact_emails(
     
     constraint fk_contact_email_1
         foreign key (people_id)
-        references crm.contact_email (people_id)
+        references crm.people (id)
         on delete restrict
 );

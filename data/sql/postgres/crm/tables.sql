@@ -10,4 +10,4 @@ set schema 'crm';
 
 \ir tables/client_people.sql
 
-\ir tables/user_people.sql
+-- \ir tables/user_people.sql
