@@ -51,11 +51,21 @@ export class SignUpComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  get emails() {
+    return this.signUpForm.get("emails");
+  }
+
   get email1() {
-    return this.signUpForm.get("emails/email1");
+    return this.signUpForm.get("emails.email1");
+  }
+
+  get email2() {
+    return this.signUpForm.get("emails.email1");
   }
 
   submit() {
     console.log("SignUpComponent::submit()");
+    
+    
   }
 }
