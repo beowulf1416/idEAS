@@ -45,6 +45,23 @@ impl Auth {
         ).await;
     }
 
+    pub async fn sign_up(
+        &self,
+        user_id: &uuid::Uuid,
+        email: &str,
+        password: &str
+    ) -> Result<(), DbError> {
+        let t_email = crate::types::email::Email::new(email);
+        return self.0.call_sp(
+            "call iam.user_signup($1, $2, $3);",
+            &[
+                &user_id,
+                &t_email,
+                &password
+            ]
+        ).await;
+    }
+
     pub async fn register_get(
         &self,
         id: &uuid::Uuid
@@ -167,10 +184,12 @@ mod tests {
                     let suffix: u8 = rng.gen();
 
                     let email = format!("email_{}@test.com", suffix);
+                    let pw = format!("pw_{}", suffix);
 
                     match auth.register(
                         &new_id,
-                        &email
+                        &email,
+                        &pw
                     ).await {
                         Err(e) => {
                             error!("unable to register new user {:?}", e);
