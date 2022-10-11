@@ -16,7 +16,7 @@ create table user_people(
         on delete restrict,
     constraint fk_user_people_2
         foreign key (user_id)
-        reference iam.users (id)
+        references iam.users (id)
         on delete restrict
 );
 
