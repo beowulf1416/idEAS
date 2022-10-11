@@ -43,7 +43,14 @@ use pg::{
 struct AuthRegisterPostRequest {
     pub id: uuid::Uuid,
     // pub token: String,
-    pub email: String
+    pub email: String,
+    pub password: String
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+struct AuthVerifyRequest {
+    pub id: uuid::Uuid
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -61,10 +68,16 @@ struct AuthLoginPostRequest {
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
-            web::resource("register")
+            web::resource("sign-up")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::get().to(register_get))
-                .route(web::post().to(register_post))
+                .route(web::get().to(sign_up_get))
+                .route(web::post().to(sign_up_post))
+        )
+        .service(
+            web::resource("verify")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(verify_get))
+                .route(web::post().to(verify_post))
         )
         .service(
             web::resource("register/info")
@@ -87,20 +100,20 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 
 
 
-async fn register_get() -> impl Responder {
-    info!("register_get()");
+async fn sign_up_get() -> impl Responder {
+    info!("sign_up_get()");
     return HttpResponse::Ok().body("use POST method instead");
 }
 
 
-async fn register_post(
+async fn sign_up_post(
     cfg: web::Data<ApplicationConfig>,
     db: web::Data<Db>,
     // queue: web::Data<Mutex<queue::Queue>>,
     producer: web::Data<Mutex<Producer>>,
     params: web::Json<AuthRegisterPostRequest>
 ) -> impl Responder {
-    info!("register_post()");
+    info!("sign_up_post()");
 
     let id = uuid::Uuid::new_v4();
 
@@ -112,20 +125,22 @@ async fn register_post(
             let auth = Auth::new(client);
             // let id = &params.id;
             let email = &params.email;
+            let pw = &params.password;
 
-            match auth.register(
+            match auth.sign_up(
                 &id,
-                &email
+                &email,
+                &pw
             ).await {
                 Err(e) => {
-                    error!("unable to register email address: {:?}", e);
+                    error!("unable to sign up using that email address: {:?}", e);
                 }
                 Ok(_) => {
-                    info!("email registered");
+                    info!("user registered");
 
                     let body = format!(r#"
 <h1>this is a test</h1>
-<p>Click <a title="Click here" href="{base_url}/auth/register/complete/{token}">{base_url}/auth/register/complete/{token}</a> to continue registration</p>
+<p>Click <a title="Click here" href="{base_url}/auth/register/verify/{token}">{base_url}/auth/register/verify/{token}</a> to continue registration</p>
 "#,
 token = id,
 base_url = cfg.base_url
@@ -156,7 +171,39 @@ base_url = cfg.base_url
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("An error occured while trying to register"),
+            String::from("An error occured while trying to sign up"),
+            None
+        ));
+}
+
+
+async fn verify_get() -> impl Responder {
+    info!("verify_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn verify_post(
+    db: web::Data<Db>,
+    params: web::Json<AuthVerifyRequest>
+) -> impl Responder {
+    info!("verify_post()");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client: {:?}", e);
+        }
+        Ok(client) => {
+            let auth = Auth::new(client);
+
+            let user_id = &params.id;
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from("An error occured while trying to verify user"),
             None
         ));
 }
