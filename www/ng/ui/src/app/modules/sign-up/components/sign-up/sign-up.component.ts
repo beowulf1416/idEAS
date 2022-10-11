@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { matchValidator } from 'src/app/classes/validators/match-validator';
 import { patternValidator } from 'src/app/classes/validators/pattern-validator';
 import { TitleService } from 'src/app/services/title.service';
+import { SignUpService } from '../../services/sign-up.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -43,7 +44,8 @@ export class SignUpComponent implements OnInit {
   });
 
   constructor(
-    private title: TitleService
+    private title: TitleService,
+    private user_service: SignUpService
   ) {
     this.title.set_title("Sign Up");
   }
