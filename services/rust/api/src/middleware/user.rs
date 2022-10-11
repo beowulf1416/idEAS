@@ -32,6 +32,7 @@ use pg::{
     DbError,
     user::User as UserDbo
 };
+use crate::extractors::user_parameter::UserParameter;
 
 
 pub struct User {
@@ -153,7 +154,7 @@ where
 
 
             debug!("user: {:?}", result);
-            request.extensions_mut().insert(result);
+            request.extensions_mut().insert(UserParameter::new(result));
 
             let fut = service.call(request);
             let res = fut.await?;

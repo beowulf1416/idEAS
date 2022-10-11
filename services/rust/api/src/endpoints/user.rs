@@ -25,6 +25,11 @@ use pg::{
     DbError
 };
 
+// use common::{
+//     user::User
+// };
+use crate::extractors::user_parameter::UserParameter;
+
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CurrentUserRequest {
@@ -52,9 +57,11 @@ async fn user_current_get() -> impl Responder {
 
 async fn user_current_post(
     db: web::Data<Db>,
-    params: web::Json<CurrentUserRequest>
+    user: UserParameter
 ) -> impl Responder {
     info!("user_current_post()");
+
+    debug!("user: {:?}", user);
 
     return HttpResponse::Ok()
         .json(ApiResponse::new(
