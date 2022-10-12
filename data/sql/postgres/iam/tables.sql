@@ -14,5 +14,5 @@ set schema 'iam';
 \ir tables/user_clients.sql
 
 
-\ir tables/user_registration.sql
+-- \ir tables/user_registration.sql
 \ir tables/user_invites.sql
