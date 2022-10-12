@@ -8,9 +8,9 @@ set schema 'iam';
 \ir procs/users/user_get.sql
 \ir procs/users/user_get_by_email.sql
 
-\ir procs/users/user_register.sql
-\ir procs/users/user_register_complete.sql
-\ir procs/users/user_register_get.sql
+-- \ir procs/users/user_register.sql
+-- \ir procs/users/user_register_complete.sql
+-- \ir procs/users/user_register_get.sql
 
 \ir procs/users/user_signup.sql
 

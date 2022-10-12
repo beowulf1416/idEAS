@@ -6,7 +6,7 @@ create or replace procedure user_signup(
 language plpgsql
 as $$
 begin
-    insert into iam.user_registration (
+    insert into iam.users (
         id,
         email,
         pw
