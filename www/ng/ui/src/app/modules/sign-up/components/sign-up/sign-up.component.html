@@ -18,11 +18,8 @@
                 <div class="wrapper-field-errors">
                     <div class="error required" *ngIf="((email1?.dirty || email1?.touched) && email1?.errors?.['required']) || ((email2?.dirty && email2?.touched) && email2?.errors?.['required'])">Email address is required</div>
                     <div class="error invalid" *ngIf="email1?.errors?.['email'] || email2?.errors?.['email']">Email is not valid</div>
-                    <div class="error error-emails-identical" *ngIf="(email1?.dirty || email1?.touched) && emails?.errors?.['identical']">Emails are not identical</div>
+                    <div class="error error-emails-identical" *ngIf="(email1?.dirty || email1?.touched) && (email2?.dirty || email2?.touched) && emails?.errors?.['identical']">Emails are not identical</div>
                 </div><!-- .wrapper-field-errors -->
-
-                <pre>{{ email2?.errors | json }}</pre>
-                <pre>{{ emails?.errors | json }}</pre>
             </fieldset>
             <fieldset formGroupName="passwords">
                 <mat-form-field appearance="outline">
@@ -37,6 +34,14 @@
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
                     <mat-hint>Please enter password</mat-hint>
                 </mat-form-field>
+
+                <div class="wrapper-field-errors">
+                    <div class="error required" *ngIf="((pw1?.dirty || pw1?.touched) && pw1?.errors?.['required']) || ((pw2?.dirty && pw2?.touched) && pw2?.errors?.['required'])">Passwords are required</div>
+                    <div class="error invalid" *ngIf="((pw1?.dirty || pw1?.touched) && pw1?.errors?.['minlength']) || ((pw2?.dirty && pw2?.touched) && pw2?.errors?.['minlength'])">Passwords should be more than 8 characters</div>
+                    <div class="error invalid" *ngIf="((pw1?.dirty || pw1?.touched) && pw1?.errors?.['upper']) || ((pw2?.dirty && pw2?.touched) && pw2?.errors?.['upper'])">Passwords should be have more than 2 upper case characters</div>
+                    <div class="error invalid" *ngIf="((pw1?.dirty || pw1?.touched) && pw1?.errors?.['numeric']) || ((pw2?.dirty && pw2?.touched) && pw2?.errors?.['numeric'])">Passwords should have more than 2 numeric characters</div>
+                    <div class="error error-emails-identical" *ngIf="(pw1?.dirty || pw1?.touched) && (pw2?.dirty || pw2?.touched) && passwords?.errors?.['identical']">Passwords are not identical</div>
+                </div><!-- .wrapper-field-errors -->
             </fieldset>
             <fieldset class="actions">
                 <button mat-raised-button color="primary" [disabled]="signUpForm.invalid">Register</button>

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/classes/api-response';
 import { environment } from 'src/environments/environment';
 
@@ -18,8 +19,8 @@ export class SignUpService {
   sign_up(
     email: string,
     password: string
-  ) {
-    this.http.post<ApiResponse>(
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
       environment.api_url_base + environment.api_sign_up,
       {
         id: uuidv4(),
