@@ -79,12 +79,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(verify_get))
                 .route(web::post().to(verify_post))
         )
-        .service(
-            web::resource("register/info")
-                .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::get().to(register_info_get))
-                .route(web::post().to(register_info_post))
-        )
+        // .service(
+        //     web::resource("register/info")
+        //         .route(web::method(http::Method::OPTIONS).to(default_options))
+        //         .route(web::get().to(register_info_get))
+        //         .route(web::post().to(register_info_post))
+        // )
         .service(
             web::resource("login")
                 .route(web::get().to(login_get))
@@ -209,52 +209,52 @@ async fn verify_post(
 }
 
 
-async fn register_info_get() -> impl Responder {
-    info!("register_info_get()");
-    return HttpResponse::Ok().body("use POST method instead");
-}
+// async fn register_info_get() -> impl Responder {
+//     info!("register_info_get()");
+//     return HttpResponse::Ok().body("use POST method instead");
+// }
 
 
-async fn register_info_post(
-    db: web::Data<Db>,
-    params: web::Json<AuthRegisterInfoPostRequest>
-) -> impl Responder {
-    info!("register_info_post()");
+// async fn register_info_post(
+//     db: web::Data<Db>,
+//     params: web::Json<AuthRegisterInfoPostRequest>
+// ) -> impl Responder {
+//     info!("register_info_post()");
 
-    match db.get_client().await {
-        Err(e) => {
-            error!("unable to retrieve client: {:?}", e);
-        }
-        Ok(client) => {
-            let auth = Auth::new(client);
+//     match db.get_client().await {
+//         Err(e) => {
+//             error!("unable to retrieve client: {:?}", e);
+//         }
+//         Ok(client) => {
+//             let auth = Auth::new(client);
 
-            let id = &params.id;
+//             let id = &params.id;
 
-            match auth.register_get(
-                &id
-            ).await {
-                Err(e) => {
-                    error!("unable to complete registration: {:?}", e);
-                }
-                Ok(r) => {
-                    return HttpResponse::Ok()
-                        .json(ApiResponse::new(
-                            false,
-                            String::from("Successfully retrieved intial registration info"),
-                            Some(serde_json::to_string(&r).unwrap())
-                        ));
-                }
-            } 
-        }
-    }
+//             match auth.register_get(
+//                 &id
+//             ).await {
+//                 Err(e) => {
+//                     error!("unable to complete registration: {:?}", e);
+//                 }
+//                 Ok(r) => {
+//                     return HttpResponse::Ok()
+//                         .json(ApiResponse::new(
+//                             false,
+//                             String::from("Successfully retrieved intial registration info"),
+//                             Some(serde_json::to_string(&r).unwrap())
+//                         ));
+//                 }
+//             } 
+//         }
+//     }
 
-    return HttpResponse::InternalServerError()
-        .json(ApiResponse::new(
-            false,
-            String::from("An error occured while trying to complete the registration"),
-            None
-        ));
-}
+//     return HttpResponse::InternalServerError()
+//         .json(ApiResponse::new(
+//             false,
+//             String::from("An error occured while trying to complete the registration"),
+//             None
+//         ));
+// }
 
 
 async fn login_get() -> impl Responder {
