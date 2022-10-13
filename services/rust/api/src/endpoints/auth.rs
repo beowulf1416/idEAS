@@ -17,6 +17,8 @@ use actix_web::{
     web
 };
 
+use http::header::AUTHORIZATION;
+
 use kafka::producer::{
     Producer, 
     Record, 
@@ -108,6 +110,7 @@ async fn sign_up_get() -> impl Responder {
 
 async fn sign_up_post(
     cfg: web::Data<ApplicationConfig>,
+    tokenizer: web::Data<token::Token>,
     db: web::Data<Db>,
     // queue: web::Data<Mutex<queue::Queue>>,
     producer: web::Data<Mutex<Producer>>,
@@ -157,12 +160,20 @@ base_url = cfg.base_url
                         error!("an error occured while trying to add to queue: {:?}", e);
                     }
 
-                    return HttpResponse::Created()
-                        .json(ApiResponse::new(
-                            false,
-                            String::from("Successfully registered email address"),
-                            None
-                        ));
+                    match tokenizer.generate(email) {
+                        Err(e) => {
+                            error!("unable to generate token: {:?}", e);
+                        }
+                        Ok(token) => {
+                            return HttpResponse::Created()
+                            .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                            .json(ApiResponse::new(
+                                false,
+                                String::from("Successfully registered email address"),
+                                None
+                            ));
+                        }
+                    }
                 }
             } 
         }
