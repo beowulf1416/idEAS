@@ -8,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { finalize, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ApiResponse } from '../classes/api-response';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -16,32 +17,30 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     console.log("AuthInterceptor::intercept()");
-    const token = sessionStorage.getItem(environment.session_token_key);
+    const token = sessionStorage.getItem(environment.session_token_key) || '';
 
-    const authReq = request.clone({
-      setHeaders: { Authorization: `Bearer ${token}` }
-    });
+    let authReq = request.clone();
+    if (token == '') {
+      authReq = request.clone({
+        setHeaders: { Authorization: `Bearer ${token}` }
+      });
+    }
   
     return next.handle(authReq)
       .pipe(
         tap({
           next: (e) => {
-            console.log("AuthInterceptor::intercept()", e);
-            console.log(e instanceof HttpResponse);
+            if (e instanceof HttpResponse) {
+              let response = (e as HttpResponse<ApiResponse>);
+              if (response.ok && response.headers.has("authorization")) {
+                let new_token = response.headers.get("authorization")?.replace("Bearer", "").trim() || '';
+                if (token != new_token) {
+                  sessionStorage.setItem(environment.session_token_key, new_token);
+                }
+              }
+            }
           }
         })
       );
-
-
-    // if (token != null) {
-    //     console.log("AuthInterceptor::intercept() Adding auth token");
-    //     const authReq = request.clone({
-    //         setHeaders: { Authorization: `Bearer ${token}` }
-    //     });
-
-    //     return next.handle(authReq);
-    // } else {
-    //     return next.handle(request);
-    // }
   }
 }
