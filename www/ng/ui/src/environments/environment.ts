@@ -9,7 +9,7 @@ export const environment = {
 
   session_token_key: "token",
 
-  api_url_base: "http://localhost:8081",
+  api_url_base: "http://localhost:8080",
 
   api_sign_up: "/auth/sign-up",
   api_register_start: "/auth/register",
