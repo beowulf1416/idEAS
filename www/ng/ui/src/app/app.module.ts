@@ -12,13 +12,17 @@ import { AppComponent } from './app.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { HomeComponent } from './components/home/home.component';
 import { ClientSelectComponent } from './components/client-select/client-select.component';
+import { SignInComponent } from './components/sign-in/sign-in.component';
+import { SignOutComponent } from './components/sign-out/sign-out.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WorkspaceComponent,
     HomeComponent,
-    ClientSelectComponent
+    ClientSelectComponent,
+    SignInComponent,
+    SignOutComponent
   ],
   imports: [
     BrowserModule,
