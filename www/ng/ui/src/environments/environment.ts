@@ -12,6 +12,8 @@ export const environment = {
   api_url_base: "http://localhost:8080",
 
   api_sign_up: "/auth/sign-up",
+  api_sign_in: "/auth/sign-in",
+  
   api_register_start: "/auth/register",
   api_register_complete: "/auth/register/complete",
   api_registration_info: "/auth/register/info",

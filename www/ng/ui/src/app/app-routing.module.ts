@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ClientSelectComponent } from './components/client-select/client-select.component';
 
 import { HomeComponent } from './components/home/home.component';
+import { SignInComponent } from './components/sign-in/sign-in.component';
 // import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 const routes: Routes = [
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: "sign-up",
     loadChildren: () => import('./modules/sign-up/sign-up.module').then(m => m.SignUpModule)
+  },
+  {
+    path: "sign-in",
+    component: SignInComponent
   },
   {
     path: "dashboard",
