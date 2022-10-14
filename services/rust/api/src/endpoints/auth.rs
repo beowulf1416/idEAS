@@ -88,14 +88,14 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         //         .route(web::post().to(register_info_post))
         // )
         .service(
-            web::resource("login")
-                .route(web::get().to(login_get))
-                .route(web::post().to(login_post))
+            web::resource("sign-in")
+                .route(web::get().to(sign_in_get))
+                .route(web::post().to(sign_in_post))
         )
         .service(
-            web::resource("logout")
-                .route(web::get().to(logout_get))
-                .route(web::post().to(logout_post))
+            web::resource("sign-out")
+                .route(web::get().to(sign_out_get))
+                .route(web::post().to(sign_out_post))
         )
     ;
 }
@@ -112,7 +112,6 @@ async fn sign_up_post(
     cfg: web::Data<ApplicationConfig>,
     tokenizer: web::Data<token::Token>,
     db: web::Data<Db>,
-    // queue: web::Data<Mutex<queue::Queue>>,
     producer: web::Data<Mutex<Producer>>,
     params: web::Json<AuthRegisterPostRequest>
 ) -> impl Responder {
@@ -126,7 +125,6 @@ async fn sign_up_post(
         }
         Ok(client) => {
             let auth = Auth::new(client);
-            // let id = &params.id;
             let email = &params.email;
             let pw = &params.password;
 
@@ -268,17 +266,36 @@ async fn verify_post(
 // }
 
 
-async fn login_get() -> impl Responder {
-    info!("login_get()");
+async fn sign_in_get() -> impl Responder {
+    info!("sign_in_get()");
     return HttpResponse::Ok().body("use POST method instead");
 }
 
 
-async fn login_post(
+async fn sign_in_post(
+    tokenizer: web::Data<token::Token>,
     db: web::Data<Db>,
     params: web::Json<AuthLoginPostRequest>
 ) -> impl Responder {
-    info!("login_post()");
+    info!("sign_in_post()");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client: {:?}", e);
+        }
+        Ok(client) => {
+            let auth = Auth::new(client);
+            let email = &params.email;
+            let pw = &params.password;
+
+            match auth.sign_in(
+                &email,
+                &pw
+            ).await {
+                
+            }
+        }
+    }
 
     return HttpResponse::Ok()
         .json(ApiResponse::new(
@@ -289,14 +306,14 @@ async fn login_post(
 }
 
 
-async fn logout_get() -> impl Responder {
-    info!("logout_get()");
+async fn sign_out_get() -> impl Responder {
+    info!("sign_out_get()");
     return HttpResponse::Ok().body("use POST method instead");
 }
 
 
-async fn logout_post() -> impl Responder {
-    info!("logout_post()");
+async fn sign_out_post() -> impl Responder {
+    info!("sign_out_post()");
     return HttpResponse::Ok()
         .json(ApiResponse::new(
             false,
