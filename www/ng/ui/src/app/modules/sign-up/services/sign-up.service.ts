@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, finalize, map, Observable, of, tap } from 'rxjs';
 import { ApiResponse } from 'src/app/classes/api-response';
 import { environment } from 'src/environments/environment';
 
@@ -26,7 +26,22 @@ export class SignUpService {
         id: uuidv4(),
         email: email,
         password: password
+      },
+      {
+        observe: "response"
       }
-    )
+    ).pipe(
+      map(o => {
+        return (o.body as ApiResponse);
+      }),
+      catchError((e, caught) => {
+        console.debug("catchError", e);
+        return of({
+          success: false,
+          message: "error",
+          data: null
+        });
+      })
+    );
   }
 }
