@@ -46,7 +46,7 @@ async fn main()  -> std::io::Result<()> {
         let bind_port = config.api.bind_port.clone();
 
         let server = HttpServer::new(move || {
-            let token = token::Token::new(&config.token.secret);
+            let tokenizer = token::Token::new(&config.token.secret);
 
             let hosts: Vec<String> = config.providers.iter()
                 .filter(|x| matches!(x.provider_type, ProviderType::Kafka) && x.name == "queue")
@@ -62,11 +62,12 @@ async fn main()  -> std::io::Result<()> {
 
             App::new()
                 .app_data(web::Data::new(config.clone()))
+                .app_data(web::Data::new(tokenizer.clone()))
                 .app_data(web::Data::new(pg::Db::new(&config.clone())))
                 .app_data(web::Data::new(Mutex::new(producer)))
 
                 .wrap(crate::middleware::cors::CORS::new())
-                .wrap(crate::middleware::user::User::new(token.clone()))
+                .wrap(crate::middleware::user::User::new(tokenizer.clone()))
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
