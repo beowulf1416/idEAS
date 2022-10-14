@@ -160,17 +160,52 @@ impl Auth {
 mod tests {
     use super::*;
 
-    use ctor::ctor;
+    use lazy_static::lazy_static;
+
+    // use ctor::ctor;
 
     use rand::Rng;
     use crate::Db;
 
     use crate::user::User;
 
-    #[ctor]
-    fn initialize() {
-
+    
+    lazy_static!{
+        static ref t_user_id: uuid::Uuid = {
+            return uuid::Uuid::new_v4();
+        };
     }
+
+
+    // fn run_test<T>(test: T) -> ()
+    //     where T: FnOnce() -> () + panic::UnwindSafe 
+    // {
+        
+
+
+    //     let result = panic::catch_unwind(|| {
+    //         test();
+    //     });
+    //     // teardown();
+    //     assert!(result.is_ok());
+    // }
+
+    // fn setup() {
+    //     if let Some(config) = config::get_configuration() {
+    //         let db = Db::new(&config);
+    //         match db.get_client().await {
+    //             Err(e) => {
+    //                 error!("unable to retrieve client {:?}", e);
+    //                 assert!(false);
+    //             }
+    //             Ok(c) => {
+    //                 client = c; 
+    //             }
+    //         }
+    //     } else {
+    //         error!("unable to retrieve database client");
+    //     }
+    // }
 
     // #[actix_rt::test] 
     // async fn test_register() {
@@ -211,6 +246,11 @@ mod tests {
     //         assert!(false);
     //     }
     // }
+
+    #[actix_rt::test]
+    async fn test() {
+        debug!("user_id: {}", t_user_id.to_string());
+    }
 
     #[actix_rt::test] 
     async fn test_sign_up() {
