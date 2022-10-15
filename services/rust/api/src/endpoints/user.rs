@@ -8,6 +8,7 @@ use serde::{
     Serialize,
     Deserialize
 };
+use serde_json::json;
 
 use actix_web::{
     HttpResponse, 
@@ -61,12 +62,20 @@ async fn user_current_post(
 ) -> impl Responder {
     info!("user_current_post()");
 
-    debug!("user: {:?}", user);
+    // debug!("user: {:?}", user);
+
+    let u = user.user();
+
 
     return HttpResponse::Ok()
         .json(ApiResponse::new(
-            false,
+            true,
             String::from("Service is up. version: 1.0.0.0.dev"),
-            None
+            Some(json!({ 
+                "user": {
+                    "email": u.email(),
+                    "name": "//TODO name"
+                }  
+            }))
         ));
 }
