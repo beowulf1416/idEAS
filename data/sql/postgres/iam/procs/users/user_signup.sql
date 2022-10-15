@@ -8,10 +8,12 @@ as $$
 begin
     insert into iam.users (
         id,
+        active,
         email,
         pw
     ) values (
         p_user_id,
+        true,
         p_email,
         p_password
     );
