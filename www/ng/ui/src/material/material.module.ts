@@ -14,6 +14,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [],
@@ -33,7 +34,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
       MatMenuModule,
       MatBadgeModule,
       MatSlideToggleModule,
-      MatPaginatorModule
+      MatPaginatorModule,
+      MatDividerModule
   ]
 })
 export class MaterialModule { }

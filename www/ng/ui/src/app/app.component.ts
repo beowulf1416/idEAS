@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from './classes/user';
 import { UserService } from './services/user.service';
@@ -8,7 +8,7 @@ import { UserService } from './services/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent{
 
   user$: Observable<User>
 
@@ -17,6 +17,4 @@ export class AppComponent {
   ) {
     this.user$ = user_service.user$;
   }
-
-  
 }

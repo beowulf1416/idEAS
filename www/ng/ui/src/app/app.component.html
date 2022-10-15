@@ -23,7 +23,7 @@
 
     <mat-sidenav-content>
 
-      <mat-toolbar class="tb-app" color="primary">
+      <mat-toolbar class="tb-app" color="primary" *ngIf="(user$ | async) as user">
         <button mat-icon-button (click)="$navleft.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
@@ -49,6 +49,9 @@
               <mat-icon>notifications_off</mat-icon>
               <span>Disable alerts</span>
           </button>
+          <mat-divider></mat-divider>
+          <a mat-button routerLink="/sign-in" *ngIf="!user.is_signed_in">Sign In</a>
+          <a mat-button routerLink="/sign-out" *ngIf="user.is_signed_in">Sign Out</a>
         </mat-menu>
       </mat-toolbar>
 
@@ -64,7 +67,7 @@
         <div class="wrapper-content-main">
 
           <pre>
-            {{ (user$ | async)?.email }}
+            {{ (user$ | async) | json }}
           </pre>
 
           <router-outlet></router-outlet>
