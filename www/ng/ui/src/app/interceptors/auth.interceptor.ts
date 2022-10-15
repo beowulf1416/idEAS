@@ -39,6 +39,8 @@ export class AuthInterceptor implements HttpInterceptor {
                   sessionStorage.setItem(environment.session_token_key, new_token);
                 }
               }
+            } else {
+              console.debug("AuthInterceptor::intercept()", e);
             }
           }
         })
