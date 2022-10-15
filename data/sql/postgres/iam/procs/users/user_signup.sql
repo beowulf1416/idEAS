@@ -5,6 +5,8 @@ create or replace procedure user_signup(
 )
 language plpgsql
 as $$
+declare
+    t_client_id client.clients.id%type;
 begin
     insert into iam.users (
         id,
@@ -17,5 +19,15 @@ begin
         p_email,
         p_password
     );
+
+    -- add user to default client
+    t_client_id := client.client_default_id();
+    call iam.user_client_add(
+        p_user_id,
+        t_client_id
+    );
+
+    -- add user to default role
+    
 end
 $$;
