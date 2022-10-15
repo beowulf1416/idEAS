@@ -62,38 +62,38 @@ impl Auth {
         ).await;
     }
 
-    pub async fn sign_in(
-        &self,
-        email: &str,
-        password: &str
-    ) -> Result<bool, DbError>{
-        let t_email = crate::types::email::Email::new(email);
-        let sql = "select * from iam.user_signin($1, $2);";
-        match self.0.get_client().prepare_cached(sql).await {
-            Err(e) => {
-                error!("unable to prepare statement: {} {:?}", sql, e);
-                return Err(DbError::ClientError);
-            }
-            Ok(stmt) => {
-                match self.0.get_client().query_one(
-                    &stmt,
-                    &[
-                        &t_email,
-                        &password
-                    ]
-                ).await {
-                    Err(e) => {
-                        error!("unable to execute sql: {} {:?}", sql, e);
-                        return Err(DbError);
-                    }
-                    Ok(r) => {
-                        debug!("sign in result: {:?}", r);
-                        return Ok(true);
-                    }
-                }
-            }
-        }
-    }
+    // pub async fn sign_in(
+    //     &self,
+    //     email: &str,
+    //     password: &str
+    // ) -> Result<bool, DbError>{
+    //     let t_email = crate::types::email::Email::new(email);
+    //     let sql = "select * from iam.user_signin($1, $2);";
+    //     match self.0.get_client().prepare_cached(sql).await {
+    //         Err(e) => {
+    //             error!("unable to prepare statement: {} {:?}", sql, e);
+    //             return Err(DbError::ClientError);
+    //         }
+    //         Ok(stmt) => {
+    //             match self.0.get_client().query_one(
+    //                 &stmt,
+    //                 &[
+    //                     &t_email,
+    //                     &password
+    //                 ]
+    //             ).await {
+    //                 Err(e) => {
+    //                     error!("unable to execute sql: {} {:?}", sql, e);
+    //                     return Err(DbError::ClientError);
+    //                 }
+    //                 Ok(r) => {
+    //                     debug!("sign in result: {:?}", r);
+    //                     return Ok(true);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     // pub async fn register_get(
     //     &self,
@@ -280,10 +280,10 @@ mod tests {
     //     }
     // }
 
-    #[actix_rt::test]
-    async fn test() {
-        debug!("user_id: {}", t_user_id.to_string());
-    }
+    // #[actix_rt::test]
+    // async fn test() {
+    //     debug!("user_id: {}", t_user_id.to_string());
+    // }
 
     #[actix_rt::test] 
     async fn test_sign_up() {
