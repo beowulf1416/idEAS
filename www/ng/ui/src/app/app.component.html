@@ -62,6 +62,11 @@
           </button>
         </div>
         <div class="wrapper-content-main">
+
+          <pre>
+            {{ (user$ | async)?.email }}
+          </pre>
+
           <router-outlet></router-outlet>
         </div>
       </div>

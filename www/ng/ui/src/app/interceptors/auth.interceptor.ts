@@ -20,7 +20,8 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = sessionStorage.getItem(environment.session_token_key) || '';
 
     let authReq = request.clone();
-    if (token == '') {
+    if (token != '') {
+      console.log("adding authorization header");
       authReq = request.clone({
         setHeaders: { Authorization: `Bearer ${token}` }
       });

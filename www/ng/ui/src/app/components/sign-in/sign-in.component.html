@@ -7,12 +7,21 @@
                     <input type="email" id="email" name="email" class="field-email1" placeholder="Email Address" required matInput formControlName="email" />
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
                     <mat-hint>Please enter email address</mat-hint>
+
+                    <div class="wrapper-field-errors">
+                        <div class="error required" *ngIf="((email?.dirty || email?.touched) && email?.errors?.['required'])">Email address is required</div>
+                        <div class="error invalid" *ngIf="email?.errors?.['email'] || email?.errors?.['email']">Email is not valid</div>
+                    </div><!-- .wrapper-field-errors -->
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Password</mat-label>
                     <input type="password" id="pw" name="pw" class="field-pw" placeholder="Password" required matInput formControlName="pw" />
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
                     <mat-hint>Please enter password</mat-hint>
+
+                    <div class="wrapper-field-errors">
+                        <div class="error required" *ngIf="((pw?.dirty || pw?.touched) && pw?.errors?.['required'])">Password is required</div>
+                    </div><!-- .wrapper-field-errors -->
                 </mat-form-field>
             </fieldset>
             <fieldset class="actions">
