@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from './classes/user';
 import { UserService } from './services/user.service';
 
 @Component({
@@ -8,9 +10,13 @@ import { UserService } from './services/user.service';
 })
 export class AppComponent {
 
+  user$: Observable<User>
+
   constructor(
     private user_service: UserService
-  ) {}
+  ) {
+    this.user$ = user_service.user$;
+  }
 
   
 }
