@@ -89,6 +89,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         // )
         .service(
             web::resource("sign-in")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(sign_in_get))
                 .route(web::post().to(sign_in_post))
         )
@@ -164,12 +165,12 @@ base_url = cfg.base_url
                         }
                         Ok(token) => {
                             return HttpResponse::Created()
-                            .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                            .json(ApiResponse::new(
-                                false,
-                                String::from("Successfully registered email address"),
-                                None
-                            ));
+                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                .json(ApiResponse::new(
+                                    true,
+                                    String::from("Successfully registered email address"),
+                                    None
+                                ));
                         }
                     }
                 }
@@ -288,16 +289,34 @@ async fn sign_in_post(
             let email = &params.email;
             let pw = &params.password;
 
-            match auth.sign_in(
+            match auth.authenticate(
                 &email,
                 &pw
             ).await {
-                
+                Err(e) => {
+                    error!("unable to sign in: {:?}", e);
+                }
+                Ok(_) => {
+                    match tokenizer.generate(email) {
+                        Err(e) => {
+                            error!("unable to generate token: {:?}", e);
+                        }
+                        Ok(token) => {
+                            return HttpResponse::Ok()
+                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                .json(ApiResponse::new(
+                                    true,
+                                    String::from("Successfully signed in"),
+                                    None
+                                ));
+                        }
+                    }
+                }
             }
         }
     }
 
-    return HttpResponse::Ok()
+    return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
             String::from("Service is up. version: 1.0.0.0.dev"),
