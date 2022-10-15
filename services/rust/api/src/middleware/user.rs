@@ -21,8 +21,10 @@ use actix_web::{
     web
 };
 
-use http::header::{
-    AUTHORIZATION
+use http::{
+    method::Method,
+    // header::AUTHORIZATION
+    header
 };
 
 use token::Token;
@@ -107,57 +109,62 @@ where
                 false,
                 String::from("")
             );
+            
+            if request.method() == Method::POST {
+                if let Some(header_value) = request.headers().get(header::AUTHORIZATION) {
+                    let token_value = header_value.to_str().unwrap().replace("Bearer", "").trim().to_owned();
 
-            if let Some(header_value) = request.headers().get(AUTHORIZATION) {
-                let token_value = header_value.to_str().unwrap().replace("Bearer", "").trim().to_owned();
+                    if let Some(token) = request.app_data::<web::Data<Token>>() {
+                        if token.validate(&token_value) {
+                            match token.claims(&token_value) {
+                                Err(e) => {
+                                    error!("unable to retrieve claims: {:?}", e);
+                                }
+                                Ok(claims) => {
+                                    let email = claims.email();
+                                    let issued  = claims.issued();
 
-                if let Some(token) = request.app_data::<web::Data<Token>>() {
-                    if token.validate(&token_value) {
-                        match token.claims(&token_value) {
-                            Err(e) => {
-                                error!("unable to retrieve claims: {:?}", e);
-                            }
-                            Ok(claims) => {
-                                let email = claims.email();
-                                let issued  = claims.issued();
-
-                                if let Some(db) = request.app_data::<web::Data<Db>>() {
-                                    if let Ok(client) = db.get_client().await {
-                                        let users = UserDbo::new(client);
-                                        match users.get_by_email(&email).await {
-                                            Err(e) => {
-                                                error!("unable to retrieve user: {:?}", e);
-                                                // return Err(DbError::ClientError);
+                                    if let Some(db) = request.app_data::<web::Data<Db>>() {
+                                        if let Ok(client) = db.get_client().await {
+                                            let users = UserDbo::new(client);
+                                            match users.get_by_email(&email).await {
+                                                Err(e) => {
+                                                    error!("unable to retrieve user: {:?}", e);
+                                                    // return Err(DbError::ClientError);
+                                                }
+                                                Ok(u) => {
+                                                    // debug!("//TODO result: {:?}", u);
+                                                    result = u.clone();
+                                                }
                                             }
-                                            Ok(u) => {
-                                                debug!("//TODO result: {:?}", u);
-                                                result = u.clone();
-                                            }
+                                        } else {
+                                            error!("unable to retrieve client object");
                                         }
                                     } else {
-                                        error!("unable to retrieve client object");
+                                        error!("unable to retrieve instance of Db object");
                                     }
-                                } else {
-                                    error!("unable to retrieve instance of Db object");
                                 }
                             }
+                        } else {
+                            error!("unable to validate token: {:?}", token_value);
                         }
                     } else {
-                        error!("unable to validate token: {:?}", token_value);
+                        error!("unable to retrieve token object");
                     }
                 } else {
-                    error!("unable to retrieve token object");
+                    debug!("no authorization header found: {:?}", request.headers().keys());
                 }
             } else {
-                debug!("no authorization header found");
+                debug!("request method found: {:?}", request.method());
             }
 
 
-            debug!("user: {:?}", result);
+            // debug!("user: {:?}", result);
             request.extensions_mut().insert(UserParameter::new(result));
 
             let fut = service.call(request);
             let res = fut.await?;
+
             return Ok(res);
         })
     }
