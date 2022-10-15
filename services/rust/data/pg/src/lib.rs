@@ -7,9 +7,10 @@ pub mod client;
 pub mod organization;
 pub mod auth;
 pub mod user;
+
+pub mod iam;
 pub mod people;
 pub mod crm;
-
 pub mod inventory;
 
 
