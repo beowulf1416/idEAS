@@ -71,6 +71,7 @@ async fn main()  -> std::io::Result<()> {
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
+                .service(web::scope("/user").configure(crate::endpoints::user::config))
                 .service(web::scope("/countries").configure(crate::endpoints::common::countries::config))
                 .service(web::scope("/currencies").configure(crate::endpoints::common::currencies::config))
                 .service(web::scope("/clients").configure(crate::endpoints::clients::config))

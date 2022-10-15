@@ -8,12 +8,16 @@ pub mod user;
 pub mod admin;
 pub mod inventory;
 
+use log::{
+    info
+};
+
 
 use serde::{
     Serialize,
     Deserialize
 };
-// use serde_json::Value;
+use serde_json::Value;
 
 use actix_web::{
     HttpResponse, 
@@ -25,8 +29,8 @@ use actix_web::{
 pub struct ApiResponse {
     success: bool,
     message: String,
-    // data: Option<Value>
-    data: Option<String>
+    data: Option<Value>
+    // data: Option<String>
 }
 
 
@@ -35,7 +39,8 @@ impl ApiResponse {
     pub fn new(
         success: bool,
         message: String,
-        data: Option<String>
+        // data: Option<String>
+        data: Option<Value>
     ) -> Self {
         return Self {
             success: success,
@@ -47,7 +52,7 @@ impl ApiResponse {
 
 
 pub async fn default_options() -> impl Responder {
-    // info!("endpoints::common::default_options()");
+    info!("endpoints::common::default_options()");
     return HttpResponse::Ok()
         .finish();
 }
