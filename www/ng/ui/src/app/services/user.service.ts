@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { filter, map, Observable } from 'rxjs';
+import { catchError, filter, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../classes/api-response';
 import { User } from '../classes/user';
@@ -22,11 +22,33 @@ export class UserService implements OnInit {
       filter((r => r.success == true)),
       map(r => {
         console.debug("r", r);
-        const data = (r.data as { user: User });
-        return {
-          email: data?.user?.email,
-          name: data?.user?.name || ''
-        };
+        const data = (r.data as { user: {
+          email: string,
+          name: string
+        } });
+        // return {
+        //   email: data?.user?.email,
+        //   name: data?.user?.name || ''
+        // };
+        return new User(
+          data?.user?.email,
+          data?.user?.name
+        );
+      }),
+      catchError(e => {
+        console.debug("catchError", e);
+        return new Observable<User>(function(observer) {
+          // observer.next({
+          //   success: true,
+          //   message: "//TODO default",
+          //   data: {
+          //     user: new User('', ''),
+          //     error: e
+          //   }
+          // });
+          observer.next(new User('', ''));
+          observer.complete();
+        });
       })
     );
   }
@@ -39,6 +61,20 @@ export class UserService implements OnInit {
     return this.http.post<ApiResponse>(
       environment.api_url_base + environment.api_user_current,
       {}
+    ).pipe(
+      catchError(e => {
+        console.debug("catchError", e);
+        return new Observable<ApiResponse>(function(observer) {
+          observer.next({
+            success: true,
+            message: "//TODO default",
+            data: {
+              user: new User('', ''),
+              error: e
+            }
+          });
+        });
+      })
     );
   }
 
