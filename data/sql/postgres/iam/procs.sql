@@ -8,6 +8,8 @@ set schema 'iam';
 \ir procs/users/user_get.sql
 \ir procs/users/user_get_by_email.sql
 
+\ir procs/users/user_permissions_fetch.sql
+
 -- \ir procs/users/user_register.sql
 -- \ir procs/users/user_register_complete.sql
 -- \ir procs/users/user_register_get.sql
@@ -24,3 +26,9 @@ set schema 'iam';
 \ir procs/roles/role_get_by_slug.sql
 \ir procs/roles/role_set_active.sql
 \ir procs/roles/role_update.sql
+
+\ir procs/role_permissions/role_permission_add.sql
+\ir procs/role_permissions/role_permission_set_active.sql
+
+\ir procs/user_roles/user_role_add.sql
+\ir procs/user_roles/user_role_set_active.sql
