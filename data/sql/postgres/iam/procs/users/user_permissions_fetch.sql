@@ -1,5 +1,6 @@
 create or replace function user_permissions_fetch(
-    p_user_id iam.users.id%type
+    p_user_id iam.users.id%type,
+    p_client_id client.clients.id%type
 )
 returns table(
     name iam.permissions.name%type
@@ -10,10 +11,9 @@ begin
     return query
     select
         distinct
-            a.id, 
             a.name
     from iam.permissions a
-        join iam.role_permisisons b
+        join iam.role_permissions b
             on a.id = b.permission_id
         join iam.user_roles c
             on b.role_id = c.role_id
