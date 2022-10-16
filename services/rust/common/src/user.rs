@@ -1,4 +1,5 @@
 use crate::client::Client;
+use crate::iam::permission::Permission;
 
 #[derive(Debug, Clone)]
 pub struct User {
@@ -8,7 +9,8 @@ pub struct User {
 
     clients: Option<Vec<Client>>,
     // current client
-    client_id: Option<uuid::Uuid>
+    client_id: Option<uuid::Uuid>,
+    permissions: Option<Vec<Permission>>
 }
 
 impl User {
@@ -23,7 +25,8 @@ impl User {
             active: active,
             email: email,
             clients: None,
-            client_id: None
+            client_id: None,
+            permissions: None
         };
     }
 
@@ -69,5 +72,18 @@ impl User {
         &self
     ) -> Option<uuid::Uuid> {
         return self.client_id.clone();
+    }
+
+    pub fn set_permissions(
+        &mut self,
+        permissions: Vec<Permission>
+    ) {
+        self.permissions = Some(permissions);
+    }
+
+    pub fn get_permissions(
+        &self
+    ) -> Option<Vec<Permission>> {
+        return self.permissions.clone();
     }
 }
