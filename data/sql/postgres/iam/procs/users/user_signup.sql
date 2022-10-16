@@ -6,6 +6,8 @@ create or replace procedure user_signup(
 language plpgsql
 as $$
 declare
+    t_salt text := public.gen_salt('md5');
+    t_pw text;
     t_client_id client.clients.id%type;
     t_role_id iam.roles.id%type;
 begin
@@ -18,7 +20,8 @@ begin
         p_user_id,
         true,
         p_email,
-        p_password
+        -- p_password
+        public.crypt(p_password, t_salt)
     );
 
     -- add user to default client
@@ -26,6 +29,12 @@ begin
     call iam.user_client_add(
         p_user_id,
         t_client_id
+    );
+
+    call iam.user_client_set_active(
+        p_user_id,
+        t_client_id,
+        true
     );
 
     -- add user to default role

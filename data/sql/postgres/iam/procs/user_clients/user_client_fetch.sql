@@ -5,7 +5,11 @@ create or replace function user_client_fetch(
 returns table (
     client_id client.clients.id%type,
     active client.clients.active%type,
-    name client.clients.name%type
+    name client.clients.name%type,
+    description client.clients.description%type,
+    address client.clients.address%type,
+    country_id client.clients.country_id%type,
+    url client.clients.url%type
 )
 language plpgsql
 as $$
@@ -15,22 +19,34 @@ begin
         select
             c.id,
             c.active,
-            c.name
+            c.name,
+            c.description,
+            c.address,
+            c.country_id,
+            c.url
         from iam.user_clients uc
             join client.clients c
                 on uc.client_id = c.id
         where
-            uc.active = p_active
+            uc.user_id = p_user_id
+            and uc.active = true
+            and c.active = true
         ;
     else
         return query
         select
             c.id,
             c.active,
-            c.name
+            c.name,
+            c.description,
+            c.address,
+            c.country_id,
+            c.url
         from iam.user_clients uc
             join client.clients c
                 on uc.client_id = c.id
+        where
+            uc.user_id = p_user_id
         ;
     end if;
 end
