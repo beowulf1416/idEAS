@@ -70,6 +70,8 @@ async fn user_current_post(
 
     let u = user.user();
 
+    debug!("user: {:?}", u);
+
     let mut clients: Vec<ClientResponse> = Vec::new();
     if let Some(user_clients) = u.get_clients() {
         clients = user_clients.iter().map(|c| ClientResponse {
@@ -81,6 +83,12 @@ async fn user_current_post(
 
     let client_id = u.get_client();
 
+    let mut permissions: Vec<String> = Vec::new();
+    if let Some(user_permissions) = u.get_permissions() {
+        permissions = user_permissions.iter().map(|up| up.name.clone())
+            .collect();
+    }
+
     return HttpResponse::Ok()
         .json(ApiResponse::new(
             true,
@@ -90,7 +98,8 @@ async fn user_current_post(
                     "email": u.email(),
                     "name": "//TODO name",
                     "clients": clients,
-                    "client": client_id
+                    "client": client_id,
+                    "permissions": permissions
                 }  
             }))
         ));
