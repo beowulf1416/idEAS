@@ -90,6 +90,47 @@ impl User {
             }
         }
     }
+
+
+    pub async fn fetch_clients(
+        &self,
+        user_id: &uuid::Uuid
+    ) -> Result<Vec<common::client::Client>, DbError> {
+        let sql = "select * from iam.user_client_fetch($1, $2)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query(
+                        &stmt,
+                        &[
+                            &user_id,
+                            &true
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(rows) => {
+                        let results = rows.iter().map(|r| common::client::Client {
+                            id: r.get("client_id"),
+                            active: r.get("active"),
+                            name: r.get("name"),
+                            description: r.get("description"),
+                            address: r.get("address"),
+                            country_id: r.get("country_id"),
+                            url: r.get("url")
+                        })
+                        .collect();
+                        return Ok(results);
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -97,8 +138,16 @@ impl User {
 mod tests {
     use super::*;
 
+    use lazy_static::lazy_static;
+
     use rand::Rng;
     use crate::Db;
+
+    lazy_static!{
+        static ref t_user_id: uuid::Uuid = {
+            return uuid::Uuid::new_v4();
+        };
+    }
 
     #[actix_rt::test] 
     async fn test_user_set_active() {
@@ -112,46 +161,45 @@ mod tests {
                 Ok(client) => {
                     let auth = crate::auth::Auth::new(client);
 
-                    let user_id = uuid::Uuid::new_v4();
-
                     let mut rng = rand::thread_rng();
                     let suffix: u8 = rng.gen();
 
                     let email = format!("email_{}@test.com", suffix);
+                    let pw = format!("ThisisaTest88**");
 
-                    // match auth.register(
-                    //     &user_id,
-                    //     &email
-                    // ).await {
-                    //     Err(e) => {
-                    //         error!("unable to register new user {:?}", e);
-                    //         assert!(false);
-                    //     }
-                    //     Ok(_) => {
-                    //         match db.get_client().await {
-                    //             Err(e) => {
-                    //                 error!("unable to retrieve client 2");
-                    //                 assert!(false);
-                    //             }
-                    //             Ok(client_2) => {
-                    //                 let user = User::new(client_2);
-                    //                 let active = true;
-                    //                 match user.set_active(
-                    //                     &user_id,
-                    //                     &active
-                    //                 ).await {
-                    //                     Err(e) => {
-                    //                         error!("unable to set active user status");
-                    //                         assert!(false);
-                    //                     }
-                    //                     Ok(_) => {
-                    //                         assert!(true);
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
+                    match auth.sign_up(
+                        &t_user_id,
+                        &email,
+                        &pw
+                    ).await {
+                        Err(e) => {
+                            error!("unable to sign up user");
+                            assert!(false);
+                        }
+                        Ok(_) => {
+                            match db.get_client().await {
+                                Err(e) => {
+                                    error!("unable to retrieve client");
+                                    assert!(false);
+                                }
+                                Ok(client_2) => {
+                                    let user_dbo = User::new(client_2);
+                                    match user_dbo.set_active(
+                                        &t_user_id,
+                                        &true
+                                    ).await {
+                                        Err(e) => {
+                                            error!("unable to set user active status");
+                                            assert!(false);
+                                        }
+                                        Ok(_) => {
+                                            assert!(true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } else {
@@ -171,46 +219,45 @@ mod tests {
                 Ok(client) => {
                     let auth = crate::auth::Auth::new(client);
 
-                    let user_id = uuid::Uuid::new_v4();
-
                     let mut rng = rand::thread_rng();
                     let suffix: u8 = rng.gen();
 
                     let email = format!("email_{}@test.com", suffix);
+                    let pw = format!("ThisisaTest88**");
 
-                    // match auth.register(
-                    //     &user_id,
-                    //     &email
-                    // ).await {
-                    //     Err(e) => {
-                    //         error!("unable to register new user {:?}", e);
-                    //         assert!(false);
-                    //     }
-                    //     Ok(_) => {
-                    //         match db.get_client().await {
-                    //             Err(e) => {
-                    //                 error!("unable to retrieve client 2");
-                    //                 assert!(false);
-                    //             }
-                    //             Ok(client_2) => {
-                    //                 let user = User::new(client_2);
-                    //                 let pw = "new_password";
-                    //                 match user.set_password(
-                    //                     &user_id,
-                    //                     &pw
-                    //                 ).await {
-                    //                     Err(e) => {
-                    //                         error!("unable to set password");
-                    //                         assert!(false);
-                    //                     }
-                    //                     Ok(_) => {
-                    //                         assert!(true);
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
+                    match auth.sign_up(
+                        &t_user_id,
+                        &email,
+                        &pw
+                    ).await {
+                        Err(e) => {
+                            error!("unable to sign up user");
+                            assert!(false);
+                        }
+                        Ok(_) => {
+                            match db.get_client().await {
+                                Err(e) => {
+                                    error!("unable to retrieve client");
+                                    assert!(false);
+                                }
+                                Ok(client_2) => {
+                                    let user_dbo = User::new(client_2);
+                                    match user_dbo.set_password(
+                                        &t_user_id,
+                                        &"NewPassword88**"
+                                    ).await {
+                                        Err(e) => {
+                                            error!("unable to set user password");
+                                            assert!(false);
+                                        }
+                                        Ok(_) => {
+                                            assert!(true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } else {
