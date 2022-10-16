@@ -123,6 +123,41 @@
                     "id",
                     "active"
                 ]
+            },
+            "clientFetchRequest":{
+                "type":"object",
+                "properties":{
+                    "filter":{
+                        "type":"string",
+                        "readOnly":true
+                    },
+                    "active":{
+                        "type":"boolean",
+                        "readOnly":true,
+                        "description":"return active clients only"
+                    },
+                    "items":{
+                        "type":"number",
+                        "readOnly":true,
+                        "description":"number of items to include in the result"
+                    },
+                    "page":{
+                        "type":"number",
+                        "readOnly":true
+                    }
+                },
+                "required":[
+                    "filter",
+                    "active",
+                    "items",
+                    "page"
+                ],
+                "example":{
+                    "filter":"%",
+                    "active":false,
+                    "items":10,
+                    "page":1
+                }
             }
         },
         "securitySchemes": {
@@ -136,7 +171,7 @@
         }
     },
     "paths":{
-        "client/add":{
+        "/client/add":{
             "summary":"add a client",
             "post":{
                 "summary": "POST method",
@@ -163,10 +198,15 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
-        "client/update":{
+        "/client/update":{
             "summary":"update a client",
             "post":{
                 "summary": "POST method",
@@ -196,7 +236,7 @@
                 }
             }
         },
-        "client/set/active":{
+        "/client/set/active":{
             "summary":"set client active status",
             "post":{
                 "summary": "POST method",
@@ -224,6 +264,41 @@
                         }
                     }
                 }
+            }
+        },
+        "/clients/fetch":{
+            "summary":"fetch clients",
+            "post":{
+                "summary": "POST method",
+                "tags":["clients"],
+                "operationId":"clients_fetch",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/clientFetchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "client set active status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         }
     }

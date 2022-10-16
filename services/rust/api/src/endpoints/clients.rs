@@ -15,10 +15,15 @@ use actix_web::{
     web
 };
 
-use pg::Db;
+use pg::{
+    Db,
+    DbError,
+    client::client::Client
+};
 
 use crate::endpoints::{
-    ApiResponse
+    ApiResponse,
+    default_options
 };
 
 
@@ -51,15 +56,23 @@ struct ClientSetActiveRequest {
     active: bool
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct ClientsFetchRequest{
+    filter: String,
+    active: bool,
+    items: i32,
+    page: i32
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     /// base url /clients
     cfg
-        .service(
-            web::resource("add")
-                .route(web::get().to(client_add_get))
-                .route(web::post().to(client_add_post))
-        )
+        // .service(
+        //     web::resource("add")
+        //         .route(web::get().to(client_add_get))
+        //         .route(web::post().to(client_add_post))
+        // )
         .service(
             web::resource("update")
                 .route(web::get().to(client_update_get))
@@ -70,30 +83,36 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(client_set_active_get))
                 .route(web::post().to(client_set_active_post))
         )
+        .service(
+            web::resource("fetch")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(client_fetch_get))
+                .route(web::post().to(client_fetch_post))
+        )
     ;
 }
 
 
 
-async fn client_add_get() -> impl Responder {
-    info!("client_add_get()");
-    return HttpResponse::Ok().body("use POST method instead");
-}
+// async fn client_add_get() -> impl Responder {
+//     info!("client_add_get()");
+//     return HttpResponse::Ok().body("use POST method instead");
+// }
 
 
-async fn client_add_post(
-    db: web::Data<Db>,
-    params: web::Json<ClientAddRequest>
-) -> impl Responder {
-    info!("client_add_post()");
+// async fn client_add_post(
+//     db: web::Data<Db>,
+//     params: web::Json<ClientAddRequest>
+// ) -> impl Responder {
+//     info!("client_add_post()");
 
-    return HttpResponse::Ok()
-        .json(ApiResponse::new(
-            false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
-            None
-        ));
-}
+//     return HttpResponse::Ok()
+//         .json(ApiResponse::new(
+//             false,
+//             String::from("Service is up. version: 1.0.0.0.dev"),
+//             None
+//         ));
+// }
 
 
 async fn client_update_get() -> impl Responder {
@@ -128,6 +147,49 @@ async fn client_set_active_post(
     params: web::Json<ClientSetActiveRequest>
 ) -> impl Responder {
     info!("client_set_active_post()");
+
+    return HttpResponse::Ok()
+        .json(ApiResponse::new(
+            false,
+            String::from("Service is up. version: 1.0.0.0.dev"),
+            None
+        ));
+}
+
+
+async fn client_fetch_get() -> impl Responder {
+    info!("client_fetch_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn client_fetch_post(
+    db: web::Data<Db>,
+    params: web::Json<ClientsFetchRequest>
+) -> impl Responder {
+    info!("client_fetch_post()");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let client_dbo = Client::new(client);
+            match client_dbo.fetch(
+                &params.filter,
+                &params.active,
+                &params.items,
+                &params.page
+            ).await {
+                Err(e) => {
+                    error!("unable to fetch clients");
+                }
+                Ok(clients) => {
+                    debug!("clients: {:?}", clients);
+                }
+            }
+        }
+    }
 
     return HttpResponse::Ok()
         .json(ApiResponse::new(
