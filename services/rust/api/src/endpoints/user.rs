@@ -79,6 +79,8 @@ async fn user_current_post(
         .collect();
     }
 
+    let client_id = u.get_client();
+
     return HttpResponse::Ok()
         .json(ApiResponse::new(
             true,
@@ -87,7 +89,8 @@ async fn user_current_post(
                 "user": {
                     "email": u.email(),
                     "name": "//TODO name",
-                    "clients": clients
+                    "clients": clients,
+                    "client": client_id
                 }  
             }))
         ));

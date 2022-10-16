@@ -129,6 +129,34 @@ impl Client {
             }
         }
     }
+
+    pub async fn get_default_client(
+        &self
+    ) -> Result<uuid::Uuid, DbError> {
+        let sql = "select * from client.client_default_id()";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query_one(
+                        &stmt,
+                        &[
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        let result = r.get("client_default_id");
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+    }
 }
 
 
