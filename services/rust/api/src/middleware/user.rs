@@ -143,8 +143,19 @@ where
                                                                 error!("unable to fetch clients: {:?}", e);
                                                             }
                                                             Ok(clients) => {
-                                                                debug!("clients {:?}", clients);
+                                                                // debug!("clients {:?}", clients);
                                                                 result.set_clients(clients);
+
+                                                                // retrieve default client
+                                                                match users.get_default_client().await {
+                                                                    Err(e) => {
+                                                                        error!("unable to retrieve default client");
+                                                                    }
+                                                                    Ok(client_id) => {
+                                                                        // debug!("client_id: {:?}", client_id);
+                                                                        result.set_client(client_id);
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }

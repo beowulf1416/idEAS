@@ -131,6 +131,70 @@ impl User {
             }
         }
     }
+
+    pub async fn fetch_permissions(
+        &self,
+        user_id: &uuid::Uuid,
+        client_id: &uuid::Uuid
+    ) -> Result<Vec<common::iam::permission::Permission>, DbError> {
+        let sql = "select * from iam.user_permissions_fetch($1, $2)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query(
+                        &stmt,
+                        &[
+                            &user_id,
+                            &client_id
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(rows) => {
+                        let results = rows.iter().map(|r| common::iam::permission::Permission {
+                            name: r.get("name")
+                        })
+                        .collect();
+                        return Ok(results);
+                    }
+                }
+            }
+        }
+    }
+
+    pub async fn get_default_client(
+        &self
+    ) -> Result<uuid::Uuid, DbError> {
+        let sql = "select * from client.client_default_id()";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query_one(
+                        &stmt,
+                        &[
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        debug!("row: {:?}", r);
+                        let result = r.get("client_default_id");
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+    }
 }
 
 

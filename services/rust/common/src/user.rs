@@ -5,7 +5,10 @@ pub struct User {
     id: Option<uuid::Uuid>,
     active: bool,
     email: String,
-    clients: Option<Vec<Client>>
+
+    clients: Option<Vec<Client>>,
+    // current client
+    client_id: Option<uuid::Uuid>
 }
 
 impl User {
@@ -19,7 +22,8 @@ impl User {
             id: id,
             active: active,
             email: email,
-            clients: None
+            clients: None,
+            client_id: None
         };
     }
 
@@ -52,5 +56,18 @@ impl User {
         &self
     ) -> Option<Vec<Client>> {
         return self.clients.clone();
+    }
+
+    pub fn set_client(
+        &mut self,
+        client_id: uuid::Uuid
+    ) {
+        self.client_id = Some(client_id);
+    }
+
+    pub fn get_client(
+        &self
+    ) -> Option<uuid::Uuid> {
+        return self.client_id.clone();
     }
 }
