@@ -26,10 +26,10 @@ impl Permissions {
         return Self(Dbo::new(client));
     }
 
-    pub async fn get_all(
+    pub async fn get_user_permissions(
         &self,
         user_id: &uuid::Uuid
-    ) -> Result<Vec<String>, DbError> {
+    ) -> Result<Vec<common::iam::permission::Permission>, DbError> {
         let sql = "select * from iam.user_permissions_fetch($1);";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
@@ -37,8 +37,7 @@ impl Permissions {
                 return Err(DbError::ClientError);
             }
             Ok(stmt) => {
-                let t_email = crate::types::email::Email::new(email);
-                match self.0.client.query_one(
+                match self.0.client.query(
                     &stmt,
                     &[
                         &user_id
@@ -48,13 +47,13 @@ impl Permissions {
                         error!("unable to retrieve user permissions: {:?}", e);
                         return Err(DbError::ClientError);
                     }
-                    Ok(r) => {
-                        
-                        return Ok(common::user::User::new(
-                            Some(r.get("id")),
-                            r.get("active"),
-                            r.get("email")
-                        ));
+                    Ok(rows) => {
+                        let results = rows.iter().map(|r| common::iam::permission::Permission {
+                            id: r.get("id"),
+                            name: r.get("name")
+                        })
+                        .collect();
+                        return Ok(results);
                     }
                 }
             }
