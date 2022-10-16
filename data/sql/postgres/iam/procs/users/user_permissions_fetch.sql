@@ -9,7 +9,9 @@ as $$
 begin
     return query
     select
-        distinct a.name
+        distinct
+            a.id, 
+            a.name
     from iam.permissions a
         join iam.role_permisisons b
             on a.id = b.permission_id
