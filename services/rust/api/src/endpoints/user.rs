@@ -36,6 +36,12 @@ use crate::extractors::user_parameter::UserParameter;
 struct CurrentUserRequest {
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct ClientResponse {
+    pub id: uuid::Uuid,
+    pub name: String
+}
+
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -62,10 +68,16 @@ async fn user_current_post(
 ) -> impl Responder {
     info!("user_current_post()");
 
-    // debug!("user: {:?}", user);
-
     let u = user.user();
 
+    let mut clients: Vec<ClientResponse> = Vec::new();
+    if let Some(user_clients) = u.get_clients() {
+        clients = user_clients.iter().map(|c| ClientResponse {
+            id: c.id,
+            name: c.name.clone()
+        })
+        .collect();
+    }
 
     return HttpResponse::Ok()
         .json(ApiResponse::new(
@@ -74,7 +86,8 @@ async fn user_current_post(
             Some(json!({ 
                 "user": {
                     "email": u.email(),
-                    "name": "//TODO name"
+                    "name": "//TODO name",
+                    "clients": clients
                 }  
             }))
         ));
