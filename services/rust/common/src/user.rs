@@ -1,8 +1,11 @@
+use crate::client::Client;
+
 #[derive(Debug, Clone)]
 pub struct User {
     id: Option<uuid::Uuid>,
     active: bool,
-    email: String
+    email: String,
+    clients: Option<Vec<Client>>
 }
 
 impl User {
@@ -15,7 +18,8 @@ impl User {
         return Self {
             id: id,
             active: active,
-            email: email
+            email: email,
+            clients: None
         };
     }
 
@@ -35,5 +39,18 @@ impl User {
 
     pub fn email(&self) -> String {
         return format!("{}", self.email);
+    }
+
+    pub fn set_clients(
+        &mut self,
+        clients: Vec<Client>
+    ) {
+        self.clients = Some(clients);
+    }
+
+    pub fn get_clients(
+        &self
+    ) -> Option<Vec<Client>> {
+        return self.clients.clone();
     }
 }

@@ -1,4 +1,9 @@
-#[derive(Debug)]
+use serde::{
+    Serialize,
+    Deserialize
+};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Client {
     pub id: uuid::Uuid,
     pub active: bool,
