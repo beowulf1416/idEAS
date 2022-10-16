@@ -32,7 +32,8 @@ use common::user::User as UserObject;
 use pg::{
     Db,
     DbError,
-    user::User as UserDbo
+    user::User as UserDbo,
+    iam::user_client::UserClient
 };
 use crate::extractors::user_parameter::UserParameter;
 
@@ -130,11 +131,23 @@ where
                                             match users.get_by_email(&email).await {
                                                 Err(e) => {
                                                     error!("unable to retrieve user: {:?}", e);
-                                                    // return Err(DbError::ClientError);
                                                 }
                                                 Ok(u) => {
-                                                    // debug!("//TODO result: {:?}", u);
                                                     result = u.clone();
+
+                                                    if let Some(user_id) = u.id() {
+                                                        match users.fetch_clients(
+                                                            &user_id
+                                                        ).await {
+                                                            Err(e) => {
+                                                                error!("unable to fetch clients: {:?}", e);
+                                                            }
+                                                            Ok(clients) => {
+                                                                debug!("clients {:?}", clients);
+                                                                result.set_clients(clients);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         } else {
