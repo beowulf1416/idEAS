@@ -7,6 +7,7 @@ language plpgsql
 as $$
 declare
     t_client_id client.clients.id%type;
+    t_role_id iam.roles.id%type;
 begin
     insert into iam.users (
         id,
@@ -28,6 +29,17 @@ begin
     );
 
     -- add user to default role
-    
+    select
+        a.id into t_role_id
+    from iam.roles a
+    where
+        a.client_id = t_client_id
+        and a.name = 'default'
+    ;
+
+    call iam.user_role_add(
+        p_user_id,
+        t_role_id
+    );
 end
 $$;

@@ -5,7 +5,7 @@ create or replace procedure user_role_add(
 language plpgsql
 as $$
 begin
-    insert iam.user_roles (
+    insert into iam.user_roles (
         active, 
         user_id, 
         role_id

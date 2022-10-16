@@ -10,7 +10,7 @@ begin
         active = p_active
     where
         role_id = p_role_id
-        permission_id = p_permission_id
+        and permission_id = p_permission_id
     ;
 end
 $$;
