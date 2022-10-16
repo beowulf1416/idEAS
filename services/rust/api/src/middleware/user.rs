@@ -154,6 +154,19 @@ where
                                                                     Ok(client_id) => {
                                                                         // debug!("client_id: {:?}", client_id);
                                                                         result.set_client(client_id);
+
+                                                                        match users.fetch_permissions(
+                                                                            &user_id,
+                                                                            &client_id
+                                                                        ).await {
+                                                                            Err(e) => {
+                                                                                error!("unable to retrieve permissions");
+                                                                            }
+                                                                            Ok(permissions) => {
+                                                                                debug!("permissions: {:?}", permissions);
+                                                                                result.set_permissions(permissions);
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                             }
