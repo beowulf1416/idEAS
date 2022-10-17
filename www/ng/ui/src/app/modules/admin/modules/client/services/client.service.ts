@@ -13,11 +13,21 @@ export class ClientService {
     private http: HttpClient
   ) { }
 
-  clients(): Observable<ApiResponse> {
+  clients(
+    filter: string,
+    active: boolean,
+    items: number,
+    page: number
+  ): Observable<ApiResponse> {
     console.log("ClientService::clients()");
     return this.http.post<ApiResponse>(
       environment.api_url_base + environment.api_clients_fetch,
-      {}
+      {
+        filter: filter,
+        active: active,
+        items: items,
+        page: page
+      }
     );
   }
 }
