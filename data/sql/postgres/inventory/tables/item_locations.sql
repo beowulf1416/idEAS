@@ -21,7 +21,18 @@ create table item_locations (
     constraint fk_item_locations_1
         foreign key (client_id)
         references client.clients (id)
-        on delete restrict
+        on delete restrict,
+    constraint fk_item_locations_2
+        foreign key (item_id)
+        references inventory.items (id)
+        on delete restrict,
+    constraint fk_item_locations_3
+        foreign key (location_id)
+        references inventory.locations (id)
+        on delete restrict,
+
+    constraint chk_item_locations_1
+        check (balance > 0)
 );
 
 

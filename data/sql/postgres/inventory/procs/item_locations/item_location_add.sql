@@ -11,7 +11,21 @@ create or replace procedure item_location_add(
 )
 language plpgsql
 as $$
+declare
+    t_perishable inventory.items.perishable%type;
 begin
+    -- check if item is perishable
+    if exists(
+        select
+            *
+        from inventory.items a
+        where
+            a.id = p_item_id
+            and a.perishable = true
+    ) and p_expiry is null then
+        raise exception 'expiry date required' using errcode = 'data_exception';
+    end if;
+
     insert into inventory.item_locations (
         id,
         client_id,

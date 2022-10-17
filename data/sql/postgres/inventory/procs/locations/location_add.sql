@@ -4,6 +4,7 @@ create or replace procedure location_add(
     p_aisle inventory.locations.aisle%type,
     p_shelf inventory.locations.shelf%type,
     p_bin inventory.locations.bin%type,
+    p_pallet inventory.locations.pallet%type,
     p_level inventory.locations.level%type,
     p_floor inventory.locations.floor%type
 )
@@ -16,7 +17,8 @@ begin
         aisle,
         shelf,
         bin,
-        level,
+        pallet,
+        [level],
         floor
     ) values (
         p_location_id,
@@ -24,6 +26,7 @@ begin
         p_aisle,
         p_shelf,
         p_bin,
+        p_pallet,
         p_level,
         p_floor
     );
