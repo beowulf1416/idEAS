@@ -292,7 +292,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "client set active status",
+                        "description": "fetch clients",
                         "content": {
                             "application/json": {
                                 "schema": {
