@@ -1,3 +1,38 @@
 <div class="wrapper-component">
-    <pre>admin client list</pre>
+    <div class="wrapper-table">
+        <table class="tbl-clients">
+            <caption>Clients</caption>
+            <thead>
+                <tr>
+                    <th>Actions</th>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <div class="wrapper-form">
+                        <form class="form-clients" method="post" action="">
+                            <td>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Name</mat-label>
+                                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput />
+                                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                                </mat-form-field>
+                            </td>
+                        </form>
+                    </div><!-- .wrapper-form -->
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Actions</th>
+                    <th>Name</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr *ngFor="let c of clients">
+                    <td></td>
+                    <td>{{ c.name }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><!-- .wrapper-table -->
 </div><!-- .wrapper-component -->
