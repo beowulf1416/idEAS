@@ -8,6 +8,7 @@ use serde::{
     Serialize,
     Deserialize
 };
+use serde_json::json;
 
 use actix_web::{
     HttpResponse, 
@@ -217,12 +218,21 @@ async fn client_fetch_post(
                 }
                 Ok(clients) => {
                     debug!("clients: {:?}", clients);
+
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("Clients"),
+                            Some(json!({
+                                "clients": clients
+                            }))
+                        ));
                 }
             }
         }
     }
 
-    return HttpResponse::Ok()
+    return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
             String::from("Service is up. version: 1.0.0.0.dev"),
