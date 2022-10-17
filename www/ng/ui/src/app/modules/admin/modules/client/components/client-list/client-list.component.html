@@ -9,12 +9,34 @@
                 </tr>
                 <tr>
                     <div class="wrapper-form">
-                        <form class="form-clients" method="post" action="">
+                        <form class="form-clients" method="post" action="" [formGroup]="formClients">
                             <td>
                                 <mat-form-field appearance="outline">
                                     <mat-label>Name</mat-label>
-                                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput />
-                                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" matInput formControlName="name"/>
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <button>&lt;</button>
+                                <button>&lt;</button>
+                                
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Page</mat-label>
+                                    <input type="number" id="page" name="page" class="field-page" placeholder="Page" required matInput formControlName="page"/>
+                                </mat-form-field>
+
+                                <button>&gt;</button>
+                                <button>&gt;</button>
+                                &nbsp;
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Items</mat-label>
+                                    <mat-select id="items" name="items" formControlName="items">
+                                        <mat-option [value]="10">10</mat-option>
+                                        <mat-option [value]="20">20</mat-option>
+                                        <mat-option [value]="30">30</mat-option>
+                                        <mat-option [value]="40">40</mat-option>
+                                        <mat-option [value]="50">50</mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </td>
                         </form>
