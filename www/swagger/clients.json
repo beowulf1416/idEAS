@@ -68,7 +68,15 @@
                     "id",
                     "name",
                     "country_id"
-                ]
+                ],
+                "example":{
+                    "id":"46292a3a-fbe0-4880-abcb-826c7b1196b8",
+                    "name":"test",
+                    "description":"test client",
+                    "address":"somewhere",
+                    "country_id":608,
+                    "url":"http://localhost:8080"
+                }
             },
             "clientUpdateRequest":{
                 "type":"object",
@@ -171,7 +179,7 @@
         }
     },
     "paths":{
-        "/client/add":{
+        "/clients/add":{
             "summary":"add a client",
             "post":{
                 "summary": "POST method",
@@ -206,7 +214,7 @@
                 ]
             }
         },
-        "/client/update":{
+        "/clients/update":{
             "summary":"update a client",
             "post":{
                 "summary": "POST method",
@@ -236,7 +244,7 @@
                 }
             }
         },
-        "/client/set/active":{
+        "/clients/set/active":{
             "summary":"set client active status",
             "post":{
                 "summary": "POST method",
