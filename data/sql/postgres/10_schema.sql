@@ -7,6 +7,7 @@ create extension if not exists pgcrypto;
 \ir client/tables.sql
 \ir crm/tables.sql
 \ir iam/tables.sql
+\ir inventory/tables.sql
 
 
 -- procs
@@ -14,3 +15,4 @@ create extension if not exists pgcrypto;
 \ir client/procs.sql
 \ir crm/procs.sql
 \ir iam/procs.sql
+\ir inventory/procs.sql
