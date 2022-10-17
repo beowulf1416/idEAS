@@ -7,14 +7,30 @@ create table locations (
     aisle varchar(30),
     shelf varchar(30),
     bin varchar(30),
-    level varchar(30),
+    pallet varchar(30),
+    [level] varchar(30),
     floor varchar(30),
 
     constraint pk_locations
         primary key (id),
 
+    constraint u_locations_1
+        unique (aisle, shelf, bin, pallet, [level], floor),
+
     constraint fk_locations_1
         foreign key (client_id)
         references client.clients (id)
-        on delete restrict
+        on delete restrict,
+
+    constraint chk_locations_1
+        check (
+            concat(
+                aisle,
+                shelf,
+                bin,
+                pallet,
+                [level],
+                floor
+            ) <> ''
+        )
 );
