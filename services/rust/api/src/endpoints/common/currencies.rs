@@ -18,7 +18,8 @@ use actix_web::{
 use pg::Db;
 
 use crate::endpoints::{
-    ApiResponse
+    ApiResponse,
+    default_options
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -34,11 +35,13 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
         .service(
             web::resource("fetch")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(currencies_fetch_get))
                 .route(web::post().to(currencies_fetch_post))
         )
         .service(
             web::resource("get")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(currencies_get_get))
                 .route(web::post().to(currencies_get_post))
         )
