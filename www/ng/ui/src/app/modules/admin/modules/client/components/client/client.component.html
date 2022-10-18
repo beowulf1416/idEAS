@@ -24,7 +24,7 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Country</mat-label>
                     <mat-select id="countries" name="country" formControlName="country">
-                        <mat-option *ngFor="let c of countries" [value]="{{ c.id }}">{{ c.name }}</mat-option>
+                        <mat-option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</mat-option>
                     </mat-select>
                     <input type="text" id="country" name="country" class="field-country" placeholder="Country" required matInput formControlName="country" />
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
