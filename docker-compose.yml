@@ -34,6 +34,25 @@ services:
     ports:
       - "5432:5432"
       
+  api:
+    build:
+      context: services/rust
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+      - kafka
+  
+  ui:
+    build:
+      context: www/ng/ui
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
 volumes:
   zookeeper_data:
     driver: local
