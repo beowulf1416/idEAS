@@ -56,27 +56,27 @@ export class UserService implements OnInit {
   ngOnInit(): void {
   }
 
-  current(): Observable<ApiResponse> {
-    console.log("UserService::current()");
-    return this.http.post<ApiResponse>(
-      environment.api_url_base + environment.api_user_current,
-      {}
-    ).pipe(
-      catchError(e => {
-        console.debug("catchError", e);
-        return new Observable<ApiResponse>(function(observer) {
-          observer.next({
-            success: true,
-            message: "//TODO default",
-            data: {
-              user: new User('', ''),
-              error: e
-            }
-          });
-        });
-      })
-    );
-  }
+  // current(): Observable<ApiResponse> {
+  //   console.log("UserService::current()");
+  //   return this.http.post<ApiResponse>(
+  //     environment.api_url_base + environment.api_user_current,
+  //     {}
+  //   ).pipe(
+  //     catchError(e => {
+  //       console.debug("catchError", e);
+  //       return new Observable<ApiResponse>(function(observer) {
+  //         observer.next({
+  //           success: true,
+  //           message: "//TODO default",
+  //           data: {
+  //             user: new User('', ''),
+  //             error: e
+  //           }
+  //         });
+  //       });
+  //     })
+  //   );
+  // }
 
   sign_in(
     email: string,
