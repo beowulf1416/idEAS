@@ -8,6 +8,7 @@ create table clients (
 
     address text,
     country_id int not null,
+    currency_id varchar(10) not null,
 
     url varchar(300),
 
@@ -17,7 +18,7 @@ create table clients (
     constraint u_clients_1
         unique (name),
 
-    constraint fk_clients_2
+    constraint fk_clients_1
         foreign key (country_id)
         references common.countries (iso_3166_1_numeric)
         on delete restrict
