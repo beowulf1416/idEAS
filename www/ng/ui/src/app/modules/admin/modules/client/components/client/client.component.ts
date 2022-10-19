@@ -33,7 +33,9 @@ export class ClientComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("ClientComponent::ngOnInit()");
     this.country_service.fetch().subscribe(countries => {
+      console.debug("ClientComponent::ngOnInit()", countries);
       this.countries = countries;
     });
   }
