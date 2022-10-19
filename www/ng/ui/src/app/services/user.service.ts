@@ -21,15 +21,11 @@ export class UserService implements OnInit {
     ).pipe(
       filter((r => r.success == true)),
       map(r => {
-        console.debug("r", r);
+        console.debug("UserService::constructor() r", r);
         const data = (r.data as { user: {
           email: string,
           name: string
         } });
-        // return {
-        //   email: data?.user?.email,
-        //   name: data?.user?.name || ''
-        // };
         return new User(
           data?.user?.email,
           data?.user?.name
@@ -38,14 +34,6 @@ export class UserService implements OnInit {
       catchError(e => {
         console.debug("catchError", e);
         return new Observable<User>(function(observer) {
-          // observer.next({
-          //   success: true,
-          //   message: "//TODO default",
-          //   data: {
-          //     user: new User('', ''),
-          //     error: e
-          //   }
-          // });
           observer.next(new User('', ''));
           observer.complete();
         });
