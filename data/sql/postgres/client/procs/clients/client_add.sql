@@ -3,7 +3,7 @@ create or replace procedure client_add(
     p_name client.clients.name%type,
     p_description client.clients.description%type,
     p_address client.clients.address%type,
-    p_country_id client.clients.country_id%type
+    p_country_id client.clients.country_id%type,
     p_url client.clients.url%type
 )
 language plpgsql
@@ -24,7 +24,6 @@ begin
         p_description,
         p_address,
         p_country_id,
-        p_currency_id,
         p_url
     );
 end

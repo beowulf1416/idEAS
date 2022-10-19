@@ -1,6 +1,6 @@
 create or replace procedure item_set_active(
     p_item_id inventory.items.id%type,
-    p_active = inventory.items.active%type
+    p_active inventory.items.active%type
 )
 language plpgsql
 as $$

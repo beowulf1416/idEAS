@@ -8,7 +8,6 @@ create table clients (
 
     address text,
     country_id int not null,
-    currency_id varchar(10) not null,
 
     url varchar(300),
 

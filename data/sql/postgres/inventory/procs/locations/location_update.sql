@@ -16,7 +16,7 @@ begin
         shelf = p_shelf,
         bin = p_bin,
         pallet = p_pallet,
-        [level] = p_level,
+        level = p_level,
         floor = p_floor
     where
         id = p_location_id
