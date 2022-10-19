@@ -92,7 +92,7 @@ async fn user_current_post(
     return HttpResponse::Ok()
         .json(ApiResponse::new(
             true,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from("current user retrieved"),
             Some(json!({ 
                 "user": {
                     "email": u.email(),
