@@ -18,7 +18,7 @@ begin
         shelf,
         bin,
         pallet,
-        [level],
+        level,
         floor
     ) values (
         p_location_id,

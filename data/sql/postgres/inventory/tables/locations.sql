@@ -8,14 +8,14 @@ create table locations (
     shelf varchar(30),
     bin varchar(30),
     pallet varchar(30),
-    [level] varchar(30),
+    level varchar(30),
     floor varchar(30),
 
     constraint pk_locations
         primary key (id),
 
     constraint u_locations_1
-        unique (aisle, shelf, bin, pallet, [level], floor),
+        unique (aisle, shelf, bin, pallet, level, floor),
 
     constraint fk_locations_1
         foreign key (client_id)
@@ -29,7 +29,7 @@ create table locations (
                 shelf,
                 bin,
                 pallet,
-                [level],
+                level,
                 floor
             ) <> ''
         )
