@@ -15,7 +15,11 @@ use actix_web::{
     web
 };
 
-use pg::Db;
+use pg::{
+    Db,
+    DbError,
+    countries::Countries
+};
 
 use crate::endpoints::{
     ApiResponse,
@@ -25,9 +29,9 @@ use crate::endpoints::{
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CountriesFetchRequest {
-    filter: String,
-    items: i32,
-    page: i32
+    // filter: String,
+    // items: i32,
+    // page: i32
 }
 
 
@@ -68,10 +72,27 @@ async fn countries_fetch_post(
 ) -> impl Responder {
     info!("countries_fetch_post()");
 
-    return HttpResponse::Ok()
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let countries_dbo = Countries::new(client);
+            match countries_dbo.fetch().await {
+                Err(e) => {
+                    error!("unable to fetch countries");
+                }
+                Ok(result) => {
+                    debug!("result: {:?}", result);
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from("An error occured while retrieving countries"),
             None
         ));
 }
@@ -89,10 +110,12 @@ async fn countries_get_post(
 ) -> impl Responder {
     info!("countries_get_post()");
 
-    return HttpResponse::Ok()
+    
+
+    return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from("An error occured while retrieving country information"),
             None
         ));
 }
