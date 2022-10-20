@@ -49,7 +49,6 @@ impl Permissions {
                     }
                     Ok(rows) => {
                         let results = rows.iter().map(|r| common::iam::permission::Permission {
-                            id: r.get("id"),
                             name: r.get("name")
                         })
                         .collect();
