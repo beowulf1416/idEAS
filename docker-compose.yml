@@ -53,6 +53,10 @@ services:
     depends_on:
       - api
 
+secrets:
+  config.json:
+    file: secrets/docker.json
+
 volumes:
   zookeeper_data:
     driver: local
