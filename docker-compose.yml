@@ -33,6 +33,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5432:5432"
+    secrets:
+      - config.json
       
   api:
     build:
