@@ -31,3 +31,8 @@ docker-compose up -d
 ```
 
 That command will build the images and containers that is required to run a local copy of the application. It will run 4 containers: A zookeeper instance and a kafka instance, a postgres database and the application binary itself. An optional container can be built and run containing the swagger instance used for testing the endpoints provided by the application.
+
+Open the main page by using your browser to navigate to this url:
+```
+http://localhost
+```
