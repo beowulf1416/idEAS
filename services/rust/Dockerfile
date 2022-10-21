@@ -10,12 +10,22 @@ RUN cargo install --root /opt/ideas --path consumers/qmailer
 FROM debian:buster-slim
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y libssl-dev
-#     apt-get install -y extra-runtime-dependencies
+    apt-get install -y libssl-dev git
+
+WORKDIR /opt/extras
+RUN git clone https://github.com/vishnubob/wait-for-it.git
+
 
 COPY --from=builder /opt/ideas/bin /opt/ideas/bin
+COPY --from=builder /opt/ideas/etc /opt/ideas/etc
+COPY --from=builder /opt/ideas/wrapper.sh /opt/ideas/bin/wrapper.sh
+
+RUN chmod ugo+x /opt/ideas/bin/wrapper.sh
+
+EXPOSE 8081/tcp
+EXPOSE 8081/udp
 
 ENV RUST_LOG=debug \
-    CFG=/run/secrets/config.json
+    CFG=/opt/ideas/etc/config.json
 
-CMD ["/opt/ideas/bin/api", "/opt/ideas/bin/qmailer"]
+CMD [ "/opt/extras/wait-for-it/wait-for-it.sh", "-t", "5", "kafka:9093", "--", "/opt/ideas/bin/wrapper.sh"]
