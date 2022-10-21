@@ -1,0 +1,35 @@
+{
+    "base_url": "http://localhost",
+
+    "api": {
+        "bindHost": "0.0.0.0",
+        "bindPort": 8081
+    },
+
+    "mailer": {
+        "host": "smtp.gmail.com",
+        "user": "replace_me@gmail.com",
+        "password": "<replace_me>"
+    },
+
+    "token": {
+        "secret": "thisIsASecret"
+    },
+
+    "providers": [
+        {
+            "name": "postgres",
+            "type": "postgres",
+            "url": [
+                "postgres://app_user:replace_me@db:5432/app"
+            ]
+        },
+        {
+            "name": "queue",
+            "type": "kafka",
+            "url": [
+                "kafka:9093"
+            ]
+        }
+    ]
+}
