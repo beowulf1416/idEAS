@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { catchError, filter, map, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, filter, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../classes/api-response';
 import { User } from '../classes/user';
@@ -10,38 +10,28 @@ import { User } from '../classes/user';
 })
 export class UserService implements OnInit {
 
-  user$: Observable<User>;
+  // user$: Observable<User>;
+
+  user$ = new BehaviorSubject<User>(new User('', ''));
 
   constructor(
     private http: HttpClient
   ) {
-    this.user$ = this.http.post<ApiResponse>(
-      environment.api_url_base + environment.api_user_current,
-      {}
-    ).pipe(
-      filter((r => r.success == true)),
-      map(r => {
-        console.debug("UserService::constructor() r", r);
-        const data = (r.data as { user: {
-          email: string,
-          name: string
-        } });
-        return new User(
-          data?.user?.email,
-          data?.user?.name
-        );
-      }),
-      catchError(e => {
-        console.debug("catchError", e);
-        return new Observable<User>(function(observer) {
-          observer.next(new User('', ''));
-          observer.complete();
-        });
-      })
-    );
+    this.update();
   }
 
   ngOnInit(): void {
+  }
+
+  update() {
+    this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_user_current,
+      {}
+    ).subscribe(r => {
+      if (r.success) {
+        this.user$.next((r.data as { user: User }).user);   
+      }
+    });
   }
 
   // current(): Observable<ApiResponse> {
