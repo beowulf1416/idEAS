@@ -23,7 +23,7 @@
 
     <mat-sidenav-content>
 
-      <mat-toolbar class="tb-app" color="primary" *ngIf="(user$ | async) as user">
+      <mat-toolbar class="tb-app" color="primary">
         <button mat-icon-button (click)="$navleft.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
@@ -67,7 +67,7 @@
         <div class="wrapper-content-main">
 
           <pre>
-            {{ (user$ | async) | json }}
+            {{ user | json }}
           </pre>
 
           <router-outlet></router-outlet>
