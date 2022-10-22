@@ -17,8 +17,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            // "outputPath": "dist/ui",
-            "outputPath": "../../nginx/content/ui",
+            "outputPath": "dist/ui",
+            // "outputPath": "../../nginx/content/ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
