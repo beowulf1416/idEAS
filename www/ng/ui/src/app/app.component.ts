@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from './classes/user';
 import { UserService } from './services/user.service';
 
@@ -8,13 +8,28 @@ import { UserService } from './services/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent{
+export class AppComponent implements OnInit {
 
-  user$: Observable<User>
+  // user$: Observable<User>;
+  user_subscription: Subscription;
+  user: User = new User('', '');
 
   constructor(
     private user_service: UserService
   ) {
-    this.user$ = user_service.user$;
+    console.log("AppComponent::constructor()");
+    // this.user$ = user_service.get_user$();
+    // user_service.user$.subscribe(r => {
+    //   this.user$ = r;
+    // });
+    this.user_subscription = this.user_service.get_user$().subscribe(r => {
+      // console.debug("AppComponent::constructor() r", r);
+      this.user = new User(r.email_address, r.fullname);
+    });
+  }
+
+  ngOnInit(): void {
+    // console.log("AppComponent::ngOnInit()");
+    // this.user$ = this.user_service.user$;
   }
 }

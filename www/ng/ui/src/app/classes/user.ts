@@ -21,6 +21,8 @@ export class User {
     }
 
     get is_signed_in(): boolean {
+        // console.debug("User::is_signed_in()", (sessionStorage.getItem(environment.session_token_key) || '') != ''
+        //     && this.email != '');
         return (sessionStorage.getItem(environment.session_token_key) || '') != ''
             && this.email != '';
     }

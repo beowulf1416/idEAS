@@ -17,10 +17,15 @@ export class UserService implements OnInit {
   constructor(
     private http: HttpClient
   ) {
+    console.log("UserService::constructor()");
     this.update();
   }
 
   ngOnInit(): void {
+  }
+
+  get_user$(): Observable<User> {
+    return this.user$.asObservable();
   }
 
   update() {
@@ -29,6 +34,7 @@ export class UserService implements OnInit {
       {}
     ).subscribe(r => {
       if (r.success) {
+        console.debug("UserService::update()", r);
         this.user$.next((r.data as { user: User }).user);   
       }
     });
