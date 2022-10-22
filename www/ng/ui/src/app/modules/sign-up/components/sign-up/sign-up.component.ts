@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { matchValidator } from 'src/app/classes/validators/match-validator';
 import { patternValidator } from 'src/app/classes/validators/pattern-validator';
 import { TitleService } from 'src/app/services/title.service';
+import { UserService } from 'src/app/services/user.service';
 import { SignUpService } from '../../services/sign-up.service';
 
 @Component({
@@ -48,7 +49,8 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private title: TitleService,
-    private user_service: SignUpService,
+    private signup_service: SignUpService,
+    private user_service: UserService,
     private router: Router
   ) {
     this.title.set_title("Sign Up");
@@ -85,16 +87,16 @@ export class SignUpComponent implements OnInit {
     console.log("SignUpComponent::submit()");
     if (this.signUpForm.valid) {
       this.submitting = true;
-      this.user_service.sign_up(
+      this.signup_service.sign_up(
         this.email1?.value || '',
         this.pw1?.value || ''
       ).subscribe(r => {
         console.debug("SignupComponent::submit()", r);
         if (r.success) {
           console.log("redirecting ...");
+          this.user_service.update();
           this.router.navigate([""]);
         }
-
         this.submitting = false;
       });
     }
