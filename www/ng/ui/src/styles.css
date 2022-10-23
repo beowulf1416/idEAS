@@ -28,6 +28,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .wrapper-content > .wrapper-content-main {
-    margin: auto;
+    margin: 2px;
     height: 100%;
 }

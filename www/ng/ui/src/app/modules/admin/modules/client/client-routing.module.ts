@@ -15,7 +15,8 @@ const routes: Routes = [
   },
   {
     path: "list",
-    component: ClientListComponent
+    component: ClientListComponent,
+    outlet: "admin"
   }
 ];
 
