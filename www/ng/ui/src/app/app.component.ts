@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
 
   // user$: Observable<User>;
   user_subscription: Subscription;
-  user: User = new User('', '', '');
+  user: User = new User('', '', '', [], []);
 
   constructor(
     private user_service: UserService
@@ -24,7 +24,13 @@ export class AppComponent implements OnInit {
     // });
     this.user_subscription = this.user_service.get_user$().subscribe(r => {
       // console.debug("AppComponent::constructor() r", r);
-      this.user = new User(r.email_address, r.fullname, r.get_client_name);
+      this.user = new User(
+        r.email, 
+        r.name, 
+        r.client,
+        [],
+        []
+      );
     });
   }
 
