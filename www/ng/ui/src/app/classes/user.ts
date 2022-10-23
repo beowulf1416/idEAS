@@ -9,7 +9,8 @@ export class User {
 
     constructor(
         private email: string,
-        private name: string
+        private name: string,
+        private client_name: string
     ){}
 
     get email_address(): string {
@@ -25,5 +26,9 @@ export class User {
         //     && this.email != '');
         return (sessionStorage.getItem(environment.session_token_key) || '') != ''
             && this.email != '';
+    }
+
+    get get_client_name(): string {
+        return this.client_name || '' == '' ? 'default' : this.client_name;
     }
 }
