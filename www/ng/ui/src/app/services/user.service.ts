@@ -12,7 +12,7 @@ export class UserService implements OnInit {
 
   // user$: Observable<User>;
 
-  user$ = new BehaviorSubject<User>(new User('', '', ''));
+  user$ = new BehaviorSubject<User>(new User('', '', '', [], []));
 
   constructor(
     private http: HttpClient
@@ -45,7 +45,9 @@ export class UserService implements OnInit {
         this.user$.next(new User(
           u.name,
           u.email,
-          u.client
+          u.client,
+          u.clients,
+          u.permissions
         ));   
       }
     });
