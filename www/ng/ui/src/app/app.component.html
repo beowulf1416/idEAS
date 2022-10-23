@@ -53,15 +53,15 @@
               <span>Disable alerts</span>
           </button>
           <mat-divider></mat-divider>
-          <a title="Sign In" routerLink="/sign-in" *ngIf="!user.is_signed_in">Sign In</a>
-          <a title="Sign Out" routerLink="/sign-out" *ngIf="user.is_signed_in">Sign Out</a>
+          <a mat-menu-item title="Sign In" routerLink="/sign-in" *ngIf="!user.is_signed_in">Sign In</a>
+          <a mat-menu-item title="Sign Out" routerLink="/sign-out" *ngIf="user.is_signed_in">Sign Out</a>
         </mat-menu>
 
         <mat-menu #menuClients="matMenu">
           <button mat-menu-item>Client 1</button>
           <button mat-menu-item>Client 2</button>
           <mat-divider></mat-divider>
-          <a mat-icon-button title="Join client" routerLink="/client/join">Join client...</a>
+          <a mat-menu-item title="Join client" routerLink="/client/join">Join client...</a>
         </mat-menu>
       </mat-toolbar>
 
@@ -75,9 +75,6 @@
           </button>
         </div>
         <div class="wrapper-content-main">
-          <pre>
-          {{ user | json }}
-          </pre>
           <router-outlet></router-outlet>
         </div>
       </div>

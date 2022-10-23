@@ -1,1 +1,25 @@
-<p>admin dashboard works!</p>
+<div class="wrapper-component">
+    <div class="wrapper-toolbar">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-admin-clients" aria-label="Administer clients" [matMenuTriggerFor]="clientsMenu">
+                    Clients
+                </button>
+                <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+                    <mat-icon>favorite</mat-icon>
+                </button>
+                <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+                    <mat-icon>share</mat-icon>
+                </button>
+                <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+                    <mat-icon>share</mat-icon>
+                </button>
+            </mat-toolbar-row>
+        </mat-toolbar><!-- .wrapper-toolbar -->
+
+        <mat-menu #clientsMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/admin/clients/list">List</a>
+            <a mat-menu-item title="Add" routerLink="/admin/clients/add">Add</a>
+        </mat-menu>
+    </div>
+</div><!-- .wrapper-component -->

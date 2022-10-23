@@ -16,7 +16,7 @@ export class User {
     ){}
 
     get email(): string {
-        return this.email;
+        return this._email;
     }
 
     get name(): string {
