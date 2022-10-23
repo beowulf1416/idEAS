@@ -12,7 +12,7 @@ export class UserService implements OnInit {
 
   // user$: Observable<User>;
 
-  user$ = new BehaviorSubject<User>(new User('', ''));
+  user$ = new BehaviorSubject<User>(new User('', '', ''));
 
   constructor(
     private http: HttpClient
@@ -35,7 +35,18 @@ export class UserService implements OnInit {
     ).subscribe(r => {
       if (r.success) {
         console.debug("UserService::update()", r);
-        this.user$.next((r.data as { user: User }).user);   
+        const u = (r.data as { user: {
+          name: string,
+          email: string,
+          client: string,
+          clients: Array<string>,
+          permissions: Array<string>
+        } }).user;
+        this.user$.next(new User(
+          u.name,
+          u.email,
+          u.client
+        ));   
       }
     });
   }

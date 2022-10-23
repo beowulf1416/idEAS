@@ -32,6 +32,9 @@
         <button mat-icon-button class="notifications" aria-label="Notifications" (click)="$navright.toggle()">
           <mat-icon>notifications</mat-icon>
         </button>
+        <button mat-button [matMenuTriggerFor]="menuClients" aria-label="Clients">
+          <div>{{ user.get_client_name }}</div>
+        </button>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Settings">
           <mat-icon>more_vert</mat-icon>
         </button>
@@ -42,16 +45,23 @@
               <span>Redial</span>
           </button>
           <button mat-menu-item disabled>
-              <mat-icon>voicemail</mat-icon>
-              <span>Check voice mail</span>
+              <mat-icon>expand_more</mat-icon>
+              <div>Clients</div>
           </button>
           <button mat-menu-item>
               <mat-icon>notifications_off</mat-icon>
               <span>Disable alerts</span>
           </button>
           <mat-divider></mat-divider>
-          <a mat-button routerLink="/sign-in" *ngIf="!user.is_signed_in">Sign In</a>
-          <a mat-button routerLink="/sign-out" *ngIf="user.is_signed_in">Sign Out</a>
+          <a title="Sign In" routerLink="/sign-in" *ngIf="!user.is_signed_in">Sign In</a>
+          <a title="Sign Out" routerLink="/sign-out" *ngIf="user.is_signed_in">Sign Out</a>
+        </mat-menu>
+
+        <mat-menu #menuClients="matMenu">
+          <button mat-menu-item>Client 1</button>
+          <button mat-menu-item>Client 2</button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>Join Client...</button>
         </mat-menu>
       </mat-toolbar>
 
@@ -65,11 +75,9 @@
           </button>
         </div>
         <div class="wrapper-content-main">
-
           <pre>
-            {{ user | json }}
+          {{ user | json }}
           </pre>
-
           <router-outlet></router-outlet>
         </div>
       </div>
