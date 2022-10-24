@@ -20,5 +20,7 @@ export const environment = {
   api_currency_fetch: "/currencies/fetch",
 
   api_clients_fetch: "/clients/fetch",
-  api_clients_add: "/clients/add"
+  api_clients_add: "/clients/add",
+  api_clients_get: "/clients/get",
+  api_clients_update: "/clients/update"
 };
