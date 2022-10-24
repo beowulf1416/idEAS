@@ -162,7 +162,7 @@ impl Client {
         &self,
         client_id: &uuid::Uuid
     ) -> Result<common::client::Client, DbError> {
-        let sql = "select * from client.client_get()";
+        let sql = "select * from client.client_get($1)";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
                 error!("unable to prepare query: {} {:?}", sql, e);
