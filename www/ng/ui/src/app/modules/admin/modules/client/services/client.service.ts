@@ -52,4 +52,36 @@ export class ClientService {
       }
     );
   }
+
+  get(
+    client_id: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_clients_get,
+      {
+        id: client_id
+      }
+    );
+  }
+
+  update(
+    id: string,
+    name: string,
+    description: string,
+    address: string,
+    country_id: number,
+    url: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_clients_update,
+      {
+        id: id,
+        name: name,
+        description: description,
+        address: address,
+        country_id: country_id,
+        url: url
+      }
+    );
+  }
 }

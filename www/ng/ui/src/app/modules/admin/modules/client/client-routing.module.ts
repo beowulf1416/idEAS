@@ -10,6 +10,14 @@ const routes: Routes = [
     component: ClientComponent
   },
   {
+    path: "client/:client_id",
+    component: ClientComponent
+  },
+  {
+    path: "client/:client_id/:action",
+    component: ClientComponent
+  },
+  {
     path: "list",
     component: ClientListComponent
   },
