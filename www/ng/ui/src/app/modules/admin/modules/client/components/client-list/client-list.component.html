@@ -1,4 +1,21 @@
 <div class="wrapper-component">
+    <div class="wrapper-tb">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-admin-clients" aria-label="Administer clients" [matMenuTriggerFor]="clientsMenu">
+                    Clients
+                </button>
+                <button mat-button class="btn-admin-clients" aria-label="Save">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <mat-menu #clientsMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/admin/clients/list">List</a>
+            <a mat-menu-item title="Add" routerLink="/admin/clients/new">New</a>
+        </mat-menu>
+    </div><!-- .wrapper-tb -->
     <div class="wrapper-table">
         <table class="tbl-clients">
             <caption>Clients</caption>
