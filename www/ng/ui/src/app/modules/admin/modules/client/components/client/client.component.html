@@ -2,6 +2,15 @@
     <div class="wrapper-form">
         <form class="form-client" method="post" action="" [formGroup]="clientForm" (ngSubmit)="submit()">
             <fieldset>
+                <mat-toolbar color="secondary">
+                    <mat-toolbar-row>
+                        <button id="btn-save" title="Save" mat-icon-button color="primary" type="submit" [disabled]="clientForm.invalid">
+                            <mat-icon>save</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+            </fieldset>
+            <fieldset>
                 <mat-form-field appearance="outline">
                     <mat-label>Name</mat-label>
                     <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput formControlName="name" />
@@ -36,9 +45,6 @@
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
                     <mat-hint>Please enter client url</mat-hint>
                 </mat-form-field>
-            </fieldset>
-            <fieldset>
-                <button mat-raised-button color="primary">Save</button>
             </fieldset>
         </form>
     </div><!-- .wrapper-form -->
