@@ -17,7 +17,7 @@
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
                     <mat-hint>Please enter client name</mat-hint>
                 </mat-form-field>
-                <mat-checkbox class="field-active">Active</mat-checkbox>
+                <mat-checkbox class="field-active" formControlName="active" >Active</mat-checkbox>
                 <mat-form-field appearance="outline">
                     <mat-label>Description</mat-label>
                     <input type="text" id="description" name="description" class="field-description" placeholder="Description" required matInput formControlName="description" />
@@ -32,7 +32,7 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Country</mat-label>
-                    <mat-select id="countries" name="country" formControlName="country">
+                    <mat-select id="countries" name="country" formControlName="country" >
                         <mat-option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</mat-option>
                     </mat-select>
                     <input type="text" id="country" name="country" class="field-country" placeholder="Country" required matInput formControlName="country" />
