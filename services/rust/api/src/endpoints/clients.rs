@@ -41,6 +41,12 @@ struct ClientAddRequest {
 
 
 #[derive(Debug, Serialize, Deserialize)]
+struct ClientGetRequest {
+    id: uuid::Uuid
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
 struct ClientUpdateRequest {
     id: uuid::Uuid,
     name: String,
@@ -74,6 +80,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(client_add_get))
                 .route(web::post().to(client_add_post))
+        )
+        .service(
+            web::resource("get")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(client_get_get))
+                .route(web::post().to(client_get_post))
         )
         .service(
             web::resource("update")
@@ -145,6 +157,56 @@ async fn client_add_post(
             None
         ));
 }
+
+
+async fn client_get_get() -> impl Responder {
+    info!("client_get_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn client_get_post(
+    db: web::Data<Db>,
+    params: web::Json<ClientGetRequest>
+) -> impl Responder {
+    info!("client_get_post()");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let client_dbo = ClientDbo::new(client);
+            match client_dbo.get(
+                &params.id
+            ).await {
+                Err(e) => {
+                    error!("unable to fetch client");
+                }
+                Ok(client) => {
+                    debug!("clients: {:?}", client);
+
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved client information"),
+                            Some(json!({
+                                "client": client
+                            }))
+                        ));
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from("An error occured while trying to retrieve client information"),
+            None
+        ));
+}
+
 
 
 async fn client_update_get() -> impl Responder {
