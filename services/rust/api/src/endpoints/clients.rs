@@ -89,6 +89,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         )
         .service(
             web::resource("update")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(client_update_get))
                 .route(web::post().to(client_update_post))
         )
@@ -221,10 +222,40 @@ async fn client_update_post(
 ) -> impl Responder {
     info!("client_update_post()");
 
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let client_dbo = ClientDbo::new(client);
+
+            match client_dbo.update(
+                &params.id,
+                &params.name,
+                &params.description,
+                &params.address,
+                &params.country_id,
+                &params.url
+            ).await {
+                Err(e) => {
+                    error!("unable to update client record");
+                }
+                Ok(_) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("Client record updated"),
+                            None
+                        ));
+                }
+            }
+        }
+    }
+
     return HttpResponse::Ok()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from("An error occured while updating client record"),
             None
         ));
 }
