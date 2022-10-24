@@ -8,6 +8,7 @@ use serde::{
     Serialize,
     Deserialize
 };
+use serde_json::json;
 
 use actix_web::{
     HttpResponse, 
@@ -83,7 +84,15 @@ async fn countries_fetch_post(
                     error!("unable to fetch countries");
                 }
                 Ok(result) => {
-                    debug!("result: {:?}", result);
+                    // debug!("result: {:?}", result);
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved countries"),
+                            Some(json!({
+                                "countries": result
+                            }))
+                        ))
                 }
             }
         }
