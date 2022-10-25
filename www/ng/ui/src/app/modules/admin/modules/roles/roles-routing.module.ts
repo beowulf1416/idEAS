@@ -5,12 +5,20 @@ import { RoleComponent } from './components/role/role.component';
 
 const routes: Routes = [
   {
-    path: "",
-    component: RoleListComponent
-  },
-  {
     path: "new",
     component: RoleComponent
+  },
+  {
+    path: "role/:role_id",
+    component: RoleComponent
+  },
+  {
+    path: "role/:role_id/:action",
+    component: RoleComponent
+  },
+  {
+    path: "",
+    component: RoleListComponent
   }
 ];
 

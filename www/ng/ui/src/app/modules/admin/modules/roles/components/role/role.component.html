@@ -1,7 +1,47 @@
 <div class="component-wrapper">
+    <div class="wrapper-tb">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-admin-roles" aria-label="Administer roles" [matMenuTriggerFor]="rolesMenu">
+                    Roles <mat-icon>expand_more</mat-icon>
+                </button>
+                <button mat-button class="btn-admin-roles" aria-label="Save">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <mat-menu #clientsMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/admin/roles/list">List</a>
+            <a mat-menu-item title="Add" routerLink="/admin/roles/new">New</a>
+        </mat-menu>
+    </div><!-- .wrapper-tb -->
     <div class="wrapper-form">
-        <form class="form-role" method="post" action="">
-            <h3>Role</h3>
+        <h3>Role</h3>
+        <form class="form-role" method="post" action="" [formGroup]="roleForm">
+            <fieldset>
+                <mat-toolbar color="secondary">
+                    <mat-toolbar-row>
+                        <button id="btn-save" title="Save" mat-icon-button color="primary" type="submit" [disabled]="roleForm.invalid">
+                            <mat-icon>save</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+            </fieldset>
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput formControlName="name" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter role name</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <input type="text" id="description" name="description" class="field-description" placeholder="Description" required matInput formControlName="description" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter description</mat-hint>
+                </mat-form-field>
+            </fieldset>
         </form>
     </div><!-- .wrapper-form -->
 </div><!-- .component-wrapper -->
