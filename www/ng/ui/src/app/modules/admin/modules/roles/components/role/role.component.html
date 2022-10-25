@@ -18,7 +18,7 @@
     </div><!-- .wrapper-tb -->
     <div class="wrapper-form">
         <h3>Role</h3>
-        <form class="form-role" method="post" action="" [formGroup]="roleForm">
+        <form class="form-role" method="post" action="" [formGroup]="roleForm" (ngSubmit)="submit()">
             <fieldset>
                 <mat-toolbar color="secondary">
                     <mat-toolbar-row>
@@ -29,6 +29,9 @@
                 </mat-toolbar>
             </fieldset>
             <fieldset>
+                <input type="hidden" id="role_id" name="role_id" formControlName="role_id" />
+                <input type="hidden" id="client_id" name="client_id" formControlName="client_id" />
+
                 <mat-form-field appearance="outline">
                     <mat-label>Name</mat-label>
                     <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput formControlName="name" />
