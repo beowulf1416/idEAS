@@ -22,13 +22,23 @@ use crate::endpoints::{
 
 use pg::{
     Db,
-    DbError
+    DbError,
+    iam::roles::Role as RoleDbo
 };
 
 
 #[derive(Debug, Serialize, Deserialize)]
 struct RoleAddRequest {
     id: uuid::Uuid,
+    client_id: uuid::Uuid,
+    name: String,
+    description: String
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct RoleUpdateRequest {
+    id: uuid::Uuid,
+    client_id: uuid::Uuid,
     name: String,
     description: String
 }
@@ -42,6 +52,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(role_add_get))
                 .route(web::post().to(role_add_post))
+        )
+        .service(
+            web::resource("update")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(role_update_get))
+                .route(web::post().to(role_update_post))
         )
     ;
 }
@@ -64,24 +80,71 @@ async fn role_add_post(
             error!("unable to retrieve client");
         }
         Ok(client) => {
-            let client_dbo = ClientDbo::new(client);
+            let role_dbo = RoleDbo::new(client);
 
-            match client_dbo.add(
+            match role_dbo.add(
                 &params.id,
+                &params.client_id,
                 &params.name,
                 &params.description,
-                &params.address,
-                &params.country_id,
-                &params.url
             ).await {
                 Err(e) => {
-                    error!("unable to add client");
+                    error!("unable to add role");
                 }
                 Ok(_) => {
                     return HttpResponse::Created()
                         .json(ApiResponse::new(
                             true,
-                            String::from("Client added"),
+                            String::from("Role added"),
+                            None
+                        ));
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from("Service is up. version: 1.0.0.0.dev"),
+            None
+        ));
+}
+
+
+pub async fn role_update_get() -> impl Responder {
+    info!("role_update_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn role_update_post(
+    db: web::Data<Db>,
+    params: web::Json<RoleUpdateRequest>
+) -> impl Responder {
+    info!("role_update_post()");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let role_dbo = RoleDbo::new(client);
+
+            match role_dbo.update(
+                &params.id,
+                &params.client_id,
+                &params.name,
+                &params.description,
+            ).await {
+                Err(e) => {
+                    error!("unable to update role");
+                }
+                Ok(_) => {
+                    return HttpResponse::Created()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("Role update"),
                             None
                         ));
                 }
