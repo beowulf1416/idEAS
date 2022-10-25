@@ -59,7 +59,35 @@ async fn role_add_post(
 ) -> impl Responder {
     info!("role_add_post()");
 
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let client_dbo = ClientDbo::new(client);
 
+            match client_dbo.add(
+                &params.id,
+                &params.name,
+                &params.description,
+                &params.address,
+                &params.country_id,
+                &params.url
+            ).await {
+                Err(e) => {
+                    error!("unable to add client");
+                }
+                Ok(_) => {
+                    return HttpResponse::Created()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("Client added"),
+                            None
+                        ));
+                }
+            }
+        }
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
