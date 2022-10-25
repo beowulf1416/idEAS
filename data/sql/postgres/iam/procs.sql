@@ -23,7 +23,6 @@ set schema 'iam';
 \ir procs/roles/role_add.sql
 \ir procs/roles/role_fetch.sql
 \ir procs/roles/role_get.sql
-\ir procs/roles/role_get_by_slug.sql
 \ir procs/roles/role_set_active.sql
 \ir procs/roles/role_update.sql
 
