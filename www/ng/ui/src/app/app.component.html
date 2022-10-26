@@ -18,7 +18,17 @@
     </mat-sidenav>
 
     <mat-sidenav #$navright mode="over" position="end">
-      right content
+      <div class="wrapper-messages">
+        <h6>Messages</h6>
+        <div class="message" *ngFor="let m of messages">
+          <div class="message-text messages-{{ m.type }}">
+            {{ m.message }}
+          </div><!-- .message-text -->
+          <button mat-icon-button class="btn-close-message" (click)="close_message(m.id)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div><!-- .message -->
+      </div><!-- .wrapper-messages -->
     </mat-sidenav>
 
     <mat-sidenav-content>
