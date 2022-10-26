@@ -44,6 +44,13 @@ export class ClientSelectComponent implements OnInit {
   }
 
   fetch_clients() {
-    this.client_service.clients();
+    this.client_service.clients(
+      "%",
+      true,
+      10,
+      1
+    ).subscribe(r => {
+      console.log("ClientSelectComponent::fetch_clients()", r);
+    });
   }
 }
