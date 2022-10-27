@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { timeStamp } from 'console';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 import { ApiResponse } from '../classes/api-response';
@@ -44,6 +45,17 @@ export class ClientService {
           data: null
         });
       })
+    );
+  }
+
+  user_join(
+    client_id: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_user_client_add,
+      {
+        client_id: client_id
+      }
     );
   }
 }
