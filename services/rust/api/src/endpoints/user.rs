@@ -23,7 +23,8 @@ use crate::endpoints::{
 
 use pg::{
     Db,
-    DbError
+    DbError,
+    iam::user_client::UserClient as UserClientDbo
 };
 
 // use common::{
@@ -42,6 +43,11 @@ struct ClientResponse {
     pub name: String
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct UserClientAddRequest {
+    client_id: uuid::Uuid
+}
+
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -51,6 +57,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(user_current_get))
                 .route(web::post().to(user_current_post))
+        )
+        .service(
+            web::resource("client/add")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(user_client_add_get))
+                .route(web::post().to(user_client_add_post))
         )
     ;
 }
@@ -69,8 +81,6 @@ async fn user_current_post(
     info!("user_current_post()");
 
     let u = user.user();
-
-    debug!("user: {:?}", u);
 
     let mut clients: Vec<ClientResponse> = Vec::new();
     if let Some(user_clients) = u.get_clients() {
@@ -102,5 +112,53 @@ async fn user_current_post(
                     "permissions": permissions
                 }  
             }))
+        ));
+}
+
+
+async fn user_client_add_get() -> impl Responder {
+    info!("user_client_add_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+async fn user_client_add_post(
+    db: web::Data<Db>,
+    user: UserParameter,
+    params: web::Json<UserClientAddRequest>
+) -> impl Responder {
+    info!("user_client_add_post()");
+
+    let u = user.user();
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let user_client_dbo = UserClient::new(client);
+            match user_client_dbo.add(
+                u.id(),
+                &params.client_id
+            ).await {
+                Err(e) => {
+                    error!("unable to add user to client");
+                }
+                Ok(_) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully added user to client"),
+                            None
+                        ));
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from("An error occured while trying to add user to client"),
+            None
         ));
 }
