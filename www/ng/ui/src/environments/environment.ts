@@ -19,6 +19,7 @@ export const environment = {
   api_registration_info: "/auth/register/info",
 
   api_user_current: "/user/current",
+  api_user_client_add: "/user/client/add"
 
   api_country_fetch: "/countries/fetch",
   api_currency_fetch: "/currencies/fetch",
