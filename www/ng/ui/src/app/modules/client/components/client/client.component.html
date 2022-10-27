@@ -13,8 +13,10 @@
                 </tr>
             </tfoot>
             <tbody>
-                <tr>
-                    <td></td>
+                <tr *ngFor="let c of clients">
+                    <td class="client-{{ c.id }}">
+                        {{ c.name }}
+                    </td>
                 </tr>
             </tbody>
         </table>
