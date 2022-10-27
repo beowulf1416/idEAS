@@ -38,6 +38,18 @@
                 "type":"object",
                 "properties":{},
                 "required":[]
+            },
+            "userClientAddRequest":{
+                "type":"object",
+                "properties":{
+                    "client_id":{
+                        "type":"string",
+                        "format":"uuid"
+                    }
+                },
+                "required":[
+                    "client_id"
+                ]
             }
         },
         "securitySchemes": {
@@ -69,7 +81,42 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "user registered",
+                        "description": "current user retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/client/add":{
+            "summary":"add user to client",
+            "post":{
+                "summary": "POST method",
+                "tags":["user"],
+                "operationId":"user_client_add",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userClientAddRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user added to client",
                         "content": {
                             "application/json": {
                                 "schema": {
