@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { timeStamp } from 'console';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 import { ApiResponse } from '../classes/api-response';
@@ -33,7 +32,7 @@ export class ClientService {
       }
     ).pipe(
       map(r => {
-        console.log(r);
+        console.log("ClientService::clients()", r);
         return r;
       }),
       catchError((e) => {
