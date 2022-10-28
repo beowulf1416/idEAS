@@ -4,6 +4,7 @@ import { ClientSelectComponent } from './components/client-select/client-select.
 
 import { HomeComponent } from './components/home/home.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
+import { SignOutComponent } from './components/sign-out/sign-out.component';
 // import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 const routes: Routes = [
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: "sign-in",
     component: SignInComponent
+  },
+  {
+    path: "sign-out",
+    component: SignOutComponent
   },
   {
     path: "dashboard",
