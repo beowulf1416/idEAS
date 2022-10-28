@@ -1,6 +1,7 @@
 create or replace procedure client_update(
     p_client_id client.clients.id%type,
     p_name client.clients.name%type,
+    p_active client.clients.active%type,
     p_description client.clients.description%type,
     p_address client.clients.address%type,
     p_country_id client.clients.country_id%type,
@@ -40,6 +41,7 @@ begin
 
         update client.clients set
             name = p_name,
+            active = p_active,
             address = p_address,
             description = p_description,
             country_id = p_country_id,

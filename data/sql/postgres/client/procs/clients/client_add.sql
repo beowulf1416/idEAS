@@ -1,6 +1,7 @@
 create or replace procedure client_add(
     p_client_id client.clients.id%type,
     p_name client.clients.name%type,
+    p_active client.clients.active%type,
     p_description client.clients.description%type,
     p_address client.clients.address%type,
     p_country_id client.clients.country_id%type,
@@ -19,7 +20,7 @@ begin
         url
     ) values (
         p_client_id,
-        false,
+        p_active,
         p_name,
         p_description,
         p_address,
