@@ -33,6 +33,19 @@ use crate::endpoints::{
 struct ClientAddRequest {
     id: uuid::Uuid,
     name: String,
+    active: bool,
+    description: String,
+    address: String,
+    country_id: i32,
+    url: String
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ClientUpdateRequest {
+    id: uuid::Uuid,
+    name: String,
+    active: bool,
     description: String,
     address: String,
     country_id: i32,
@@ -46,15 +59,7 @@ struct ClientGetRequest {
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
-struct ClientUpdateRequest {
-    id: uuid::Uuid,
-    name: String,
-    description: String,
-    address: String,
-    country_id: i32,
-    url: String
-}
+
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -131,6 +136,7 @@ async fn client_add_post(
             match client_dbo.add(
                 &params.id,
                 &params.name,
+                &params.active,
                 &params.description,
                 &params.address,
                 &params.country_id,
@@ -232,6 +238,7 @@ async fn client_update_post(
             match client_dbo.update(
                 &params.id,
                 &params.name,
+                &params.active,
                 &params.description,
                 &params.address,
                 &params.country_id,
