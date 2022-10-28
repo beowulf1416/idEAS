@@ -35,6 +35,7 @@ export class ClientService {
 
   add(
     name: string,
+    active: boolean,
     description: string,
     address: string,
     country_id: number,
@@ -45,6 +46,7 @@ export class ClientService {
       {
         id: uuidv4(),
         name: name,
+        active: active,
         description: description,
         address: address,
         country_id: country_id,
@@ -67,6 +69,7 @@ export class ClientService {
   update(
     id: string,
     name: string,
+    active: boolean,
     description: string,
     address: string,
     country_id: number,
@@ -77,6 +80,7 @@ export class ClientService {
       {
         id: id,
         name: name,
+        active: active,
         description: description,
         address: address,
         country_id: country_id,
