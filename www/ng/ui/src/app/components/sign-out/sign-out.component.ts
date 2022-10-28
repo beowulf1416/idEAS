@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TitleService } from 'src/app/services/title.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-sign-out',
@@ -13,12 +14,15 @@ export class SignOutComponent implements OnInit {
 
   constructor(
     private title: TitleService,
+    private user_service: UserService,
     private router: Router
   ) { 
     this.title.set_title("Sign Out");
   }
 
   ngOnInit(): void {
+    this.user_service.sign_out();
+    
     const self = this;
     setTimeout(() => {
       self.router.navigate(["sign-in"]);
