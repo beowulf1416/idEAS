@@ -102,4 +102,9 @@ export class UserService implements OnInit {
       }
     );
   }
+
+  sign_out() {
+    console.log("UserService::sign_out()");
+    sessionStorage.removeItem(environment.session_token_key);
+  }
 }
