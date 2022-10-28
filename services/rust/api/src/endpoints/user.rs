@@ -128,37 +128,43 @@ async fn user_client_add_post(
 ) -> impl Responder {
     info!("user_client_add_post()");
 
-    let u = user.user();
+    let mut error_message = "An error occured while trying to add user to client";
 
-    match db.get_client().await {
-        Err(e) => {
-            error!("unable to retrieve client");
-        }
-        Ok(client) => {
-            let user_client_dbo = UserClient::new(client);
-            match user_client_dbo.add(
-                u.id(),
-                &params.client_id
-            ).await {
-                Err(e) => {
-                    error!("unable to add user to client");
-                }
-                Ok(_) => {
-                    return HttpResponse::Ok()
-                        .json(ApiResponse::new(
-                            true,
-                            String::from("successfully added user to client"),
-                            None
-                        ));
+    let u = user.user();
+    if let Some(user_id) = u.id() {
+        match db.get_client().await {
+            Err(e) => {
+                error!("unable to retrieve client");
+            }
+            Ok(client) => {
+                let user_client_dbo = UserClientDbo::new(client);
+                match user_client_dbo.add(
+                    &user_id,
+                    &params.client_id
+                ).await {
+                    Err(e) => {
+                        error_message = "unable to add user to client";
+                        error!("unable to add user to client");
+                    }
+                    Ok(_) => {
+                        return HttpResponse::Ok()
+                            .json(ApiResponse::new(
+                                true,
+                                String::from("successfully added user to client"),
+                                None
+                            ));
+                    }
                 }
             }
         }
+    } else {
+        error_message = "Unable to retrieve user id";
     }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("An error occured while trying to add user to client"),
+            String::from(error_message),
             None
         ));
 }
