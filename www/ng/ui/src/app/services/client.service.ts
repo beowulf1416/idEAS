@@ -27,7 +27,7 @@ export class ClientService {
       {
         filter: filter,
         active: active_only,
-        items: items,
+        items: items,                                               
         page: page
       }
     ).pipe(

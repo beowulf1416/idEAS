@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiResponse } from 'src/app/classes/api-response';
+import { MessageType } from 'src/app/classes/message-type';
 import { ClientService } from 'src/app/services/client.service';
+import { MessageService } from 'src/app/services/message.service';
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
@@ -9,6 +13,8 @@ import { TitleService } from 'src/app/services/title.service';
 })
 export class ClientComponent implements OnInit {
 
+  submitting = false;
+
   clients: Array<{
     id: string,
     name: string
@@ -16,7 +22,9 @@ export class ClientComponent implements OnInit {
 
   constructor(
     private title: TitleService,
-    private client_service: ClientService
+    private client_service: ClientService,
+    private msg_service: MessageService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -32,6 +40,31 @@ export class ClientComponent implements OnInit {
       1
     ).subscribe(r => {
       console.log("ClientComponent::refresh_clients()", r);
+      if (r.success) {
+        this.clients = (r.data as { clients: Array<{
+          id: string,
+          name: string,
+          description: string,
+          address: string,
+          country_id: number,
+          url: string
+        }> }).clients;
+      }
+    });
+  }
+
+  join(client_id: string) {
+    console.debug("ClientComponent::join()", client_id);
+    this.submitting = true;
+    this.client_service.user_join(client_id).subscribe((r: ApiResponse) => {
+      if (r.success) {
+        let client = this.clients.find(c => c.id == client_id);
+
+        this.msg_service.send(`User joined client {client.name}`, MessageType.info);
+        this.router.navigate([""]);
+      } else {
+        console.error("ClientComponent::join()", r);
+      }
     });
   }
 }

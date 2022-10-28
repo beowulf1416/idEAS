@@ -1,24 +1,30 @@
 <div class="wrapper-component">
-    <div class="wrapper-tbl">
-        <table class="tbl-clients">
-            <caption>Clients</caption>
-            <thead>
-                <tr>
-                    <th>Client</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <th>Client</th>
-                </tr>
-            </tfoot>
-            <tbody>
-                <tr *ngFor="let c of clients">
-                    <td class="client-{{ c.id }}">
-                        {{ c.name }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div><!-- .wrapper-tbl -->
+    <div class="wrapper-form">
+        <form class="formClients" method="post" action="">
+            <div class="wrapper-tbl">
+                <table class="tbl-clients">
+                    <caption>Clients</caption>
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Client</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr *ngFor="let c of clients">
+                            <td class="client-{{ c.id }}">
+                                <button mat-button title="{{ c.name }}" type="button" (click)="join(c.id)">
+                                    {{ c.name }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- .wrapper-tbl -->
+        </form>
+    </div><!-- .wrapper-form -->
 </div><!-- .wrapper-component -->
