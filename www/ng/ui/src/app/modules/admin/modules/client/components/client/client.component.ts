@@ -51,22 +51,36 @@ export class ClientComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("ClientComponent::ngOnInit()");
-    this.client_id = this.route.snapshot.paramMap.get("client_id") || '';
-    this.action = this.route.snapshot.paramMap.get("action") || "new";
 
     this.country_service.fetch().subscribe((countries: Array<Country>) => {
       this.countries = countries;
     });
 
-    if (this.action != "new") {
-      this.client_service.get(this.client_id).subscribe((r: ApiResponse) => {
-        if (r.success) {
-          this.client = (r.data as { client: Client }).client;
-          this.set_client(this.client);
-        } else {
-          console.error("ClientComponent::ngOnInit()", r);
-        }
-      });
+    this.client_id = this.route.snapshot.paramMap.get("client_id") || '';
+    if (this.client_id == '') {
+      this.action = "new";
+    } else {
+      this.action = this.route.snapshot.paramMap.get("action") || "view";
+    }
+
+    switch (this.action) {
+      case "view":
+      case "edit": {
+
+        this.client_service.get(this.client_id).subscribe((r: ApiResponse) => {
+          if (r.success) {
+            this.client = (r.data as { client: Client }).client;
+            this.set_client(this.client);
+          } else {
+            console.error("ClientComponent::ngOnInit()", r);
+          }
+        });
+
+        break;
+      }
+      default: {
+        break;
+      }
     }
   }
 
@@ -100,6 +114,8 @@ export class ClientComponent implements OnInit {
   // }
 
   set_client(client: Client) {
+    console.log("ClientComponnet::set_client()", client);
+
     this.clientForm.get("name")?.setValue(client.name);
     this.clientForm.get("active")?.setValue(client.active);
     this.clientForm.get("description")?.setValue(client.description);
@@ -119,6 +135,7 @@ export class ClientComponent implements OnInit {
           this.client_service.update(
             this.client_id,
             this.client_name?.value || '',
+            this.client_active?.value == true,
             this.client_description?.value || '',
             this.client_address?.value || '',
             this.client_country?.value || 0,
@@ -134,6 +151,7 @@ export class ClientComponent implements OnInit {
         default: {
           this.client_service.add(
             this.client_name?.value || '',
+            this.client_active?.value == true,
             this.client_description?.value || '',
             this.client_address?.value || '',
             this.client_country?.value || 0,
