@@ -12,7 +12,6 @@ begin
         c_role_id,
         c_client_id,
         'default',
-        'default',
         'default'
     );
 
