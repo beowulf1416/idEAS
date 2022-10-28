@@ -19,9 +19,9 @@ use crate::{
 };
 
 
-pub struct Permissions(Dbo);
+pub struct Role(Dbo);
 
-impl Permissions {
+impl Role {
     pub fn new(client: Object<Manager>) -> Self {
         return Self(Dbo::new(client));
     }
@@ -82,7 +82,7 @@ impl Permissions {
         filter: &str,
         items: &i32,
         page: &i32
-    ) -> Result<Vec<common::iam::Role>, DbError> {
+    ) -> Result<Vec<common::iam::role::Role>, DbError> {
         let sql = "select * from iam.role_fetch($1, $2, $3, $4)";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
@@ -104,7 +104,7 @@ impl Permissions {
                         return Err(DbError::ClientError);
                     }
                     Ok(rows) => {
-                        let results = rows.iter().map(|r| common::iam::Role {
+                        let results: Vec<common::iam::role::Role> = rows.iter().map(|r| common::iam::role::Role {
                             id: r.get("id"),
                             active: r.get("active"),
                             name: r.get("name"),
