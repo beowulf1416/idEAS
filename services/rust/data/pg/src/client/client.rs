@@ -31,16 +31,18 @@ impl Client {
         &self,
         client_id: &uuid::Uuid,
         name: &str,
+        active: &bool,
         description: &str,
         address: &str,
         country_id: &i32,
         url: &str
     ) -> Result<(), DbError> {
         return self.0.call_sp(
-            "call client.client_add($1, $2, $3, $4, $5, $6);",
+            "call client.client_add($1, $2, $3, $4, $5, $6, $7);",
             &[
                 &client_id,
                 &name,
+                @active,
                 &description,
                 &address,
                 &country_id,
@@ -53,16 +55,18 @@ impl Client {
         &self,
         client_id: &uuid::Uuid,
         name: &str,
+        active: &bool,
         description: &str,
         address: &str,
         country_id: &i32,
         url: &str
     ) -> Result<(), DbError> {
         return self.0.call_sp(
-            "call client.client_update($1, $2, $3, $4, $5, $6);",
+            "call client.client_update($1, $2, $3, $4, $5, $6, $7);",
             &[
                 &client_id,
                 &name,
+                @active,
                 &description,
                 &address,
                 &country_id,
