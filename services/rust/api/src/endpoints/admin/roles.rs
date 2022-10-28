@@ -23,7 +23,7 @@ use crate::endpoints::{
 use pg::{
     Db,
     DbError,
-    iam::roles::Role as RoleDbo
+    iam::role::Role as RoleDbo
 };
 
 
