@@ -24,12 +24,10 @@ use crate::endpoints::{
 use pg::{
     Db,
     DbError,
+    user::User as UserDbo,
     iam::user_client::UserClient as UserClientDbo
 };
 
-// use common::{
-//     user::User
-// };
 use crate::extractors::user_parameter::UserParameter;
 
 
@@ -48,6 +46,15 @@ struct UserClientAddRequest {
     client_id: uuid::Uuid
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct UserProfileUpdateRequest {
+    people_id: uuid::Uuid,
+    given_name: String,
+    middle_name: String,
+    family_name: String,
+    prefix: String,
+    suffix: String
+}
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -63,6 +70,18 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(user_client_add_get))
                 .route(web::post().to(user_client_add_post))
+        )
+        .service(
+            web::resource("profile/get")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(user_profile_get))
+                .route(web::post().to(user_profile_post))
+        )
+        .service(
+            web::resource("profile/update")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(user_profile_update_get))
+                .route(web::post().to(user_profile_update_post))
         )
     ;
 }
@@ -128,9 +147,12 @@ async fn user_client_add_post(
 ) -> impl Responder {
     info!("user_client_add_post()");
 
-    let mut error_message = "An error occured while trying to add user to client";
+    let mut error_message = String::from("An error occured while trying to add user to client");
 
     let u = user.user();
+    debug!("user_client_add_post() {:?}", u);
+
+
     if let Some(user_id) = u.id() {
         match db.get_client().await {
             Err(e) => {
@@ -143,7 +165,7 @@ async fn user_client_add_post(
                     &params.client_id
                 ).await {
                     Err(e) => {
-                        error_message = "unable to add user to client";
+                        error_message = String::from("unable to add user to client");
                         error!("unable to add user to client");
                     }
                     Ok(_) => {
@@ -158,13 +180,134 @@ async fn user_client_add_post(
             }
         }
     } else {
-        error_message = "Unable to retrieve user id";
+        error_message = String::from("Please sign in");
+
+        return HttpResponse::Unauthorized()
+            .json(ApiResponse::new(
+                false,
+                error_message,
+                None
+            ));
     }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
             String::from(error_message),
+            None
+        ));
+}
+
+async fn user_profile_get() -> impl Responder {
+    info!("user_profile_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+async fn user_profile_post(
+    db: web::Data<Db>,
+    user: UserParameter
+) -> impl Responder {
+    info!("user_profile_post()");
+
+    let mut error_message = String::from("An error occured while trying to retrieve user profile");
+
+    let u = user.user();
+    if let Some(user_id) = u.id() {
+        match db.get_client().await {
+            Err(e) => {
+                error!("unable to retrieve client");
+            }
+            Ok(client) => {
+                let user_dbo = UserDbo::new(client);
+    
+                match user_dbo.get_profile(
+                    &user_id
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve user profile: {:?}", e);
+                    }
+                    Ok(result) => {
+                        debug!("user_profile_post result: {:?}", result);
+                    }
+                }
+            }
+        }
+    } else {
+        error_message = String::from("Please sign in");
+
+        return HttpResponse::Unauthorized()
+            .json(ApiResponse::new(
+                false,
+                error_message,
+                None
+            ));
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            error_message,
+            None
+        ));
+}
+
+
+async fn user_profile_update_get() -> impl Responder {
+    info!("user_profile_update_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+async fn user_profile_update_post(
+    db: web::Data<Db>,
+    user: UserParameter,
+    params: web::Json<UserProfileUpdateRequest>
+) -> impl Responder {
+    info!("user_profile_update_post()");
+
+    let mut error_message = String::from("An error occured while trying to retrieve user profile");
+
+    let u = user.user();
+    if let Some(user_id) = u.id() {
+        match db.get_client().await {
+            Err(e) => {
+                error!("unable to retrieve client");
+            }
+            Ok(client) => {
+                let user_dbo = UserDbo::new(client);
+    
+                match user_dbo.update_profile(
+                    &user_id,
+                    &params.people_id,
+                    &params.given_name,
+                    &params.middle_name,
+                    &params.family_name,
+                    &params.prefix,
+                    &params.suffix
+                ).await {
+                    Err(e) => {
+                        error!("unable to update profile: {:?}", e);
+                    }
+                    Ok(_) => {
+                        debug!("successfully updated user profile");
+                    }
+                }
+            }
+        }
+    } else {
+        error_message = String::from("Please sign in");
+
+        return HttpResponse::Unauthorized()
+            .json(ApiResponse::new(
+                false,
+                error_message,
+                None
+            ));
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            error_message,
             None
         ));
 }
