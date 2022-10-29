@@ -31,3 +31,6 @@ set schema 'iam';
 
 \ir procs/user_roles/user_role_add.sql
 \ir procs/user_roles/user_role_set_active.sql
+
+\ir procs/user_people/user_get_people_id.sql
+\ir procs/user_people/user_people_add.sql
