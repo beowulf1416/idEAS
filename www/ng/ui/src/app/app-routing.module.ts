@@ -29,6 +29,10 @@ const routes: Routes = [
     component: SignOutComponent
   },
   {
+    path: "profile",
+    loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule)
+  },
+  {
     path: "dashboard",
     loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
   },

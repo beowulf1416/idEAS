@@ -58,10 +58,7 @@
               <mat-icon>expand_more</mat-icon>
               <div>Clients</div>
           </button>
-          <button mat-menu-item>
-              <mat-icon>notifications_off</mat-icon>
-              <span>Disable alerts</span>
-          </button>
+          <a mat-menu-item title="Profile" routerLink="/profile" *ngIf="user.is_signed_in">Profile</a>
           <mat-divider></mat-divider>
           <a mat-menu-item title="Sign In" routerLink="/sign-in" *ngIf="!user.is_signed_in">Sign In</a>
           <a mat-menu-item title="Sign Out" routerLink="/sign-out" *ngIf="user.is_signed_in">Sign Out</a>
