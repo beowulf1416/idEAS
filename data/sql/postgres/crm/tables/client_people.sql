@@ -14,3 +14,5 @@ create table client_people(
         references crm.people (id)
         on delete restrict
 );
+
+comment on table client_people is 'table mapping people to clients';

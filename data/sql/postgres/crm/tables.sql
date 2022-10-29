@@ -9,5 +9,3 @@ set schema 'crm';
 \ir tables/contact_emails.sql
 
 \ir tables/client_people.sql
-
--- \ir tables/user_people.sql
