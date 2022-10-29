@@ -1,1 +1,15 @@
-<p>people works!</p>
+<div class="wrapper-component">
+    <app-crm-toolbar></app-crm-toolbar>
+    <div class="wrapper-form">
+        <form class="form-person" method="post" action="">
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput formControlName="name" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter client name</mat-hint>
+                </mat-form-field>
+            </fieldset>
+        </form>
+    </div><!-- .wrapper-form -->
+</div><!-- .wrapper-component -->

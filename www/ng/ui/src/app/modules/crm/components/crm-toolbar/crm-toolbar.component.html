@@ -1,0 +1,16 @@
+<div class="wrapper-component">
+    <div class="wrapper-tb">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-crm-menu" aria-label="CRM" [matMenuTriggerFor]="crmMenu">
+                    CRM
+                </button>
+            </mat-toolbar-row>
+
+            <mat-menu #crmMenu="matMenu">
+                <a mat-menu-item title="New" routerLink="/crm/people/new">New</a>
+                <a mat-menu-item title="List" routerLink="/crm/people/list">List</a>
+            </mat-menu>
+        </mat-toolbar><!-- .wrapper-toolbar -->
+    </div><!-- .wrapper-tb -->
+</div><!-- .wrapper-component -->
