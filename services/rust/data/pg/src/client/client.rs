@@ -42,7 +42,7 @@ impl Client {
             &[
                 &client_id,
                 &name,
-                @active,
+                &active,
                 &description,
                 &address,
                 &country_id,
@@ -66,7 +66,7 @@ impl Client {
             &[
                 &client_id,
                 &name,
-                @active,
+                &active,
                 &description,
                 &address,
                 &country_id,
