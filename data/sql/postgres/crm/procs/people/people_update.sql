@@ -9,28 +9,6 @@ create or replace procedure people_update(
 language plpgsql
 as $$
 begin
-    insert into crm.people (
-        people_id,
-        active,
-        given_name,
-        middle_name,
-        family_name,
-        prefix,
-        suffix
-    )
-    select
-        p_people_id,
-        active,
-        given_name,
-        middle_name,
-        family_name,
-        prefix,
-        suffix
-    from crm.people
-    where
-        id = p_people_id
-    ;
-
     update crm.people set
         given_name = p_given_name,
         middle_name = p_middle_name,
