@@ -61,6 +61,8 @@ impl User {
         &self,
         email: &str
     ) -> Result<common::user::User, DbError> {
+        debug!("Users::get_by_email() {:?}", email);
+
         let sql = "select * from iam.user_get_by_email($1);";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
@@ -194,6 +196,61 @@ impl User {
                 }
             }
         }
+    }
+
+    pub async fn get_profile(
+        &self,
+        user_id: &uuid::Uuid
+    ) -> Result<()/* common::crm::people::People */, DbError> {
+        let sql = "select * from iam.user_get_profile_id($1)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query_one(
+                        &stmt,
+                        &[
+                            &user_id
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        debug!("row: {:?}", r);
+                        // let result = r.get("client_default_id");
+                        return Ok(());
+                    }
+                }
+            }
+        }
+    }
+
+    pub async fn update_profile(
+        &self,
+        user_id: &uuid::Uuid,
+        people_id: &uuid::Uuid,
+        given_name: &str,
+        middle_name: &str,
+        family_name: &str,
+        prefix: &str,
+        suffix: &str
+    ) -> Result<(), DbError> {
+        return self.0.call_sp(
+            "call iam.user_people_update",
+            &[
+                &user_id,
+                &people_id,
+                &given_name,
+                &middle_name,
+                &family_name,
+                &prefix,
+                &suffix
+            ]
+        ).await;
     }
 }
 
