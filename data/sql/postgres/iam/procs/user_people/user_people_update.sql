@@ -1,4 +1,4 @@
-create or replace procedure user_people_add(
+create or replace procedure user_people_update(
     p_user_id iam.user_people.user_id%type,
     p_people_id iam.user_people.people_id%type
 )
@@ -15,4 +15,4 @@ begin
 end
 $$;
 
-comment on procedure user_people_add(iam.user_people.user_id%type, iam.user_people.people_id%type) is 'associate user record to people record';
+comment on procedure user_people_update(iam.user_people.user_id%type, iam.user_people.people_id%type) is 'associate user record to people record';
