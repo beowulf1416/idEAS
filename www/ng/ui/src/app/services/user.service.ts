@@ -107,4 +107,12 @@ export class UserService implements OnInit {
     console.log("UserService::sign_out()");
     sessionStorage.removeItem(environment.session_token_key);
   }
+
+  get_profile(): Observable<ApiResponse> {
+    console.log("UserService::get_profile()");
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_user_profile_get,
+      {}
+    );
+  }
 }

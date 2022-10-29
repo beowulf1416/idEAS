@@ -20,6 +20,7 @@ export const environment = {
 
   api_user_current: "/user/current",
   api_user_client_add: "/user/client/add",
+  api_user_profile_get: "/user/profile/get",
 
   api_country_fetch: "/countries/fetch",
   api_currency_fetch: "/currencies/fetch",
