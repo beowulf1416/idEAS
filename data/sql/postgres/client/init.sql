@@ -12,16 +12,11 @@ begin
     call client.client_add(
         c_client_id,
         'default',
+        true,
         'default client',
         'default',
         c_country_id,
         ''
-    );
-
-    -- set default client to active
-    call client.client_set_active(
-        c_client_id,
-        true
     );
 end
 $$;
