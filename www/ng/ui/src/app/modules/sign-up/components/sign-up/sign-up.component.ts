@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageType } from 'src/app/classes/message-type';
 import { matchValidator } from 'src/app/classes/validators/match-validator';
 import { patternValidator } from 'src/app/classes/validators/pattern-validator';
+import { MessageService } from 'src/app/services/message.service';
 import { TitleService } from 'src/app/services/title.service';
 import { UserService } from 'src/app/services/user.service';
 import { SignUpService } from '../../services/sign-up.service';
@@ -15,6 +17,7 @@ import { SignUpService } from '../../services/sign-up.service';
 export class SignUpComponent implements OnInit {
 
   submitting = false;
+  messages = "";
 
   signUpForm = new FormGroup({
     emails: new FormGroup({
@@ -51,12 +54,16 @@ export class SignUpComponent implements OnInit {
     private title: TitleService,
     private signup_service: SignUpService,
     private user_service: UserService,
+    private msg_service: MessageService,
     private router: Router
   ) {
     this.title.set_title("Sign Up");
   }
 
   ngOnInit(): void {
+    this.msg_service.message$.subscribe(r => {
+      this.messages = r.message;
+    });
   }
 
   get emails() {
@@ -96,6 +103,8 @@ export class SignUpComponent implements OnInit {
           console.log("redirecting ...");
           this.user_service.update();
           this.router.navigate([""]);
+        } else {
+          this.msg_service.send(r.message, MessageType.error);
         }
         this.submitting = false;
       });

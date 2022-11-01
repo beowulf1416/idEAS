@@ -1,6 +1,8 @@
 <div class="wrapper-component">
     <div class="wrapper-form">
         <form class="form-signup" method="post" action="" [formGroup]="signUpForm" (ngSubmit)="submit()">
+            <fieldset class="messages">
+            </fieldset>
             <fieldset formGroupName="emails">
                 <mat-form-field appearance="outline">
                     <mat-label>Email Address</mat-label>
