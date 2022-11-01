@@ -198,11 +198,11 @@ impl User {
         }
     }
 
-    pub async fn get_profile(
+    pub async fn get_people_id(
         &self,
         user_id: &uuid::Uuid
-    ) -> Result<()/* common::crm::people::People */, DbError> {
-        let sql = "select * from iam.user_get_profile_id($1)";
+    ) -> Result<Option<uuid::Uuid>, DbError> {
+        let sql = "select * from iam.user_get_people_id($1)";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
                 error!("unable to prepare query: {} {:?}", sql, e);
@@ -221,8 +221,51 @@ impl User {
                     }
                     Ok(r) => {
                         debug!("row: {:?}", r);
-                        // let result = r.get("client_default_id");
-                        return Ok(());
+                        if (r.is_empty()) {
+                            return Ok(None);
+                        } else {
+                            let result: uuid::Uuid = r.get("user_get_people_id");
+                            return Ok(Some(result));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    pub async fn get_profile(
+        &self,
+        people_id: &uuid::Uuid
+    ) -> Result<common::crm::people::People, DbError> {
+        let sql = "select * from crm.people_get($1)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query_one(
+                        &stmt,
+                        &[
+                            &people_id
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        debug!("row: {:?}", r);
+                        // let result: uuid::Uuid = r.get("user_get_people_id");
+                        let result = common::crm::people::People {
+                            id: people_id.clone(),
+                            given_name: r.get("given_name"),
+                            middle_name: r.get("middle_name"),
+                            family_name: r.get("family_name"),
+                            prefix: r.get("prefix"),
+                            suffix: r.get("suffix")
+                        };
+                        return Ok(result);
                     }
                 }
             }
