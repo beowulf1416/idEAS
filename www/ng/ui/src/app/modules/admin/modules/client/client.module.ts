@@ -7,13 +7,15 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ClientComponent } from './components/client/client.component';
 import { MaterialModule } from 'src/material/material.module';
 import { ClientListComponent } from './components/client-list/client-list.component';
+import { ClientToolbarComponent } from './components/client-toolbar/client-toolbar.component';
 
 
 @NgModule({
   declarations: [
     DashboardComponent,
     ClientComponent,
-    ClientListComponent
+    ClientListComponent,
+    ClientToolbarComponent
   ],
   imports: [
     CommonModule,
