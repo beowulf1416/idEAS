@@ -296,21 +296,31 @@ async fn sign_in_post(
                 Err(e) => {
                     error!("unable to sign in: {:?}", e);
                 }
-                Ok(_) => {
-                    match tokenizer.generate(email) {
-                        Err(e) => {
-                            error!("unable to generate token: {:?}", e);
+                Ok(authenticated) => {
+                    if authenticated {
+                        match tokenizer.generate(email) {
+                            Err(e) => {
+                                error!("unable to generate token: {:?}", e);
+                            }
+                            Ok(token) => {
+                                return HttpResponse::Ok()
+                                    .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                    .json(ApiResponse::new(
+                                        true,
+                                        String::from("Successfully signed in"),
+                                        None
+                                    ));
+                            }
                         }
-                        Ok(token) => {
-                            return HttpResponse::Ok()
-                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                    } else {
+                        return HttpResponse::Ok()
                                 .json(ApiResponse::new(
-                                    true,
-                                    String::from("Successfully signed in"),
+                                    false,
+                                    String::from("Username/password combination is incorrect"),
                                     None
                                 ));
-                        }
                     }
+                    
                 }
             }
         }
