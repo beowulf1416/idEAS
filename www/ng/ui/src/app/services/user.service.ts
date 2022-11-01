@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, catchError, filter, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, filter, map, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../classes/api-response';
 import { MessageType } from '../classes/message-type';
@@ -33,38 +33,39 @@ export class UserService implements OnInit {
 
   update() {
     console.log("UserService::update()");
-    this.http.post<ApiResponse>(
-      environment.api_url_base + environment.api_user_current,
-      {}
-    ).pipe(
-      catchError(e => {
-        return of({
-          success: false,
-          message: e.statusText,
-          data: null
-        });
-      })
-    ).subscribe(r => {
-      if (r.success) {
-        const u = (r.data as { user: {
-          name: string,
-          email: string,
-          client: string,
-          clients: Array<string>,
-          permissions: Array<string>
-        } }).user;
-        this.user$.next(new User(
-          u.name,
-          u.email,
-          u.client,
-          u.clients,
-          u.permissions
-        ));   
-      } else {
-        this.msg_service.send(r.message, MessageType.error);
-      }
+    if (sessionStorage.getItem(environment.session_token_key) != null) {
+      this.http.post<ApiResponse>(
+        environment.api_url_base + environment.api_user_current,
+        {}
+      ).pipe(
+        catchError(e => {
+          return of({
+            success: false,
+            message: e.statusText,
+            data: null
+          });
+        })
+      ).subscribe(r => {
+        if (r.success) {
+          const u = (r.data as { user: {
+            name: string,
+            email: string,
+            client: string,
+            clients: Array<string>,
+            permissions: Array<string>
+          } }).user;
+          this.user$.next(new User(
+            u.name,
+            u.email,
+            u.client,
+            u.clients,
+            u.permissions
+          ));   
+        } else {
+          this.msg_service.send(r.message, MessageType.error);
+        }
+      });
     }
-    );
   }
 
   // current(): Observable<ApiResponse> {
@@ -94,12 +95,19 @@ export class UserService implements OnInit {
     pw: string
   ): Observable<ApiResponse> {
     console.log("UserService::sign_in()");
+    const self = this;
     return this.http.post<ApiResponse>(
       environment.api_url_base + environment.api_sign_in,
       {
         email: email,
         password: pw
       }
+    ).pipe(
+      tap(r => {
+        if (r.success) {
+          self.update();
+        }
+      })
     );
   }
 
