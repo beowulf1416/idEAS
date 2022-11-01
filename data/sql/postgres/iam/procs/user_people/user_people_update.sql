@@ -44,4 +44,12 @@ begin
 end
 $$;
 
-comment on procedure user_people_update(iam.user_people.user_id%type, iam.user_people.people_id%type) is 'associate user record to people record';
+comment on procedure user_people_update(
+    iam.user_people.user_id%type,
+    iam.user_people.people_id%type,
+    p_given_name crm.people.given_name%type,
+    p_middle_name crm.people.middle_name%type,
+    p_family_name crm.people.family_name%type,
+    p_prefix crm.people.prefix%type,
+    p_suffix crm.people.suffix%type
+) is 'associate user record to people record';
