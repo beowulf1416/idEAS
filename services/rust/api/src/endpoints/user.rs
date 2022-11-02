@@ -47,6 +47,11 @@ struct UserClientAddRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+struct UserClientSetRequest {
+    client_id: uuid::Uuid
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct UserProfileUpdateRequest {
     people_id: uuid::Uuid,
     given_name: String,
@@ -70,6 +75,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(user_client_add_get))
                 .route(web::post().to(user_client_add_post))
+        )
+        .service(
+            web::resource("client/set")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(user_client_set_get))
+                .route(web::post().to(user_client_set_post))
         )
         .service(
             web::resource("profile/get")
@@ -197,6 +208,32 @@ async fn user_client_add_post(
             None
         ));
 }
+
+
+async fn user_client_set_get() -> impl Responder {
+    info!("user_client_set_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn user_client_set_post(
+    db: web::Data<Db>,
+    user: UserParameter,
+    params: web::Json<UserClientSetRequest>
+) -> impl Responder {
+    info!("user_client_set_post()");
+
+    let mut error_message = String::from("An error occured while trying to retrieve user profile");
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            error_message,
+            None
+        ));
+}
+
+
 
 async fn user_profile_get() -> impl Responder {
     info!("user_profile_get()");
