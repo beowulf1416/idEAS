@@ -22,7 +22,13 @@ export class AppComponent implements OnInit {
 
   // user$: Observable<User>;
   user_subscription: Subscription;
-  user: User = new User('', '', '', [], []);
+  user: User = new User(
+    '', 
+    '', 
+    '', 
+    [],
+    []
+  );
 
   msg_subscription: Subscription;
   messages = new Array<{
@@ -38,11 +44,12 @@ export class AppComponent implements OnInit {
   ) {
     console.log("AppComponent::constructor()");
     this.user_subscription = this.user_service.get_user$().subscribe(r => {
+      console.debug("result", r);
       this.user = new User(
         r.email, 
         r.name, 
         r.client,
-        [],
+        r.clients,
         []
       );
     });
@@ -83,5 +90,10 @@ export class AppComponent implements OnInit {
         delete this.messages[i];
       }
     });
+  }
+
+  switch_client(client_id: string){
+    console.log("AppComponent::switch_client()", client_id);
+    this.user_service.set_client(client_id);
   }
 }

@@ -15,6 +15,7 @@ export const environment = {
   api_registration_info: "/auth/register/info",
 
   api_user_current: "/user/current",
+  api_user_client_set: "/user/client/set",
   api_user_client_add: "/user/client/add",
   api_user_profile_get: "/user/profile/get",
   api_user_profile_update: "/user/profile/update",
