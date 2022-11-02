@@ -219,16 +219,48 @@ async fn user_profile_post(
             }
             Ok(client) => {
                 let user_dbo = UserDbo::new(client);
-    
-                match user_dbo.get_profile(
-                    &user_id
-                ).await {
-                    Err(e) => {
-                        error!("unable to retrieve user profile: {:?}", e);
+
+                if let Ok(Some(people_id)) = user_dbo.get_people_id(&user_id).await {
+                    match user_dbo.get_profile(
+                        &people_id
+                    ).await {
+                        Err(e) => {
+                            error!("unable to retrieve user profile: {:?}", e);
+                        }
+                        Ok(r) => {
+                            debug!("profile: {:?}", r);
+                            return HttpResponse::Ok()
+                                .json(ApiResponse::new(
+                                    true,
+                                    String::from("successfully retrieved user profile"),
+                                    Some(json!({
+                                        "people": {
+                                            "people_id": Some(people_id),
+                                            "given_name": "given_name",
+                                            "middle_name": "middle_name",
+                                            "family_name": "family_name",
+                                            "prefix": "prefix",
+                                            "suffix": "suffix"
+                                        }
+                                    }))
+                                ));
+                        }
                     }
-                    Ok(result) => {
-                        debug!("user_profile_post result: {:?}", result);
-                    }
+                } else {
+                    // no people id associated with this user
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("There is no profile associated with this user"),
+                            Some(json!({
+                                "people_id": "",
+                                "given_name": "",
+                                "middle_name": "",
+                                "family_name": "",
+                                "prefix": "",
+                                "suffix": ""
+                            }))
+                        ));
                 }
             }
         }
@@ -274,10 +306,16 @@ async fn user_profile_update_post(
             }
             Ok(client) => {
                 let user_dbo = UserDbo::new(client);
-    
+
+
+                let mut people_id = params.people_id;
+                if let Ok(Some(t_people_id)) = user_dbo.get_people_id(&user_id).await {
+                    people_id = t_people_id;
+                }
+
                 match user_dbo.update_profile(
                     &user_id,
-                    &params.people_id,
+                    &people_id,
                     &params.given_name,
                     &params.middle_name,
                     &params.family_name,
@@ -289,6 +327,12 @@ async fn user_profile_update_post(
                     }
                     Ok(_) => {
                         debug!("successfully updated user profile");
+                        return HttpResponse::Ok()
+                            .json(ApiResponse::new(
+                                true,
+                                String::from("successfully updated user profile"),
+                                None
+                            ));
                     }
                 }
             }
