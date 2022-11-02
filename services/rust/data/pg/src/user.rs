@@ -221,11 +221,13 @@ impl User {
                     }
                     Ok(r) => {
                         debug!("row: {:?}", r);
-                        if (r.is_empty()) {
+                        if r.is_empty() {
                             return Ok(None);
                         } else {
-                            let result: uuid::Uuid = r.get("user_get_people_id");
-                            return Ok(Some(result));
+                            if let Ok(people_id) = r.try_get("user_get_people_id") {
+                                return Ok(Some(people_id));
+                            }
+                            return Ok(None);
                         }
                     }
                 }
@@ -283,7 +285,7 @@ impl User {
         suffix: &str
     ) -> Result<(), DbError> {
         return self.0.call_sp(
-            "call iam.user_people_update",
+            "call iam.user_people_update($1,$2,$3,$4,$5,$6,$7)",
             &[
                 &user_id,
                 &people_id,
