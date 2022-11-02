@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/classes/api-response';
 import { environment } from 'src/environments/environment.prod';
 
+import { v4 as uuidv4 } from 'uuid';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +34,7 @@ export class ProfileService {
     return this.http.post<ApiResponse>(
       environment.api_url_base + environment.api_user_profile_update,
       {
-        people_id: people_id,
+        people_id: people_id == '' ? uuidv4() : people_id,
         given_name: given_name,
         middle_name: middle_name,
         family_name: family_name,
