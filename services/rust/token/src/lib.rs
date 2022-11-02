@@ -25,6 +25,7 @@ use std::clone::Clone;
 
 pub struct Claims {
     email: String,
+    client_id: uuid::Uuid,
     issued: chrono::DateTime<Utc>
 }
 
@@ -32,6 +33,10 @@ impl Claims {
 
     pub fn email(&self) -> String {
         return self.email.clone();
+    }
+
+    pub fn client_id(&self) -> uuid::Uuid {
+        return self.client_id.clone();
     }
 
     pub fn issued(&self) -> chrono::DateTime<Utc> {
@@ -61,7 +66,8 @@ impl Token {
 
     pub fn generate(
         &self,
-        email: &str
+        email: &str,
+        client_id: &uuid::Uuid
     ) -> Result<String, TokenError> {
         let key: Hmac<Sha256> = Hmac::new_from_slice(self.secret.as_bytes()).unwrap();
         let mut claims = BTreeMap::new();
@@ -71,6 +77,7 @@ impl Token {
 
         // custom claims
         claims.insert("email", email.to_string());
+        claims.insert("client_id", client_id.to_string());
 
         match claims.sign_with_key(&key) {
             Ok(token) => {
@@ -111,11 +118,16 @@ impl Token {
                 return Err(TokenError::ClaimError);
             }
             Ok(claims) => {
-                let issued: DateTime<Utc> = claims["iat"].clone().parse().unwrap();
-                return Ok(Claims {
-                    email: claims["email"].clone(),
-                    issued: issued
-                });
+                if let Ok(client_id) = uuid::Uuid::parse_str(&claims["client_id"].clone()) {
+                    let issued: DateTime<Utc> = claims["iat"].clone().parse().unwrap();
+                    return Ok(Claims {
+                        email: claims["email"].clone(),
+                        client_id: client_id,
+                        issued: issued
+                    });
+                } else {
+                    return Err(TokenError::ClaimError);
+                }
             }
         }
     }
