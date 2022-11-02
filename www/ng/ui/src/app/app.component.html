@@ -65,8 +65,9 @@
         </mat-menu>
 
         <mat-menu #menuClients="matMenu">
-          <button mat-menu-item>Client 1</button>
-          <button mat-menu-item>Client 2</button>
+          <button *ngFor="let c of user.clients" title="{{ c.name }}" mat-menu-item (click)="switch_client(c.id)">
+            {{ c.name }}
+          </button>
           <mat-divider></mat-divider>
           <a mat-menu-item title="Join client" routerLink="/client/join">Join client...</a>
         </mat-menu>

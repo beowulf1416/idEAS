@@ -51,12 +51,12 @@ export class UserService implements OnInit {
             name: string,
             email: string,
             client: string,
-            clients: Array<string>,
+            clients: Array<{ id: string, name: string }>,
             permissions: Array<string>
           } }).user;
           this.user$.next(new User(
-            u.name,
             u.email,
+            u.name,
             u.client,
             u.clients,
             u.permissions
@@ -122,5 +122,22 @@ export class UserService implements OnInit {
       environment.api_url_base + environment.api_user_profile_get,
       {}
     );
+  }
+
+  set_client(client_id: string) {
+    console.log("UserService::set_client()", client_id);
+    this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_user_client_set,
+      {
+        client_id: client_id
+      }
+    ).subscribe(r => {
+      if (r.success) {
+        this.msg_service.send(r.message, MessageType.info);
+      } else {
+        console.error("UserService::set_client()", r);
+        this.msg_service.send(r.message, MessageType.error);
+      }
+    });
   }
 }
