@@ -37,7 +37,8 @@ use config::{
 use pg::{
     Db,
     DbError,
-    auth::Auth
+    auth::Auth,
+    user::User as UserDbo,
 };
 
 
@@ -159,18 +160,28 @@ base_url = cfg.base_url
                         error!("an error occured while trying to add to queue: {:?}", e);
                     }
 
-                    match tokenizer.generate(email) {
+                    match db.get_client().await {
                         Err(e) => {
-                            error!("unable to generate token: {:?}", e);
+                            error!("unable to retrieve client: {:?}", e);
                         }
-                        Ok(token) => {
-                            return HttpResponse::Created()
-                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                                .json(ApiResponse::new(
-                                    true,
-                                    String::from("Successfully registered email address"),
-                                    None
-                                ));
+                        Ok(client_2) => {
+                            let user_dbo = UserDbo::new(client_2);
+                            if let Ok(default_client_id) = user_dbo.get_default_client().await {
+                                match tokenizer.generate(&email, &default_client_id) {
+                                    Err(e) => {
+                                        error!("unable to generate token: {:?}", e);
+                                    }
+                                    Ok(token) => {
+                                        return HttpResponse::Created()
+                                            .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                            .json(ApiResponse::new(
+                                                true,
+                                                String::from("Successfully registered email address"),
+                                                None
+                                            ));
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -219,54 +230,6 @@ async fn verify_post(
 }
 
 
-// async fn register_info_get() -> impl Responder {
-//     info!("register_info_get()");
-//     return HttpResponse::Ok().body("use POST method instead");
-// }
-
-
-// async fn register_info_post(
-//     db: web::Data<Db>,
-//     params: web::Json<AuthRegisterInfoPostRequest>
-// ) -> impl Responder {
-//     info!("register_info_post()");
-
-//     match db.get_client().await {
-//         Err(e) => {
-//             error!("unable to retrieve client: {:?}", e);
-//         }
-//         Ok(client) => {
-//             let auth = Auth::new(client);
-
-//             let id = &params.id;
-
-//             match auth.register_get(
-//                 &id
-//             ).await {
-//                 Err(e) => {
-//                     error!("unable to complete registration: {:?}", e);
-//                 }
-//                 Ok(r) => {
-//                     return HttpResponse::Ok()
-//                         .json(ApiResponse::new(
-//                             false,
-//                             String::from("Successfully retrieved intial registration info"),
-//                             Some(serde_json::to_string(&r).unwrap())
-//                         ));
-//                 }
-//             } 
-//         }
-//     }
-
-//     return HttpResponse::InternalServerError()
-//         .json(ApiResponse::new(
-//             false,
-//             String::from("An error occured while trying to complete the registration"),
-//             None
-//         ));
-// }
-
-
 async fn sign_in_get() -> impl Responder {
     info!("sign_in_get()");
     return HttpResponse::Ok().body("use POST method instead");
@@ -279,6 +242,8 @@ async fn sign_in_post(
     params: web::Json<AuthLoginPostRequest>
 ) -> impl Responder {
     info!("sign_in_post()");
+
+    let mut error_message = String::from("an error occured while trying to respond to this request");
 
     match db.get_client().await {
         Err(e) => {
@@ -298,20 +263,30 @@ async fn sign_in_post(
                 }
                 Ok(authenticated) => {
                     if authenticated {
-                        match tokenizer.generate(email) {
+                        match db.get_client().await {
                             Err(e) => {
-                                error!("unable to generate token: {:?}", e);
+                                error!("unable to retrieve client: {:?}", e);
                             }
-                            Ok(token) => {
-                                return HttpResponse::Ok()
-                                    .append_header((AUTHORIZATION, format!("Bearer {}", token)))
-                                    .json(ApiResponse::new(
-                                        true,
-                                        String::from("Successfully signed in"),
-                                        None
-                                    ));
+                            Ok(client_2) => {
+                                let user_dbo = UserDbo::new(client_2);
+                                if let Ok(default_client_id) = user_dbo.get_default_client().await {
+                                    match tokenizer.generate(&email, &default_client_id) {
+                                        Err(e) => {
+                                            error!("unable to generate token: {:?}", e);
+                                        }
+                                        Ok(token) => {
+                                            return HttpResponse::Ok()
+                                                .append_header((AUTHORIZATION, format!("Bearer {}", token)))
+                                                .json(ApiResponse::new(
+                                                    true,
+                                                    String::from("Successfully signed in"),
+                                                    None
+                                                ));
+                                        }
+                                    }
+                                }
                             }
-                        }
+                        }                        
                     } else {
                         return HttpResponse::Ok()
                                 .json(ApiResponse::new(
@@ -329,7 +304,7 @@ async fn sign_in_post(
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            error_message,
             None
         ));
 }

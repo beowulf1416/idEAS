@@ -123,6 +123,7 @@ where
                                 }
                                 Ok(claims) => {
                                     let email = claims.email();
+                                    let client_id = claims.client_id();
                                     let issued  = claims.issued();
 
                                     if let Some(db) = request.app_data::<web::Data<Db>>() {
@@ -134,6 +135,7 @@ where
                                                 }
                                                 Ok(u) => {
                                                     result = u.clone();
+                                                    result.set_client(client_id);
 
                                                     if let Some(user_id) = u.id() {
                                                         match users.fetch_clients(
@@ -146,14 +148,14 @@ where
                                                                 // debug!("clients {:?}", clients);
                                                                 result.set_clients(clients);
 
-                                                                // retrieve default client
-                                                                match users.get_default_client().await {
-                                                                    Err(e) => {
-                                                                        error!("unable to retrieve default client");
-                                                                    }
-                                                                    Ok(client_id) => {
-                                                                        // debug!("client_id: {:?}", client_id);
-                                                                        result.set_client(client_id);
+                                                                // // retrieve default client
+                                                                // match users.get_default_client().await {
+                                                                //     Err(e) => {
+                                                                //         error!("unable to retrieve default client");
+                                                                //     }
+                                                                //     Ok(client_id) => {
+                                                                //         // debug!("client_id: {:?}", client_id);
+                                                                //         result.set_client(client_id);
 
                                                                         match users.fetch_permissions(
                                                                             &user_id,
@@ -167,8 +169,8 @@ where
                                                                                 result.set_permissions(permissions);
                                                                             }
                                                                         }
-                                                                    }
-                                                                }
+                                                                //     }
+                                                                // }
                                                             }
                                                         }
                                                     }
