@@ -17,3 +17,5 @@ jwt = "0.16"
 
 serde = { version = "*", features = ["derive"] }
 chrono = { version = "0.4.19", features = [ "serde" ] }
+
+uuid = { version = "0.8.2", features = ["v4", "serde"] }
