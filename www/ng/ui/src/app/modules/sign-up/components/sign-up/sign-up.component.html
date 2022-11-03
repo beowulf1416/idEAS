@@ -46,7 +46,7 @@
                 </div><!-- .wrapper-field-errors -->
             </fieldset>
             <fieldset class="actions">
-                <button mat-raised-button color="primary" [disabled]="signUpForm.invalid">Register</button>
+                <button mat-raised-button color="primary" [disabled]="signUpForm.invalid || submitting">Register</button>
             </fieldset>
         </form>
     </div><!-- .wrapper-form -->
