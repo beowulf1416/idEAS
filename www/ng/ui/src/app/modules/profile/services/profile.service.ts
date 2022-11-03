@@ -43,4 +43,15 @@ export class ProfileService {
       }
     );
   }
+
+  set_password(
+    new_password: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_user_profile_password_set,
+      {
+        new_password: new_password
+      }
+    );
+  }
 }

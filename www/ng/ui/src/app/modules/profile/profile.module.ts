@@ -5,11 +5,13 @@ import { ProfileRoutingModule } from './profile-routing.module';
 import { GeneralComponent } from './components/general/general.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/material/material.module';
+import { PasswordComponent } from './components/password/password.component';
 
 
 @NgModule({
   declarations: [
-    GeneralComponent
+    GeneralComponent,
+    PasswordComponent
   ],
   imports: [
     CommonModule,
