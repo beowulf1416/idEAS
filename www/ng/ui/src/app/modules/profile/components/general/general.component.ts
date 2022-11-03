@@ -43,16 +43,21 @@ export class GeneralComponent implements OnInit {
 
     this.profile_service.get().subscribe(r => {
       if (r.success) {
-        this.set_value((r.data as { people: {
+        const people = (r.data as { people: {
           people_id: string,
           given_name: string,
           middle_name: string,
           family_name: string,
           prefix: string,
           suffix: string
-        } }).people);
+        } }).people;
+
+        console.debug("GeneralComponent::ngOnInit()", people);
+        if (people != null) {
+          this.set_value(people);
+        }
       } else {
-        console.error("ProfileForm::ngOnInit()", r);
+        console.error("GeneralComponent::ngOnInit()", r);
         this.msg_service.send(r.message, MessageType.error);
       }
     });
