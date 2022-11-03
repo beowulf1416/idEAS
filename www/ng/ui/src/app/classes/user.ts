@@ -11,7 +11,7 @@ export class User {
         private _email: string,
         private _name: string,
         private _client: string,
-        private _clients: Array<string>,
+        private _clients: Array<{ id: string, name: string }>,
         private _permissions: Array<string>
     ){}
 
@@ -34,7 +34,7 @@ export class User {
         return this._client || '' == '' ? 'default' : this._client;
     }
 
-    get clients(): Array<string> {
+    get clients(): Array<{ id: string, name: string }> {
         return this._clients;
     }
 
