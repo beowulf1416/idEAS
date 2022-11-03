@@ -61,6 +61,11 @@ struct UserProfileUpdateRequest {
     suffix: String
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct UserSetPasswordRequest {
+    new_password: String
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg
@@ -93,6 +98,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(user_profile_update_get))
                 .route(web::post().to(user_profile_update_post))
+        )
+        .service(
+            web::resource("profile/pw")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(user_password_set_get))
+                .route(web::post().to(user_password_set_post))
         )
     ;
 }
@@ -223,7 +234,21 @@ async fn user_client_set_post(
 ) -> impl Responder {
     info!("user_client_set_post()");
 
-    let mut error_message = String::from("An error occured while trying to retrieve user profile");
+    let mut error_message = String::from("An error occured while trying to set current client");
+
+    let u = user.user();
+    if let Some(user_id) = u.id() {
+        
+    } else {
+        error_message = String::from("Please sign in");
+
+        return HttpResponse::Unauthorized()
+            .json(ApiResponse::new(
+                false,
+                error_message,
+                None
+            ));
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
@@ -344,7 +369,6 @@ async fn user_profile_update_post(
             Ok(client) => {
                 let user_dbo = UserDbo::new(client);
 
-
                 let mut people_id = params.people_id;
                 if let Ok(Some(t_people_id)) = user_dbo.get_people_id(&user_id).await {
                     people_id = t_people_id;
@@ -383,6 +407,58 @@ async fn user_profile_update_post(
                 error_message,
                 None
             ));
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            error_message,
+            None
+        ));
+}
+
+
+async fn user_password_set_get() -> impl Responder {
+    info!("user_password_set_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn user_password_set_post(
+    db: web::Data<Db>,
+    user: UserParameter,
+    params: web::Json<UserSetPasswordRequest>
+) -> impl Responder {
+    info!("user_password_set_post()");
+
+    let mut error_message = String::from("An error occured while trying to retrieve user profile");
+
+    let u = user.user();
+    if let Some(user_id) = u.id() {
+        match db.get_client().await {
+            Err(e) => {
+                error!("unable to retrieve client");
+            }
+            Ok(client) => {
+                let user_dbo = UserDbo::new(client);
+                match user_dbo.set_password(
+                    &user_id,
+                    &params.new_password
+                ).await {
+                    Err(e) => {
+                        error!("unable to set user password: {:?}", e);
+                    }
+                    Ok(_) => {
+                        return HttpResponse::Ok()
+                            .json(ApiResponse::new(
+                                true,
+                                String::from("successfully set user password"),
+                                None
+                            ));
+                    }
+                }
+            }
+        }
     }
 
     return HttpResponse::InternalServerError()
