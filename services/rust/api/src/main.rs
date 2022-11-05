@@ -3,6 +3,7 @@ extern crate log;
 mod classes;
 mod extractors;
 mod services;
+mod guards;
 mod middleware;
 mod endpoints;
 
