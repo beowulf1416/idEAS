@@ -33,7 +33,8 @@ begin
     -- set active
     call iam.user_client_set_active(
         p_id,
-        t_default_client_id
+        t_default_client_id,
+        true
     );
 
     -- create a record in crm.people table
