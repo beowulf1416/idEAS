@@ -1,5 +1,11 @@
 set schema 'iam';
 
+\ir procs/permissions/permission_get_id.sql
+
+\ir procs/user_clients/user_client_add.sql
+\ir procs/user_clients/user_client_set_active.sql
+\ir procs/user_clients/user_client_fetch.sql
+
 \ir procs/users/user_add.sql
 \ir procs/users/user_set_password.sql
 \ir procs/users/user_set_active.sql
@@ -15,10 +21,6 @@ set schema 'iam';
 -- \ir procs/users/user_register_get.sql
 
 \ir procs/users/user_signup.sql
-
-\ir procs/user_clients/user_client_add.sql
-\ir procs/user_clients/user_client_set_active.sql
-\ir procs/user_clients/user_client_fetch.sql
 
 \ir procs/roles/role_add.sql
 \ir procs/roles/role_fetch.sql
