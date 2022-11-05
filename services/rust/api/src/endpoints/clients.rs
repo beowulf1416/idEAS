@@ -22,9 +22,12 @@ use pg::{
     client::client::Client as ClientDbo
 };
 
-use crate::endpoints::{
-    ApiResponse,
-    default_options
+use crate::{
+    guards,
+    endpoints::{
+        ApiResponse,
+        default_options
+    }
 };
 
 
@@ -84,7 +87,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::resource("add")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(client_add_get))
-                .route(web::post().to(client_add_post))
+                .route(
+                    web::post()
+                    .guard(guards::Permission("client.add"))
+                    .to(client_add_post)
+                )
         )
         .service(
             web::resource("get")
