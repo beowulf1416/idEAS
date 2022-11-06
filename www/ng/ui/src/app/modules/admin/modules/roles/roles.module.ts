@@ -6,12 +6,14 @@ import { RolesRoutingModule } from './roles-routing.module';
 import { RoleComponent } from './components/role/role.component';
 import { RoleListComponent } from './components/role-list/role-list.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RolePermissionsComponent } from './components/role-permissions/role-permissions.component';
 
 
 @NgModule({
   declarations: [
     RoleComponent,
-    RoleListComponent
+    RoleListComponent,
+    RolePermissionsComponent
   ],
   imports: [
     CommonModule,
