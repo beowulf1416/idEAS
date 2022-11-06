@@ -77,6 +77,9 @@ async fn main()  -> std::io::Result<()> {
                 .service(web::scope("/currencies").configure(crate::endpoints::common::currencies::config))
                 .service(web::scope("/clients").configure(crate::endpoints::clients::config))
                 .service(web::scope("/roles").configure(crate::endpoints::admin::roles::config))
+
+                .service(web::scope("/inventory/item").configure(crate::endpoints::inventory::item::item::config))
+                .service(web::scope("/inventory/item/category").configure(crate::endpoints::inventory::item::category::config))
         })
         .workers(2) // for testing only
         .bind(format!("{}:{}", bind_host, bind_port))?
