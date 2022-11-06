@@ -8,6 +8,13 @@ declare
     c_permission_user_current_id iam.permissions.id%type := iam.permission_get_id('user.current');
     c_permission_user_profile_id iam.permissions.id%type := iam.permission_get_id('user.profile');
 
+    c_permission_client_add iam.permissions.id%type := iam.permission_get_id('client.add');
+    c_permission_client_update iam.permissions.id%type := iam.permission_get_id('client.update');
+    c_permission_client_update_any iam.permissions.id%type := iam.permission_get_id('client.update.any');
+    c_permission_client_active iam.permissions.id%type := iam.permission_get_id('client.active');
+    c_permission_client_view iam.permissions.id%type := iam.permission_get_id('client.view');
+    c_permission_client_view_any iam.permissions.id%type := iam.permission_get_id('client.view.any');
+
     c_role_id iam.roles.id%type:= public.gen_random_uuid();
     c_admin_role_id iam.roles.id%type := public.gen_random_uuid();
 begin
@@ -46,7 +53,13 @@ begin
 
     insert into iam.role_permissions (active, role_id, permission_id) values
     (true, c_admin_role_id, c_permission_user_current_id),
-    (true, c_admin_role_id, c_permission_user_profile_id)
+    (true, c_admin_role_id, c_permission_user_profile_id),
+    (true, c_admin_role_id, c_permission_client_add),
+    (true, c_admin_role_id, c_permission_client_update),
+    (true, c_admin_role_id, c_permission_client_update_any),
+    (true, c_admin_role_id, c_permission_client_active),
+    (true, c_admin_role_id, c_permission_client_view),
+    (true, c_admin_role_id, c_permission_client_view_any)
     ;
 end
 $$;
