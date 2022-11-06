@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermissionGuard } from 'src/app/guards/permission.guard';
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { ClientComponent } from './components/client/client.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -7,7 +8,11 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 const routes: Routes = [
   {
     path: "new",
-    component: ClientComponent
+    component: ClientComponent,
+    canActivate: [ PermissionGuard ],
+    data: {
+      permission: "client.add"
+    }
   },
   {
     path: "client/:client_id",
@@ -15,7 +20,10 @@ const routes: Routes = [
   },
   {
     path: "client/:client_id/:action",
-    component: ClientComponent
+    component: ClientComponent,
+    data: {
+      permission: "client.add"
+    }
   },
   {
     path: "list",
