@@ -37,8 +37,8 @@ begin
         true
     );
 
-    -- create a record in crm.people table
-    call crm.people_add(
+    -- associate record with user
+    call iam.user_people_update(
         p_id,
         '',
         '',

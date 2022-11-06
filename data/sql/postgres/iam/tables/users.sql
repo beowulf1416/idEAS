@@ -6,18 +6,11 @@ create table users (
     email common.email_address not null,
     pw text not null,
 
-    people_id uuid,
-
     constraint pk_users
         primary key (id),
 
     constraint u_users_1
-        unique (email),
-
-    constraint fk_users_1
-        foreign key (people_id)
-        references crm.people (id)
-        on delete restrict
+        unique (email)
 );
 
 comment on table users is 'table of user accounts';

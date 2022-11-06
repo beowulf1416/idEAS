@@ -24,11 +24,14 @@ insert into iam.permissions (id, active, name, description) values
 (4, true, 'site.admin.dashboard.view', 'view site admin dashboard'),
 (5, true, 'site.admin.clients.view', 'view site admin clients'),
 (6, true, 'client.add', 'add client'),
-(7, true, 'client.active', 'set client active status'),
-(8, true, 'client.view', 'view client information'),
-(9, true, 'client.users.view', 'view client users'),
-(10, true, 'client.users.add', 'add user to client'),
-(11, true, 'client.admin', 'administer client'),
-(12, true, 'client.admin.list', 'view list of client'),
-(13, true, 'client.admin.view', 'view tenant information')
+(7, true, 'client.update', 'update client'),
+(8, true, 'client.update.any', 'update any client'),
+(9, true, 'client.active', 'set client active status'),
+(10, true, 'client.view', 'view client information'),
+(11, true, 'client.view.any', 'view any client information'),
+(12, true, 'client.users.view', 'view client users'),
+(13, true, 'client.users.add', 'add user to client'),
+(14, true, 'client.admin', 'administer client'),
+(15, true, 'client.admin.list', 'view list of client'),
+(16, true, 'client.admin.view', 'view tenant information')
 ;
