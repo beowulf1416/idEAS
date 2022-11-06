@@ -10,11 +10,11 @@ const routes: Routes = [
     component: DashboardComponent
   },
   {
-    path: "item",
+    path: "items/new",
     component: ItemComponent
   },
   {
-    path: "items",
+    path: "items/list",
     component: ItemListComponent
   }
 ];

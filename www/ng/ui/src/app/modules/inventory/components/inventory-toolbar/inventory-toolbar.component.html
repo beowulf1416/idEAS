@@ -1,0 +1,16 @@
+<div class="wrapper-component">
+    <div class="wrapper-toolbar">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-items" aria-label="Items" [matMenuTriggerFor]="itemsMenu">
+                    Items
+                </button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <mat-menu #itemsMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/inventory/items/list">List</a>
+            <a mat-menu-item title="Add" routerLink="/inventory/items/new">New</a>
+        </mat-menu>
+    </div><!-- .wrapper-toolbar -->
+</div><!-- .wrapper-component -->
