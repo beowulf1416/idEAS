@@ -31,6 +31,8 @@ set schema 'iam';
 
 \ir procs/role_permissions/role_permission_add.sql
 \ir procs/role_permissions/role_permission_set_active.sql
+\ir procs/role_permissions/role_permissions_get.sql
+\ir procs/role_permissions/role_permissions_not_assigned.sql
 
 \ir procs/user_roles/user_role_add.sql
 \ir procs/user_roles/user_role_set_active.sql
