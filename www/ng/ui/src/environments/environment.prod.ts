@@ -28,6 +28,7 @@ export const environment = {
   api_clients_add: "/clients/add",
   api_clients_get: "/clients/get",
   api_clients_update: "/clients/update",
+  api_client_members_fetch: "/clients/members",
 
   api_role_add: "/roles/add",
   api_role_update: "/roles/update",
