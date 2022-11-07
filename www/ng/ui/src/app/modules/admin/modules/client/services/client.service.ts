@@ -88,4 +88,15 @@ export class ClientService {
       }
     );
   }
+
+  members(
+    client_id: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_client_members_fetch,
+      {
+        client_id: client_id
+      }
+    )
+  }
 }

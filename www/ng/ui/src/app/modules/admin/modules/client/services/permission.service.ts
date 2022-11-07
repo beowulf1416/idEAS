@@ -25,4 +25,17 @@ export class PermissionService {
       console.debug("PermissionService::assigned()", r);
     });
   }
+
+  not_assigned(
+    role_id: String
+  ) {
+    this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_permissions_not_assigned,
+      {
+        role_id: role_id
+      }
+    ).subscribe(r => {
+      console.debug("PermissionService::not_assigned()", r);
+    });
+  }
 }
