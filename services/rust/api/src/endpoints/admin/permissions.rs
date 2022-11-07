@@ -26,6 +26,12 @@ use pg::{
     iam::permission::Permissions as PermissionDbo
 };
 
+#[derive(Debug, Serialize, Deserialize)]
+struct PermissionAssignedRequest {
+    role_id: uuid::Uuid
+}
+
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     /// base url /roles
@@ -53,10 +59,37 @@ pub async fn permissions_assigned_get() -> impl Responder {
 
 
 async fn permissions_assigned_post(
-    db: web::Data<Db>
+    db: web::Data<Db>,
+    params: web::Json<PermissionAssignedRequest>
 ) -> impl Responder {
     info!("permissions_assigned_post()");
     let error_message = "an error occured while trying to process request";
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client: {:?}", e);
+        }
+        Ok(client) => {
+            let permissions_dbo = PermissionDbo::new(client);
+            let role_id = params.role_id;
+            match permissions_dbo.get_role_permissions(&role_id).await {
+                Err(e) => {
+                    error!("unable to retrieve permissions");
+                }
+                Ok(permissions) => {
+                    debug!("permissions_assigned_post(): {:?}", permissions);
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved permissions"),
+                            Some(json!({
+                                "permissions": permissions
+                            }))
+                        ));
+                }
+            }
+        }
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
@@ -78,6 +111,32 @@ async fn permissions_not_assigned_post(
 ) -> impl Responder {
     info!("permissions_not_assigned_post()");
     let error_message = "an error occured while trying to process request";
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client: {:?}", e);
+        }
+        Ok(client) => {
+            let permissions_dbo = PermissionDbo::new(client);
+            let role_id = params.role_id;
+            match permissions_dbo.get_role_permissions_not_assigned(&role_id).await {
+                Err(e) => {
+                    error!("unable to retrieve permissions");
+                }
+                Ok(permissions) => {
+                    debug!("permissions_assigned_post(): {:?}", permissions);
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved permissions"),
+                            Some(json!({
+                                "permissions": permissions
+                            }))
+                        ));
+                }
+            }
+        }
+    }
 
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
