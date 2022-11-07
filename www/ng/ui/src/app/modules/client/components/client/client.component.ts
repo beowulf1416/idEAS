@@ -5,6 +5,7 @@ import { MessageType } from 'src/app/classes/message-type';
 import { ClientService } from 'src/app/services/client.service';
 import { MessageService } from 'src/app/services/message.service';
 import { TitleService } from 'src/app/services/title.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-client',
@@ -23,6 +24,7 @@ export class ClientComponent implements OnInit {
   constructor(
     private title: TitleService,
     private client_service: ClientService,
+    private user_service: UserService,
     private msg_service: MessageService,
     private router: Router
   ) { }
@@ -60,7 +62,8 @@ export class ClientComponent implements OnInit {
       if (r.success) {
         let client = this.clients.find(c => c.id == client_id);
 
-        this.msg_service.send(`User joined client {client.name}`, MessageType.info);
+        this.msg_service.send(`User joined client ${client?.name}`, MessageType.info);
+        this.user_service.update();
         this.router.navigate([""]);
       } else {
         console.error("ClientComponent::join()", r);
