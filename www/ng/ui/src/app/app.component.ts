@@ -11,6 +11,7 @@ import {
 
 import { v4 as uuidv4 } from 'uuid';
 import { MessageType } from './classes/message-type';
+import { environment } from 'src/environments/environment.prod';
 
 
 @Component({
@@ -19,6 +20,8 @@ import { MessageType } from './classes/message-type';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+
+  app_name = environment.app_name;
 
   // user$: Observable<User>;
   user_subscription: Subscription;
