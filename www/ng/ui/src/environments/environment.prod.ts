@@ -30,5 +30,8 @@ export const environment = {
   api_clients_update: "/clients/update",
 
   api_role_add: "/roles/add",
-  api_role_update: "/roles/update"
+  api_role_update: "/roles/update",
+
+  api_permissions_assigned: "/permissions/assigned",
+  api_permissions_not_assigned: "/permissions/not-assigned"
 };
