@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiResponse } from 'src/app/classes/api-response';
 import { Client } from 'src/app/classes/client';
 import { Country } from 'src/app/classes/country';
@@ -16,6 +16,7 @@ import { ClientService } from '../../services/client.service';
 export class ClientComponent implements OnInit {
 
   submitting = false;
+  messages = "";
 
   client_id = "";
   action = "new";
@@ -44,7 +45,8 @@ export class ClientComponent implements OnInit {
     private title: TitleService,
     private client_service: ClientService,
     private country_service: CountryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.title.set_title("Client");
   }
@@ -141,8 +143,10 @@ export class ClientComponent implements OnInit {
             this.client_country?.value || 0,
             this.client_url?.value || ''
           ).subscribe((r: ApiResponse) => {
-            if (!r.success) {
-              console.error("error: ", r);
+            if (r.success) {
+              this.router.navigate(["/admin/clients/list"]);
+            } else {
+              this.messages = r.message;
             }
             this.submitting = false;
           });
@@ -157,8 +161,10 @@ export class ClientComponent implements OnInit {
             this.client_country?.value || 0,
             this.client_url?.value || ''
           ).subscribe((r: ApiResponse) => {
-            if (!r.success) {
-              console.error("error: ", r);
+            if (r.success) {
+              this.router.navigate(["/admin/clients/list"]);
+            } else {
+              this.messages = r.message;
             }
             this.submitting = false;
           });

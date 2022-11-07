@@ -1,5 +1,5 @@
 <div class="wrapper-component">
-    <app-client-toolbar></app-client-toolbar>
+    <!-- <app-client-toolbar></app-client-toolbar> -->
     <div class="wrapper-form">
         <form class="form-client" method="post" action="" [formGroup]="clientForm" (ngSubmit)="submit()">
             <fieldset>
@@ -10,6 +10,9 @@
                         </button>
                     </mat-toolbar-row>
                 </mat-toolbar>
+            </fieldset>
+            <fieldset>
+                {{ messages }}
             </fieldset>
             <fieldset>
                 <mat-form-field appearance="outline">
