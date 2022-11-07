@@ -1,5 +1,5 @@
 <div class="wrapper-component">
-    <app-client-toolbar></app-client-toolbar>
+    <!-- <app-client-toolbar></app-client-toolbar> -->
     <div class="wrapper-table">
         <table class="tbl-clients">
             <caption>Clients</caption>
@@ -23,13 +23,16 @@
             <tbody>
                 <tr *ngFor="let c of clients">
                     <td>
-                        <a title="{{ c.name }}" routerLink="/admin/clients/client/{{ c.id }}">View</a>
+                        <a title="View {{ c.name }}" routerLink="/admin/clients/client/view/{{ c.id }}">View</a>
                     </td>
                     <td>
-                        <a title="{{ c.name }}" routerLink="/admin/clients/client/{{ c.id }}/edit">Edit</a>
+                        <a title="Edit {{ c.name }}" routerLink="/admin/clients/client/edit/{{ c.id }}">Edit</a>
                     </td>
                     <td>
-                        <a title="{{ c.name }}" routerLink="/admin/clients/client/{{ c.id }}">{{ c.name }}</a>
+                        <a title="Members" routerLink="/admin/clients/client/members/{{ c.id }}">Members</a>
+                    </td>
+                    <td>
+                        <a title="View {{ c.name }}" routerLink="/admin/clients/client/view/{{ c.id }}">{{ c.name }}</a>
                     </td>
                 </tr>
             </tbody>

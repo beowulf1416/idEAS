@@ -8,6 +8,9 @@ import { ClientComponent } from './components/client/client.component';
 import { MaterialModule } from 'src/material/material.module';
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { ClientToolbarComponent } from './components/client-toolbar/client-toolbar.component';
+import { MemberListComponent } from './components/member-list/member-list.component';
+import { ClientDashboardComponent } from './components/client-dashboard/client-dashboard.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 
 @NgModule({
@@ -15,7 +18,10 @@ import { ClientToolbarComponent } from './components/client-toolbar/client-toolb
     DashboardComponent,
     ClientComponent,
     ClientListComponent,
-    ClientToolbarComponent
+    ClientToolbarComponent,
+    MemberListComponent,
+    ClientDashboardComponent,
+    AdminComponent
   ],
   imports: [
     CommonModule,
