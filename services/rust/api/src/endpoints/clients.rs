@@ -89,7 +89,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(client_add_get))
                 .route(
                     web::post()
-                    .guard(guards::Permission("client.add"))
+                    .guard(guards::permission("client.add"))
                     .to(client_add_post)
                 )
         )
