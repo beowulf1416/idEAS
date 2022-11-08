@@ -4,6 +4,7 @@ create or replace function role_permissions_not_assigned(
 returns table (
     name iam.permissions.name%type
 )
+language plpgsql
 as $$
 begin
     return query
