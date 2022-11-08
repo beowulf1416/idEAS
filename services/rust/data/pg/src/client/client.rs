@@ -199,6 +199,41 @@ impl Client {
             }
         }
     }
+
+    pub async fn members(
+        &self,
+        client_id: &uuid::Uuid
+    ) -> Result<Vec<common::user::User>, DbError> {
+        let sql = "select * from iam.user_client_members_fetch($1)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query(
+                        &stmt,
+                        &[
+                            &client_id
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(rows) => {
+                        let results = rows.iter().map(|r| common::user::User::new(
+                            r.get("id"),
+                            r.get("active"),
+                            r.get("email")
+                        ))
+                        .collect();
+                        return Ok(results);
+                    }
+                }
+            }
+        }
+    }
 }
 
 

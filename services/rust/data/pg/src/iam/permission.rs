@@ -73,7 +73,7 @@ impl Permissions {
                 match self.0.client.query(
                     &stmt,
                     &[
-                        &user_id
+                        &role_id
                     ]
                 ).await {
                     Err(e) => {
@@ -106,7 +106,7 @@ impl Permissions {
                 match self.0.client.query(
                     &stmt,
                     &[
-                        &user_id
+                        &role_id
                     ]
                 ).await {
                     Err(e) => {
