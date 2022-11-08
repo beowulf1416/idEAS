@@ -62,9 +62,6 @@ struct ClientGetRequest {
 }
 
 
-
-
-
 #[derive(Debug, Serialize, Deserialize)]
 struct ClientSetActiveRequest {
     id: uuid::Uuid,
@@ -77,6 +74,11 @@ struct ClientsFetchRequest{
     active: bool,
     items: i32,
     page: i32
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ClientMembersRequest {
+    client_id: uuid::Uuid
 }
 
 
@@ -115,6 +117,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(client_fetch_get))
                 .route(web::post().to(client_fetch_post))
+        )
+        .service(
+            web::resource("members")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(client_members_get))
+                .route(web::post().to(client_members_post))
         )
     ;
 }
@@ -343,6 +351,55 @@ async fn client_fetch_post(
         .json(ApiResponse::new(
             false,
             String::from("Service is up. version: 1.0.0.0.dev"),
+            None
+        ));
+}
+
+
+async fn client_members_get() -> impl Responder {
+    info!("client_members_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn client_members_post(
+    db: web::Data<Db>,
+    params: web::Json<ClientMembersRequest>
+) -> impl Responder {
+    info!("client_members_post()");
+    let error_message = String::from("an error occured while trying to process this request");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let client_dbo = ClientDbo::new(client);
+            match client_dbo.members(
+                &params.client_id
+            ).await {
+                Err(e) => {
+                    error!("unable to retrieve client members");
+                }
+                Ok(members) => {
+                    debug!("client members: {:?}", members);
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved client members"),
+                            Some(json!({
+                                "members": members
+                            }))
+                        ))
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            error_message,
             None
         ));
 }
