@@ -144,7 +144,7 @@ export class ClientComponent implements OnInit {
             this.client_url?.value || ''
           ).subscribe((r: ApiResponse) => {
             if (r.success) {
-              this.router.navigate(["/admin/clients/list"]);
+              this.router.navigate(["/admin/clients/client/list"]);
             } else {
               this.messages = r.message;
             }
@@ -162,7 +162,7 @@ export class ClientComponent implements OnInit {
             this.client_url?.value || ''
           ).subscribe((r: ApiResponse) => {
             if (r.success) {
-              this.router.navigate(["/admin/clients/list"]);
+              this.router.navigate(["/admin/clients/client/list"]);
             } else {
               this.messages = r.message;
             }
