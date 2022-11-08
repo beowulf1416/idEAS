@@ -8,6 +8,7 @@ use serde::{
     Serialize,
     Deserialize
 };
+use serde_json::json;
 
 use actix_web::{
     HttpResponse, 
@@ -107,7 +108,8 @@ pub async fn permissions_not_assigned_get() -> impl Responder {
 
 
 async fn permissions_not_assigned_post(
-    db: web::Data<Db>
+    db: web::Data<Db>,
+    params: web::Json<PermissionAssignedRequest>
 ) -> impl Responder {
     info!("permissions_not_assigned_post()");
     let error_message = "an error occured while trying to process request";

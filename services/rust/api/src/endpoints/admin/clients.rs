@@ -48,12 +48,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(client_add_get))
                 .route(web::post().to(client_add_post))
         )
-        .service(
-            web::resource("add")
-                .route(web::method(http::Method::OPTIONS).to(default_options))
-                .route(web::get().to(client_members_get))
-                .route(web::post().to(client_members_post))
-        )
+        // .service(
+        //     web::resource("members")
+        //         .route(web::method(http::Method::OPTIONS).to(default_options))
+        //         .route(web::get().to(client_members_get))
+        //         .route(web::post().to(client_members_post))
+        // )
     ;
 }
 
@@ -80,21 +80,21 @@ async fn client_add_post(
 }
 
 
-async fn client_members_get() -> impl Responder {
-    info!("client_members_get()");
-    return HttpResponse::Ok().body("use POST method instead");
-}
+// async fn client_members_get() -> impl Responder {
+//     info!("client_members_get()");
+//     return HttpResponse::Ok().body("use POST method instead");
+// }
 
 
-async fn client_members_post(
-    db: web::Data<Db>
-) -> impl Responder {
-    info!("client_members_post()");
+// async fn client_members_post(
+//     db: web::Data<Db>
+// ) -> impl Responder {
+//     info!("client_members_post()");
 
-    return HttpResponse::Ok()
-        .json(ApiResponse::new(
-            false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
-            None
-        ));
-}
+//     return HttpResponse::Ok()
+//         .json(ApiResponse::new(
+//             false,
+//             String::from("Service is up. version: 1.0.0.0.dev"),
+//             None
+//         ));
+// }
