@@ -1,44 +1,49 @@
 <div class="wrapper-component">
     <div class="wrapper-form">
-        <form class="form-members" method="post" action="" [formGroup]="formMembers">
+        <form class="form-members" method="post" action="" [formGroup]="formMembers" (ngSubmit)="submit()">
             <fieldset class="members">
                 <div class="wrapper-table">
                     <table class="tbl-members-active">
+                        <caption>Active Members</caption>
                         <thead>
                             <tr>
                                 <th></th>
                                 <th>Email</th>
+                                <th>Name</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody formGroupName="active">
                             <tr *ngFor="let m of members_active">
                                 <td>
-                                    <mat-form-field appearance="outline">
-                                        <input type="checkbox" class="field-select" [value]="m.id" />
-                                    </mat-form-field>
+                                    <!-- <mat-form-field appearance="outline">
+                                        <input type="checkbox" class="field-select" name="members_active_select" [value]="m.id" formControlName="members_active_select" />
+                                    </mat-form-field> -->
+                                    <!-- <mat-checkbox class="field-select" [value]="m.id" formControlName="members_active_select"></mat-checkbox> -->
+                                    <input type="checkbox" name="members" [value]="m.id" formControlName="members" />
                                 </td>
-                                <td>
-                                    {{ m.email }}
-                                </td>
+                                <td>{{ m.email }}</td>
                             </tr>
                         </tbody>
                     </table>
+                    <button type="submit">remove</button>
                 </div><!-- .wrapper-table -->
             </fieldset>
             <fieldset class="requests">
                 <div class="wrapper-table">
                     <table class="tbl-members-inactive">
+                        <caption>Inactive and Requesting Members</caption>
                         <thead>
                             <tr>
                                 <th></th>
                                 <th>Email</th>
+                                <th>Name</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let m of members_inactive">
                                 <td>
                                     <mat-form-field appearance="outline">
-                                        <input type="checkbox" class="field-select" [value]="m.id" />
+                                        <input type="checkbox" class="field-select" name="members_inactive_select" [value]="m.id" />
                                     </mat-form-field>
                                 </td>
                                 <td>
