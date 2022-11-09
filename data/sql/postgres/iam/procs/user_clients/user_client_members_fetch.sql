@@ -1,5 +1,6 @@
 create or replace function user_client_members_fetch(
-    p_client_id iam.user_clients.client_id%type
+    p_client_id iam.user_clients.client_id%type,
+    p_active iam.user_clients.active%type
 )
 returns table (
     id iam.users.id%type,
@@ -19,7 +20,7 @@ begin
             on a.id = b.user_id
     where
         b.client_id = p_client_id
-        and b.active = true
+        and b.active = p_active
     ;
 end
 $$;
