@@ -1,19 +1,19 @@
 <div class="wrapper-component">
-    <div class="wrapper-tb">
-        <mat-toolbar color="secondary">
-            <mat-toolbar-row>
-                <button mat-button class="btn-admin-roles" aria-label="Administer roles" [matMenuTriggerFor]="usersMenu">
-                    Users <mat-icon>expand_more</mat-icon>
-                </button>
-                <button mat-button class="btn-admin-users" aria-label="Save">
-                    <mat-icon>save</mat-icon>
-                </button>
-            </mat-toolbar-row>
-        </mat-toolbar>
-
-        <mat-menu #usersMenu="matMenu">
-            <a mat-menu-item title="List" routerLink="/admin/users/list">List</a>
-            <a mat-menu-item title="Add" routerLink="/admin/users/new">New</a>
-        </mat-menu>
-    </div><!-- .wrapper-tb -->
+    <div class="wrapper-tbl">
+        <table class="tbl-users">
+            <caption>Users</caption>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div><!-- .wrapper-tbl -->
 </div><!-- .wrapper-component -->

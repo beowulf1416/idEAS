@@ -4,20 +4,22 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
-    path: "clients",
-    loadChildren: () => import('./modules/client/client.module').then(m => m.ClientModule)
-  },
-  {
-    path: "roles",
-    loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
-  },
-  {
-    path: "users",
-    loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
-  },
-  {
-    path: "",
-    component: DashboardComponent
+    path: '',
+    component: DashboardComponent,
+    children: [
+      {
+        path: "clients",
+        loadChildren: () => import('./modules/client/client.module').then(m => m.ClientModule)
+      },
+      {
+        path: "roles",
+        loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
+      },
+      {
+        path: "users",
+        loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
+      }
+    ]
   }
 ];
 

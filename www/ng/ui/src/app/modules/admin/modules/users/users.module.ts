@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UsersRoutingModule } from './users-routing.module';
 import { AdminComponent } from './components/admin/admin.component';
+import { MaterialModule } from 'src/material/material.module';
 
 
 @NgModule({
@@ -11,6 +12,7 @@ import { AdminComponent } from './components/admin/admin.component';
   ],
   imports: [
     CommonModule,
+    MaterialModule,
     UsersRoutingModule
   ]
 })
