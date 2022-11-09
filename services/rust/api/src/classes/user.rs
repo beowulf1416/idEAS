@@ -4,10 +4,16 @@ use log::{
     debug
 };
 
+use serde::{
+    Serialize,
+    Deserialize
+};
+
+
 
 pub struct User {
-    id: Option<uuid::Uuid>,
-    email: String
+    pub id: uuid::Uuid,
+    pub email: String
 }
 
 
@@ -21,9 +27,5 @@ impl User {
             id: id,
             email: email
         };
-    }
-
-    pub fn is_authenticated(&self) -> bool {
-        return self.id != None;
     }
 }
