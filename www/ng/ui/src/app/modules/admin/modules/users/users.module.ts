@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { UsersRoutingModule } from './users-routing.module';
 import { AdminComponent } from './components/admin/admin.component';
 import { MaterialModule } from 'src/material/material.module';
+import { UserComponent } from './components/user/user.component';
 
 
 @NgModule({
   declarations: [
-    AdminComponent
+    AdminComponent,
+    UserComponent
   ],
   imports: [
     CommonModule,
