@@ -36,7 +36,7 @@ use config::{
 pub struct Queue {
     hosts: Vec<String>,
     client: KafkaClient,
-    // producer: Producer
+    // producer: Option<Producer>
 }
 
 impl Queue {
