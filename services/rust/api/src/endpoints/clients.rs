@@ -78,7 +78,8 @@ struct ClientsFetchRequest{
 
 #[derive(Debug, Serialize, Deserialize)]
 struct ClientMembersRequest {
-    client_id: uuid::Uuid
+    client_id: uuid::Uuid,
+    active: bool
 }
 
 
@@ -376,7 +377,8 @@ async fn client_members_post(
         Ok(client) => {
             let client_dbo = ClientDbo::new(client);
             match client_dbo.members(
-                &params.client_id
+                &params.client_id,
+                &params.active
             ).await {
                 Err(e) => {
                     error!("unable to retrieve client members");

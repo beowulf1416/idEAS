@@ -202,9 +202,10 @@ impl Client {
 
     pub async fn members(
         &self,
-        client_id: &uuid::Uuid
-    ) -> Result<Vec<common::user::User>, DbError> {
-        let sql = "select * from iam.user_client_members_fetch($1)";
+        client_id: &uuid::Uuid,
+        active: &bool
+    ) -> Result<Vec<common::iam::user::User>, DbError> {
+        let sql = "select * from iam.user_client_members_fetch($1,$2)";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
                 error!("unable to prepare query: {} {:?}", sql, e);
@@ -214,7 +215,8 @@ impl Client {
                 match self.0.client.query(
                         &stmt,
                         &[
-                            &client_id
+                            &client_id,
+                            &active
                         ]
                 ).await {
                     Err(e) => {
@@ -222,11 +224,11 @@ impl Client {
                         return Err(DbError::ClientError);
                     }
                     Ok(rows) => {
-                        let results = rows.iter().map(|r| common::user::User::new(
-                            r.get("id"),
-                            r.get("active"),
-                            r.get("email")
-                        ))
+                        let results = rows.iter().map(|r| common::iam::user::User {
+                            id: r.get("id"),
+                            active: r.get("active"),
+                            email: r.get("email")
+                        })
                         .collect();
                         return Ok(results);
                     }
