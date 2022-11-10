@@ -24,6 +24,7 @@ export const environment = {
   api_user_profile_get: "/user/profile/get",
   api_user_profile_update: "/user/profile/update",
   api_user_profile_password_set: "/user/profile/pw",
+  api_users_fetch: "/users/fetch",
 
   api_country_fetch: "/countries/fetch",
   api_currency_fetch: "/currencies/fetch",
