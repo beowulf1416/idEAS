@@ -71,10 +71,13 @@ async fn main()  -> std::io::Result<()> {
                 .wrap(crate::middleware::user::User::new(tokenizer.clone()))
 
                 .service(web::scope("/status").configure(crate::endpoints::status::config))
-                .service(web::scope("/auth").configure(crate::endpoints::auth::config))
-                .service(web::scope("/user").configure(crate::endpoints::user::config))
+                
                 .service(web::scope("/countries").configure(crate::endpoints::common::countries::config))
                 .service(web::scope("/currencies").configure(crate::endpoints::common::currencies::config))
+
+                .service(web::scope("/auth").configure(crate::endpoints::auth::config))
+                .service(web::scope("/user").configure(crate::endpoints::user::config))
+                .service(web::scope("/users").configure(crate::endpoints::users::config))
 
                 .service(web::scope("/clients").configure(crate::endpoints::clients::config))
                 .service(web::scope("/roles").configure(crate::endpoints::admin::roles::config))
