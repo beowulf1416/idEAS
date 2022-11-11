@@ -40,7 +40,7 @@ struct UsersFetchRequest {
 pub fn config(cfg: &mut web::ServiceConfig) {
     return cfg
         .service(
-            web::resource("current")
+            web::resource("fetch")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(users_fetch_get))
                 .route(web::post().to(users_fetch_post))
