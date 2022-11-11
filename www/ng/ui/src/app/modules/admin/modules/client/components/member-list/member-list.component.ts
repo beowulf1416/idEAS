@@ -28,9 +28,7 @@ export class MemberListComponent implements OnInit {
 
 
   formMembers = new FormGroup({
-    active: new FormGroup({
-      members: new FormArray([])
-    })
+    members: new FormArray<any>([])
   });
 
   constructor(
@@ -53,10 +51,18 @@ export class MemberListComponent implements OnInit {
       if (r.success) {
         this.members_active = (r.data as { members: Array<{ id: string, active: boolean, email: string}> }).members;
 
-        const members = (this.formMembers.get('active.members') as FormArray);
+        // const members = (this.formMembers.get('active.members') as FormArray);
+        // this.members_active.forEach(m => {
+        //   members.push(new FormControl(m.id, []));
+        // });
+        
+        const members = this.formMembers.controls.members;
         this.members_active.forEach(m => {
-          members.push(new FormControl(m.id, []));
-        });
+          members.push(this.fb.group({
+            member: m,
+            control: new FormControl(false, [])
+          }));
+        })
       } else {
         this.msg_service.send(r.message, MessageType.error);
       }

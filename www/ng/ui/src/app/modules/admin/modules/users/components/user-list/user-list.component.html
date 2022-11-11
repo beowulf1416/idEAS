@@ -1,4 +1,16 @@
 <div class="wrapper-users">
+    <div class="wrapper-form">
+        <form class="form-filter" method="post" action="" [formGroup]="formFilter" (ngSubmit)="submit()">
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>Email Address</mat-label>
+                    <input type="search" id="filter" name="filter" class="field-filter" placeholder="Filter" required matInput formControlName="filter" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter email address</mat-hint>
+                </mat-form-field>
+            </fieldset>
+        </form>
+    </div><!-- .wrapper-form -->
     <div class="wrapper-tbl">
         <table>
             <caption>Users</caption>
@@ -11,7 +23,7 @@
             </thead>
             <tbody>
                 <tr>
-                    
+
                 </tr>
             </tbody>
         </table>

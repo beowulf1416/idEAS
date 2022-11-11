@@ -13,15 +13,13 @@
                             </tr>
                         </thead>
                         <tbody formGroupName="active">
-                            <tr *ngFor="let m of members_active">
+                            <tr *ngFor="let m of formMembers.controls.members">
                                 <td>
-                                    <!-- <mat-form-field appearance="outline">
-                                        <input type="checkbox" class="field-select" name="members_active_select" [value]="m.id" formControlName="members_active_select" />
-                                    </mat-form-field> -->
-                                    <!-- <mat-checkbox class="field-select" [value]="m.id" formControlName="members_active_select"></mat-checkbox> -->
-                                    <input type="checkbox" name="members" [value]="m.id" formControlName="members" />
+                                    <input type="checkbox" name="members" [value]="m.member.id" />
                                 </td>
-                                <td>{{ m.email }}</td>
+                                <td>
+                                    {{ m.member.email }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
