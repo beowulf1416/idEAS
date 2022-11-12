@@ -38,7 +38,7 @@ struct UsersFetchRequest {
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    return cfg
+    cfg
         .service(
             web::resource("fetch")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
@@ -56,7 +56,8 @@ async fn users_fetch_get() -> impl Responder {
 
 async fn users_fetch_post(
     db: web::Data<Db>,
-    user: UserParameter
+    user: UserParameter,
+    params: web::Json<UsersFetchRequest>
 ) -> impl Responder {
     info!("users_fetch_post()");
     let err_msg = String::from("an error occured while trying to process the request");
@@ -76,13 +77,13 @@ async fn users_fetch_post(
                     error!("unable to retrieve records");
                 }
                 Ok(users) => {
-                    debug!("users_fetch_post: {:?}", results);
+                    debug!("users_fetch_post: {:?}", users);
                     
                     return HttpResponse::Ok()
                         .json(ApiResponse::new(
                             true,
                             String::from("successfully retrieved users"),
-                            data: Some(json!({
+                            Some(json!({
                                 "users": users
                             }))
                         ));

@@ -78,7 +78,7 @@ async fn main()  -> std::io::Result<()> {
                 .service(web::scope("/auth").configure(crate::endpoints::auth::config))
                 .service(web::scope("/user").configure(crate::endpoints::user::config))
                 
-                .service(web::scope("/admin/users").configure(crate::endpoints::users::config))
+                .service(web::scope("/admin/users").configure(crate::endpoints::admin::users::config))
                 .service(web::scope("/admin/user").configure(crate::endpoints::admin::user::config))
 
                 .service(web::scope("/clients").configure(crate::endpoints::clients::config))

@@ -8,6 +8,7 @@ use serde::{
     Serialize,
     Deserialize
 };
+use serde_json::json;
 
 use actix_web::{
     HttpResponse, 
@@ -34,7 +35,7 @@ pub struct UserAddRequest {
 
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    return cfg
+    cfg
         .service(
             web::resource("add")
                 .route(web::method(http::Method::OPTIONS).to(default_options))
