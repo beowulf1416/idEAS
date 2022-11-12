@@ -3,6 +3,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TitleService } from 'src/app/services/title.service';
 import { UsersService } from '../../services/users.service';
 
+
+export interface User {
+  id: string,
+  active: boolean,
+  email: string
+};
+
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -11,8 +18,12 @@ import { UsersService } from '../../services/users.service';
 export class UserListComponent implements OnInit {
 
   formFilter = new FormGroup({
-    filter: new FormControl('', [])
+    filter: new FormControl('', []),
+    items: new FormControl(10, []),
+    page: new FormControl(1, []) 
   });
+
+  users = Array<User>();
 
   constructor(
     private title: TitleService,
@@ -22,6 +33,36 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filter_users();
   }
 
+  get filter() {
+    return this.formFilter.get('filter');
+  }
+
+  get items() {
+    return this.formFilter.get('items');
+  }
+
+  get page() {
+    return this.formFilter.get('page');
+  }
+
+  filter_users() {
+    this.users_service.fetch(
+      this.formFilter.get('filter')?.value || '',
+      this.formFilter.get('items')?.value || 10,
+      this.formFilter.get('page')?.value || 1
+    ).subscribe(r => {
+      if (r.success) {
+        this.users = (r.data as { users: Array<User> }).users;
+      } else {
+        console.error('UserListComponent::filter_users()', r);
+      }
+    });
+  }
+
+  submit() {
+    console.debug("UserListComponent::submit()");
+  }
 }

@@ -3,10 +3,22 @@
         <form class="form-filter" method="post" action="" [formGroup]="formFilter" (ngSubmit)="submit()">
             <fieldset>
                 <mat-form-field appearance="outline">
-                    <mat-label>Email Address</mat-label>
+                    <mat-label>Filter</mat-label>
                     <input type="search" id="filter" name="filter" class="field-filter" placeholder="Filter" required matInput formControlName="filter" />
                     <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                    <mat-hint>Please enter email address</mat-hint>
+                    <mat-hint>Please enter filter</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label></mat-label>
+                    <input type="number" id="items" name="items" class="field-items" placeholder="Items" required matInput formControlName="items" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please select items to show</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Page</mat-label>
+                    <input type="number" id="page" name="page" class="field-page" placeholder="Page" required matInput formControlName="page" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please select page</mat-hint>
                 </mat-form-field>
             </fieldset>
         </form>
@@ -22,8 +34,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-
+                <tr *ngFor="let u of users">
+                    <td></td>
+                    <td>{{ u.active }}</td>
+                    <td>{{ u.email }}</td>
                 </tr>
             </tbody>
         </table>
