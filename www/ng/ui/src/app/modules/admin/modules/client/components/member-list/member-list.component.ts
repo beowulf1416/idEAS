@@ -7,6 +7,12 @@ import { TitleService } from 'src/app/services/title.service';
 import { ClientService } from '../../services/client.service';
 
 
+export interface Member {
+  id: string,
+  active: boolean,
+  email: string
+}
+
 @Component({
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
@@ -15,16 +21,8 @@ import { ClientService } from '../../services/client.service';
 export class MemberListComponent implements OnInit {
 
   client_id = '';
-  members_active = Array<{
-    id: string,
-    active: boolean,
-    email: string
-  }>();
-  members_inactive = Array<{
-    id: string,
-    active: boolean,
-    email: string
-  }>();
+  members_active = Array<Member>();
+  members_inactive = Array<Member>();
 
 
   formMembers = new FormGroup({
@@ -49,7 +47,7 @@ export class MemberListComponent implements OnInit {
     ).subscribe(r => {
       console.log("MemberListComponent::ngOnInit()", r);
       if (r.success) {
-        this.members_active = (r.data as { members: Array<{ id: string, active: boolean, email: string}> }).members;
+        this.members_active = (r.data as { members: Array<Member> }).members;
 
         // const members = (this.formMembers.get('active.members') as FormArray);
         // this.members_active.forEach(m => {
@@ -74,7 +72,7 @@ export class MemberListComponent implements OnInit {
     ).subscribe(r => {
       console.log("MemberListComponent::ngOnInit()", r);
       if (r.success) {
-        this.members_inactive = (r.data as { members: Array<{ id: string, active: boolean, email: string}> }).members;
+        this.members_inactive = (r.data as { members: Array<Member> }).members;
       } else {
         this.msg_service.send(r.message, MessageType.error);
       }

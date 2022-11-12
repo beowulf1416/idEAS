@@ -64,5 +64,6 @@ export class UserListComponent implements OnInit {
 
   submit() {
     console.debug("UserListComponent::submit()");
+    this.filter_users();
   }
 }
