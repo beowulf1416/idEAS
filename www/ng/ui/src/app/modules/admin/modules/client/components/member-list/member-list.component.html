@@ -12,13 +12,12 @@
                                 <th>Name</th>
                             </tr>
                         </thead>
-                        <tbody formGroupName="active">
-                            <tr *ngFor="let m of formMembers.controls.members">
+                        <tbody>
+                            <tr formArrayName="members" *ngFor="let m of members.controls">
                                 <td>
-                                    <input type="checkbox" name="members" [value]="m.member.id" />
+                                    <pre>{{ m }}</pre>
                                 </td>
                                 <td>
-                                    {{ m.member.email }}
                                 </td>
                             </tr>
                         </tbody>

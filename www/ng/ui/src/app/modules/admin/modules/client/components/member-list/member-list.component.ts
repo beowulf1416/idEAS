@@ -25,9 +25,11 @@ export class MemberListComponent implements OnInit {
   members_inactive = Array<Member>();
 
 
-  formMembers = new FormGroup({
-    members: new FormArray<FormGroup>([])
-  });
+  // formMembers = new FormGroup({
+  //   members: new FormArray<FormGroup>([])
+  // });
+  // formMembers = new FormGroup({});
+  formMembers: FormGroup;
 
   constructor(
     private title: TitleService,
@@ -35,7 +37,11 @@ export class MemberListComponent implements OnInit {
     private msg_service: MessageService,
     private route: ActivatedRoute,
     private fb: FormBuilder
-  ) {}
+  ) {
+    this.formMembers = this.fb.group({
+      members: this.fb.array([]) 
+    });
+  }
 
   ngOnInit(): void {
     this.title.set_title("Members");
@@ -54,17 +60,29 @@ export class MemberListComponent implements OnInit {
         //   members.push(new FormControl(m.id, []));
         // });
         
-        const members = this.formMembers.controls.members;
+        
+
+        // const members = this.formMembers.controls.members;
+        // this.members_active.forEach(m => {
+        //   members.push(
+        //     // this.fb.group({
+        //     //   active: [false]
+        //     // }, {})
+        //     new FormGroup({
+        //       active: new FormControl(false, [])
+        //     })
+        //   );
+        // })
+
         this.members_active.forEach(m => {
-          members.push(
-            // this.fb.group({
-            //   active: [false]
-            // }, {})
-            new FormGroup({
-              active: new FormControl(false, [])
+          (this.formMembers.get('members') as FormArray).push(
+            this.fb.group({
+              id: [''],
+              active: [false],
+              email: ['']
             })
           );
-        })
+        });
       } else {
         this.msg_service.send(r.message, MessageType.error);
       }
@@ -89,5 +107,9 @@ export class MemberListComponent implements OnInit {
     const members = this.formMembers.get('active.members');
     console.debug("members", members);
     console.log(this.formMembers.get('active')?.value);
+  }
+
+  get members() {
+    return <FormArray> this.formMembers.get('members');
   }
 }
