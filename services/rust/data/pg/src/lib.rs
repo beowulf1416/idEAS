@@ -7,6 +7,7 @@ pub mod client;
 pub mod organization;
 pub mod auth;
 pub mod user;
+pub mod users;
 
 pub mod iam;
 pub mod people;

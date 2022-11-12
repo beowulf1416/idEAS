@@ -26,7 +26,7 @@ impl UserDbo {
         return Self(Dbo::new(client));
     }
 
-    pub fn add(
+    pub async fn add(
         &self,
         email: &str,
         password: &str

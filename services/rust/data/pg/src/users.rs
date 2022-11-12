@@ -26,13 +26,13 @@ impl UsersDbo {
         return Self(Dbo::new(client));
     }
 
-    pub fn fetch(
+    pub async fn fetch(
         &self,
         filter: &str,
         items: &i32,
         page: &i32
-    ) {
-        debug!("UsersDbo::fetch() {:?}", email);
+    ) -> Result<Vec<common::iam::user::User>, DbError> {
+        info!("UsersDbo::fetch()");
 
         let sql = "select * from iam.user_get_by_email($1);";
         match self.0.client.prepare_cached(sql).await {
@@ -51,15 +51,16 @@ impl UsersDbo {
                 ).await {
                     Err(e) => {
                         error!("unable to retrieve records");
+                        return Err(DbError::ClientError);
                     }
                     Ok(rows) => {
                         let users = rows.iter().map(|r| common::iam::user::User {
-                            id: r.get('id'),
-                            active: r.get('active'),
-                            email: r.get('email')
+                            id: r.get("id"),
+                            active: r.get("active"),
+                            email: r.get("email")
                         })
-                        .collect()
-                        return users;
+                        .collect();
+                        return Ok(users);
                     }
                 }
             }
