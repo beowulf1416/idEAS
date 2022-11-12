@@ -26,7 +26,7 @@ export class MemberListComponent implements OnInit {
 
 
   formMembers = new FormGroup({
-    members: new FormArray<any>([])
+    members: new FormArray<FormGroup>([])
   });
 
   constructor(
@@ -56,10 +56,14 @@ export class MemberListComponent implements OnInit {
         
         const members = this.formMembers.controls.members;
         this.members_active.forEach(m => {
-          members.push(this.fb.group({
-            member: m,
-            control: new FormControl(false, [])
-          }));
+          members.push(
+            // this.fb.group({
+            //   active: [false]
+            // }, {})
+            new FormGroup({
+              active: new FormControl(false, [])
+            })
+          );
         })
       } else {
         this.msg_service.send(r.message, MessageType.error);
