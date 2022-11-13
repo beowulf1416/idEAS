@@ -9,5 +9,14 @@ create table tasks (
 
     pay_rate_type_id smallint not null,
 
-    
+    constraint pk_tasks
+        primary key (id),
+
+    constraint fk_tasks_1
+        foreign key (client_id)
+        references client.clients (id)
+        on delete restrict,
+    constraint fk_tasks_2
+        foreign key hr.pay_rate_types (id)
+        on delete restrict  
 );
