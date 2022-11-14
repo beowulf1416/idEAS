@@ -33,6 +33,7 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("UserListComponent::ngOnInit()");
     this.filter_users();
   }
 
@@ -52,8 +53,9 @@ export class UserListComponent implements OnInit {
     this.users_service.fetch(
       this.formFilter.get('filter')?.value || '',
       this.formFilter.get('items')?.value || 10,
-      this.formFilter.get('page')?.value || 1
+      this.formFilter.get('page')?.value || 0
     ).subscribe(r => {
+      console.log("UserListComponent::filter_users()");
       if (r.success) {
         this.users = (r.data as { users: Array<User> }).users;
       } else {
