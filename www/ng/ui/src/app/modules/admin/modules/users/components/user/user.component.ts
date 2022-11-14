@@ -40,7 +40,7 @@ export class UserComponent implements OnInit {
   }
 
   get password() {
-    return this.formUser.get('password');
+    return this.formUser.get('pw');
   }
 
   generate_password() {
@@ -54,7 +54,7 @@ export class UserComponent implements OnInit {
       this.users_service.add(
         uuidv4(),
         this.formUser.get('email')?.value || '',
-        this.formUser.get('password')?.value || ''
+        this.formUser.get('pw')?.value || ''
       ).subscribe(r => {
         if (r.success) {
           this.router.navigate(['/admin/users']);
