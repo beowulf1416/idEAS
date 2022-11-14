@@ -34,7 +34,7 @@ impl UsersDbo {
     ) -> Result<Vec<common::iam::user::User>, DbError> {
         info!("UsersDbo::fetch()");
 
-        let sql = "select * from iam.user_get_by_email($1);";
+        let sql = "select * from iam.user_fetch($1, $2, $3);";
         match self.0.client.prepare_cached(sql).await {
             Err(e) => {
                 error!("unable to prepare sql: {:?}", e);

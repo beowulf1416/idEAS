@@ -68,10 +68,11 @@ async fn users_fetch_post(
         }
         Ok(client) => {
             let users_dbo = UsersDbo::new(client);
+            let params_page = params.page - 1;
             match users_dbo.fetch(
                 &params.filter,
                 &params.items,
-                &params.page
+                &params_page
             ).await {
                 Err(e) => {
                     error!("unable to retrieve records");
