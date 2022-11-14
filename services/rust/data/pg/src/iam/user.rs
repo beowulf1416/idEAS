@@ -34,7 +34,7 @@ impl UserDbo {
         info!("UserClient::add()");
         let t_email = crate::types::email::Email::new(email);
         return self.0.call_sp(
-            "call iam.user_dd($1, $2);",
+            "call iam.user_add($1, $2);",
             &[
                 &t_email,
                 &password
