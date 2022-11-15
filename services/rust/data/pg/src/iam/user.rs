@@ -33,7 +33,7 @@ impl UserDbo {
         email: &str,
         password: &str
     ) -> Result<(), DbError> {
-        info!("UserClient::add()");
+        info!("UserDbo::add()");
         let t_email = crate::types::email::Email::new(email);
         return self.0.call_sp(
             "call iam.user_signup($1, $2, $3);",
@@ -43,5 +43,40 @@ impl UserDbo {
                 &password
             ]
         ).await;
+    }
+
+    pub async fn get(
+        &self,
+        user_id: &uuid::Uuid
+    ) -> Result<common::iam::user::User, DbError> {
+        info!("UserDbo::get()");
+        let sql = "select * from iam.user_get($1)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query_one(
+                        &stmt,
+                        &[
+                            &user_id
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(r) => {
+                        let result = common::iam::user::User {
+                            id: r.get("id"),
+                            active: r.get("active"),
+                            email: r.get("email")
+                        };
+                        return Ok(result);
+                    }
+                }
+            }
+        }
     }
 }
