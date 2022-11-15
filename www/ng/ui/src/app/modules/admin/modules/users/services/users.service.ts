@@ -29,14 +29,14 @@ export class UsersService {
   }
 
   add(
-    id: string,
+    user_id: string,
     email: string,
     password: string
   ): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(
       environment.api_url_base + environment.api_user_add,
       {
-        id: id,
+        user_id: user_id,
         email: email,
         password: password
       }

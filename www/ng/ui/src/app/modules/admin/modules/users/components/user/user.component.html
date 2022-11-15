@@ -9,6 +9,7 @@
                 </div>
             </fieldset>
             <fieldset>
+                <input type="hidden" id="user_id" name="user_id" [value]="user_id?.value" />
                 <mat-form-field appearance="outline">
                     <mat-label>Email Address</mat-label>
                     <input type="email" id="email" name="email" class="field-email" placeholder="Email Address" required matInput formControlName="email" />
