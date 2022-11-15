@@ -26,16 +26,19 @@ impl UserDbo {
         return Self(Dbo::new(client));
     }
 
+
     pub async fn add(
         &self,
+        user_id: &uuid::Uuid,
         email: &str,
         password: &str
     ) -> Result<(), DbError> {
         info!("UserClient::add()");
         let t_email = crate::types::email::Email::new(email);
         return self.0.call_sp(
-            "call iam.user_add($1, $2);",
+            "call iam.user_signup($1, $2, $3);",
             &[
+                &user_id,
                 &t_email,
                 &password
             ]

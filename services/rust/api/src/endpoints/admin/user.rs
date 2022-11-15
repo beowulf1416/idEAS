@@ -29,6 +29,7 @@ use pg::{
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserAddRequest {
+    pub user_id: uuid::Uuid,
     pub email: String,
     pub password: String
 }
@@ -66,6 +67,7 @@ async fn user_add_post(
         Ok(client) => {
             let user_dbo = UserDbo::new(client);
             match user_dbo.add(
+                &params.user_id,
                 &params.email,
                 &params.password
             ).await {
