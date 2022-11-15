@@ -1,7 +1,39 @@
 <div class="wrapper-component">
     <div class="wrapper-form">
-        <form class="form-item" method="post" action="">
-            <h3>Item</h3>
+        <form class="form-item" method="post" action="" [formGroup]="formItem" (ngSubmit)="submit()">
+            <fieldset>
+                <button mat-icon-button type="submit">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </fieldset>
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>Filter</mat-label>
+                    <input type="text" id="name" name="name" class="field-name" placeholder="Name" required matInput formControlName="name" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter name</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <input type="text" id="description" name="description" class="field-description" placeholder="Description" required matInput formControlName="description" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter description</mat-hint>
+                </mat-form-field>
+            </fieldset>
+            <fieldset>
+                <mat-form-field appearance="outline">
+                    <mat-label>SKU</mat-label>
+                    <input type="text" id="sku" name="sku" class="field-sku" placeholder="SKU" required matInput formControlName="sku" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter SKU</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>UPC</mat-label>
+                    <input type="text" id="upc" name="upc" class="field-upc" placeholder="UPC" required matInput formControlName="upc" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter UPC</mat-hint>
+                </mat-form-field>
+            </fieldset>
         </form>
     </div><!-- .wrapper-form -->
 </div><!-- .wrapper-component -->

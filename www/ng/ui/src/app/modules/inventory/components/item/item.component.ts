@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
@@ -7,6 +8,12 @@ import { TitleService } from 'src/app/services/title.service';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit {
+
+  formItem = new FormGroup({
+    name: new FormControl('', []),
+    description: new FormControl('', []),
+    sku: new FormControl('', [])
+  });
 
   constructor(
     private title: TitleService
@@ -17,4 +24,7 @@ export class ItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  submit() {
+
+  }
 }
