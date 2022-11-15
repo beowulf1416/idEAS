@@ -19,7 +19,10 @@ const routes: Routes = [
       },
       {
         path: 'view/:user_id',
-        component: UserComponent
+        component: UserComponent,
+        data: {
+          readonly: true
+        }
       },
       {
         path: 'list',

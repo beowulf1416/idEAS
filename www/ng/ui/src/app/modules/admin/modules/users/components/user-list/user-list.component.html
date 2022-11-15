@@ -35,6 +35,8 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th>View</th>
+                        <th>Edit</th>
                         <th>Active</th>
                         <th>Email</th>
                     </tr>
@@ -42,6 +44,12 @@
                 <tbody>
                     <tr *ngFor="let u of users">
                         <td></td>
+                        <td>
+                            <a title="View" class="link-user-view" routerLink="/admin/users/view/{{ u.id }}">view</a>
+                        </td>
+                        <td>
+                            <a title="Edit" class="link-user-edit" routerLink="/admin/users/edit/{{ u.id }}">edit</a>
+                        </td>
                         <td>{{ u.active }}</td>
                         <td>
                             <a [title]="u.email" class="link-user-view" routerLink="/admin/users/view/{{ u.id }}">{{ u.email }}</a>

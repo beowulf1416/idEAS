@@ -20,6 +20,8 @@ export interface User {
 export class UserComponent implements OnInit {
 
   submitting = false;
+  read_only = false;
+
   formUser = new FormGroup({
     user_id: new FormControl('', []),
     email: new FormControl('', [
@@ -42,6 +44,8 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.read_only = (this.route.snapshot.data as { readonly: boolean }).readonly;
+
     const user_id = this.route.snapshot.paramMap.get("user_id");
     if (user_id != null) {
       this.users_service.get(user_id).subscribe(r => {
