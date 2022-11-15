@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionGuard } from 'src/app/guards/permission.guard';
+import { AdminComponent } from './components/admin/admin.component';
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { ClientToolbarComponent } from './components/client-toolbar/client-toolbar.component';
 import { ClientComponent } from './components/client/client.component';
@@ -26,7 +27,7 @@ const routes: Routes = [
   // },
   {
     path: "client",
-    component: ClientToolbarComponent,
+    component: AdminComponent,
     children: [
       {
         path: "list",
