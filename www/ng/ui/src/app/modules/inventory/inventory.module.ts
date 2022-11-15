@@ -10,6 +10,7 @@ import { ItemListComponent } from './components/item-list/item-list.component';
 import { CategoryComponent } from './components/category/category.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { InventoryToolbarComponent } from './components/inventory-toolbar/inventory-toolbar.component';
+import { HomeComponent } from './components/home/home.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { InventoryToolbarComponent } from './components/inventory-toolbar/invent
     ItemListComponent,
     CategoryComponent,
     CategoriesComponent,
-    InventoryToolbarComponent
+    InventoryToolbarComponent,
+    HomeComponent
   ],
   imports: [
     CommonModule,
