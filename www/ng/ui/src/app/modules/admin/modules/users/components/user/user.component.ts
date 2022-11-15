@@ -6,6 +6,12 @@ import { UsersService } from '../../services/users.service';
 import { v4 as uuidv4 } from 'uuid';
 
 
+export interface User {
+  id: string,
+  active: boolean,
+  email: string
+};
+
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -36,8 +42,14 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const user_id = this.route.snapshot.paramMap.get("user_id") || uuidv4();
-    this.formUser.get('user_id')?.setValue(user_id);
+    const user_id = this.route.snapshot.paramMap.get("user_id");
+    if (user_id != null) {
+      this.users_service.get(user_id).subscribe(r => {
+        if (r.success) {
+          this.set_user((r.data as { user: User }).user);
+        }
+      });
+    }
   }
 
   get user_id() {
@@ -52,6 +64,11 @@ export class UserComponent implements OnInit {
     return this.formUser.get('pw');
   }
 
+  set_user(user: User) {
+    this.formUser.get('user_id')?.setValue(user.id);
+    this.formUser.get('email')?.setValue(user.email);
+  }
+
   generate_password() {
     console.log("UserComponent::generate_password()");
   }
@@ -60,17 +77,34 @@ export class UserComponent implements OnInit {
     console.log("UserComponent::submit()");
     if (this.formUser.valid) {
       this.submitting = true;
-      this.users_service.add(
-        this.formUser.get('user_id')?.value || '',
-        this.formUser.get('email')?.value || '',
-        this.formUser.get('pw')?.value || ''
-      ).subscribe(r => {
-        if (r.success) {
-          this.router.navigate(['/admin/users']);
-        } else {
-          console.error('UserComponent::add()', r);
-        }
-      });
+
+      const user_id = this.formUser.get('user_id')?.value;
+      if (user_id == null) {
+        this.users_service.add(
+          uuidv4(),
+          this.formUser.get('email')?.value || '',
+          this.formUser.get('pw')?.value || ''
+        ).subscribe(r => {
+          if (r.success) {
+            this.router.navigate(['/admin/users']);
+          } else {
+            console.error('UserComponent::add()', r);
+          }
+        });
+      } else {
+        this.users_service.update(
+          user_id,
+          this.formUser.get('email')?.value || '',
+          this.formUser.get('pw')?.value || ''
+        ).subscribe(r => {
+          if (r.success) {
+            this.router.navigate(['/admin/users']);
+          } else {
+            console.error('UserComponent::add()', r);
+          }
+        });
+
+      }
     }
   }
 }

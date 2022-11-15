@@ -43,7 +43,9 @@
                     <tr *ngFor="let u of users">
                         <td></td>
                         <td>{{ u.active }}</td>
-                        <td>{{ u.email }}</td>
+                        <td>
+                            <a [title]="u.email" class="link-user-view" routerLink="/admin/users/view/{{ u.id }}">{{ u.email }}</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
