@@ -9,18 +9,26 @@
                         <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
                         <mat-hint>Please enter filter</mat-hint>
                     </mat-form-field>
+                    <mat-select id="items" name="items" class="field-items" formControlName="items">
+                        <mat-option value="10">10</mat-option >
+                        <mat-option value="20">20</mat-option >
+                        <mat-option value="30">30</mat-option >
+                    </mat-select>
+                    <button type="button" mat-icon-button (click)="navigate_first()" [disabled]="current_page <= 1">
+                        <mat-icon>first_page</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button (click)="navigate_previous()" [disabled]="current_page <= 1">
+                        <mat-icon>navigate_before</mat-icon>
+                    </button>
                     <mat-form-field appearance="outline">
-                        <mat-label></mat-label>
-                        <input type="number" id="items" name="items" class="field-items" placeholder="Items" required matInput formControlName="items" />
-                        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                        <mat-hint>Please select items to show</mat-hint>
+                        <input type="number" id="page" name="page" class="field-page" required matInput formControlName="page" />
                     </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Page</mat-label>
-                        <input type="number" id="page" name="page" class="field-page" placeholder="Page" required matInput formControlName="page" />
-                        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                        <mat-hint>Please select page</mat-hint>
-                    </mat-form-field>
+                    <button type="button" mat-icon-button (click)="navigate_next()">
+                        <mat-icon>navigate_next</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button (click)="navigate_last()">
+                        <mat-icon>last_page</mat-icon>
+                    </button>
                 </fieldset>
                 <fieldset>
                     <button mat-icon-button type="submit">

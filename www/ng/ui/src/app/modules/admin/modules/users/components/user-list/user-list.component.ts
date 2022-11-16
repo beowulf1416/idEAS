@@ -24,6 +24,7 @@ export class UserListComponent implements OnInit {
   });
 
   users = Array<User>();
+  current_page = 1;
 
   constructor(
     private title: TitleService,
@@ -53,7 +54,7 @@ export class UserListComponent implements OnInit {
     this.users_service.fetch(
       this.formFilter.get('filter')?.value || '',
       this.formFilter.get('items')?.value || 10,
-      this.formFilter.get('page')?.value || 0
+      this.current_page
     ).subscribe(r => {
       console.log("UserListComponent::filter_users()");
       if (r.success) {
@@ -62,6 +63,32 @@ export class UserListComponent implements OnInit {
         console.error('UserListComponent::filter_users()', r);
       }
     });
+  }
+
+  navigate_first() {
+    this.current_page = 1;
+    this.formFilter.get('page')?.setValue(this.current_page);
+    this.filter_users();
+  }
+
+  navigate_last() {
+    console.log("// TODO UserListComponent::navigate_last()");
+    this.filter_users();
+  }
+
+  navigate_previous() {
+    --this.current_page;
+    if (this.current_page < 1) {
+      this.current_page = 1;
+    }
+    this.formFilter.get('page')?.setValue(this.current_page);
+    this.filter_users();
+  }
+
+  navigate_next() {
+    this.current_page++;
+    this.formFilter.get('page')?.setValue(this.current_page);
+    this.filter_users();
   }
 
   submit() {
