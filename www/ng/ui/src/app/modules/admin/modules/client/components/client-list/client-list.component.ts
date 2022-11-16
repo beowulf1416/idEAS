@@ -10,6 +10,14 @@ import { ClientService } from '../../services/client.service';
 })
 export class ClientListComponent implements OnInit {
 
+  current_page = 1;
+
+  formFilter = new FormGroup({
+    filter: new FormControl('', []),
+    items: new FormControl(10, []),
+    page: new FormControl(1, []) 
+  });
+
   clients: Array<{
     id: string,
     active: boolean,
@@ -52,19 +60,49 @@ export class ClientListComponent implements OnInit {
   }
 
   get_clients() {
-    let items = parseInt(this.filter_items?.value || '');
-    let page = parseInt(this.filter_page?.value || '');
+    let page = this.current_page;
 
     this.client_service.clients(
       this.filter_name?.value || '',
       false,
-      isNaN(items) ? 10 : items,
-      isNaN(page) ? 0 : page
+      this.formFilter.get('items')?.value || 10,
+      this.current_page
     ).subscribe(r => {
       console.debug("ClientListComponent::get_clients()", r);
       if (r.success) {
         this.clients = r.data.clients;
       }
     });
+  }
+
+  navigate_first() {
+    this.current_page = 1;
+    this.formFilter.get('page')?.setValue(this.current_page);
+    this.get_clients();
+  }
+
+  navigate_last() {
+    console.log("// TODO UserListComponent::navigate_last()");
+    this.get_clients();
+  }
+
+  navigate_previous() {
+    --this.current_page;
+    if (this.current_page < 1) {
+      this.current_page = 1;
+    }
+    this.formFilter.get('page')?.setValue(this.current_page);
+    this.get_clients();
+  }
+
+  navigate_next() {
+    this.current_page++;
+    this.formFilter.get('page')?.setValue(this.current_page);
+    this.get_clients();
+  }
+
+
+  submit() {
+    console.log("//TODO ClientListComponent::submit()");
   }
 }
