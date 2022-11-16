@@ -26,7 +26,7 @@ export class MemberListComponent implements OnInit {
 
 
   // formMembers = new FormGroup({
-  //   members: new FormArray<FormGroup>([])
+  //   members: new FormArray()
   // });
   // formMembers = new FormGroup({});
   formMembers: FormGroup;
@@ -75,11 +75,12 @@ export class MemberListComponent implements OnInit {
         // })
 
         this.members_active.forEach(m => {
+          console.debug(m);
           (this.formMembers.get('members') as FormArray).push(
             this.fb.group({
-              id: [''],
-              active: [false],
-              email: ['']
+              id: [m.id],
+              active: [m.active],
+              email: [m.email]
             })
           );
         });
@@ -104,12 +105,11 @@ export class MemberListComponent implements OnInit {
   submit() {
     console.log("MemberListComponent::submit()");
 
-    const members = this.formMembers.get('active.members');
+    const members = this.formMembers.get('members')?.value;
     console.debug("members", members);
-    console.log(this.formMembers.get('active')?.value);
   }
 
   get members() {
-    return <FormArray> this.formMembers.get('members');
+    return this.formMembers.get('members') as FormArray;
   }
 }
