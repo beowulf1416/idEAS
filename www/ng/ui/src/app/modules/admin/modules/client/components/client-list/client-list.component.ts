@@ -3,6 +3,17 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from 'src/app/services/title.service';
 import { ClientService } from '../../services/client.service';
 
+
+export interface Client {
+  id: string,
+  active: boolean,
+  name: string,
+  description: string,
+  address: string,
+  country_id: number,
+  url: string
+};
+
 @Component({
   selector: 'app-client-list',
   templateUrl: './client-list.component.html',
@@ -18,15 +29,7 @@ export class ClientListComponent implements OnInit {
     page: new FormControl(1, []) 
   });
 
-  clients: Array<{
-    id: string,
-    active: boolean,
-    name: string,
-    description: string,
-    address: string,
-    country_id: number,
-    url: string
-  }> = [];
+  clients: Array<Client> = [];
 
   formClients = new FormGroup({
     name: new FormControl('', []),
