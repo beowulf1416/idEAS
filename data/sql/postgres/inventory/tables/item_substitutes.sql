@@ -10,7 +10,7 @@ create table item_substitutes (
         primary key (client_id, item_id, substitute_item_id),
 
     constraint fk_item_substitutes_1
-        foreign key client_id
+        foreign key (client_id)
         references client.clients (id)
         on delete restrict,
     constraint fk_item_substitutes_2
