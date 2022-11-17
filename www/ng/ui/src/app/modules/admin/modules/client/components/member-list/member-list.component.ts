@@ -105,7 +105,7 @@ export class MemberListComponent implements OnInit {
   submit() {
     console.log("MemberListComponent::submit()");
 
-    const members = this.formMembers.get('members')?.value;
+    const members = this.formMembers.get('members')?.getRawValue();
     console.debug("members", members);
   }
 

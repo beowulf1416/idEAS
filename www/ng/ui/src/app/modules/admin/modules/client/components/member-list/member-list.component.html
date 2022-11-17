@@ -13,14 +13,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr formArrayName="members" *ngFor="let m of members.controls; let i = index">
-                                <td>
-                                    <input type="checkbox" [value]="m.get('id')?.value" [checked]="m.get('active')?.value" [formControlName]="i" />
-                                </td>
-                                <td>
-                                    {{ m.get('email')?.value }}
-                                </td>
-                            </tr>
+                            <ng-container *ngFor="let m of members_active">
+                                <app-member-item [member]="m"></app-member-item>
+                            </ng-container>
                         </tbody>
                     </table>
                     <button type="submit">remove</button>
@@ -38,16 +33,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let m of members_inactive">
-                                <td>
-                                    <mat-form-field appearance="outline">
-                                        <input type="checkbox" class="field-select" name="members_inactive_select" [value]="m.id" />
-                                    </mat-form-field>
-                                </td>
-                                <td>
-                                    {{ m.email }}
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div><!-- .wrapper-table -->

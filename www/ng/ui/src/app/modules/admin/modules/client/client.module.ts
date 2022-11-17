@@ -11,6 +11,7 @@ import { ClientToolbarComponent } from './components/client-toolbar/client-toolb
 import { MemberListComponent } from './components/member-list/member-list.component';
 import { ClientDashboardComponent } from './components/client-dashboard/client-dashboard.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { MemberItemComponent } from './components/member-item/member-item.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { AdminComponent } from './components/admin/admin.component';
     ClientToolbarComponent,
     MemberListComponent,
     ClientDashboardComponent,
-    AdminComponent
+    AdminComponent,
+    MemberItemComponent
   ],
   imports: [
     CommonModule,
