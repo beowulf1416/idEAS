@@ -1,0 +1,9 @@
+<tr [formGroup]="formMemberItem">
+    <td></td>
+    <td>
+        <input type="checkbox" id="id" name="id" [value]="member.id" [checked]="member.active" formControlName="id" />
+    </td>
+    <td>
+        {{ member.email }}
+    </td>
+</tr>
