@@ -29,4 +29,12 @@ export class OrganizationComponent implements OnInit {
   submit() {
     console.log("OrganizationComponent::submit()");
   }
+
+  get name() {
+    return this.formOrg.get('name');
+  }
+
+  get description() {
+    return this.formOrg.get('description');
+  }
 }
