@@ -7,24 +7,9 @@ import { ClientToolbarComponent } from './components/client-toolbar/client-toolb
 import { ClientComponent } from './components/client/client.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MemberListComponent } from './components/member-list/member-list.component';
+import { OrganizationListComponent } from './components/organization-list/organization-list.component';
 
 const routes: Routes = [
-  // {
-  //   path: "new",
-  //   component: ClientComponent,
-  //   canActivate: [ PermissionGuard ],
-  //   data: {
-  //     permission: "client.add"
-  //   }
-  // },
-  // {
-  //   path: "client/:client_id",
-  //   component: ClientComponent
-  // },
-  // {
-  //   path: "client/:client_id/:action",
-  //   component: ClientComponent
-  // },
   {
     path: "client",
     component: AdminComponent,
@@ -55,6 +40,10 @@ const routes: Routes = [
       {
         path: "members/:client_id",
         component: MemberListComponent
+      },
+      {
+        path: "organizations/:client_id",
+        component: OrganizationListComponent
       }
     ]
   },

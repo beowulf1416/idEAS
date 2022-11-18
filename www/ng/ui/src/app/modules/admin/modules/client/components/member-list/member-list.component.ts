@@ -110,6 +110,7 @@ export class MemberListComponent implements OnInit {
   }
 
   get members() {
-    return this.formMembers.get('members') as FormArray;
+    // return this.formMembers.get('members') as FormArray;
+    
   }
 }

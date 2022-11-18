@@ -12,6 +12,8 @@ import { MemberListComponent } from './components/member-list/member-list.compon
 import { ClientDashboardComponent } from './components/client-dashboard/client-dashboard.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { MemberItemComponent } from './components/member-item/member-item.component';
+import { OrganizationListComponent } from './components/organization-list/organization-list.component';
+import { OrganizationComponent } from './components/organization/organization.component';
 
 
 @NgModule({
@@ -23,7 +25,9 @@ import { MemberItemComponent } from './components/member-item/member-item.compon
     MemberListComponent,
     ClientDashboardComponent,
     AdminComponent,
-    MemberItemComponent
+    MemberItemComponent,
+    OrganizationListComponent,
+    OrganizationComponent
   ],
   imports: [
     CommonModule,
