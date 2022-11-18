@@ -1,0 +1,18 @@
+<div class="wrapper-component">
+    <div class="wrapper-toolbar">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-hr" aria-label="Human Resources" [matMenuTriggerFor]="hrMenu">
+                    HR
+                </button>
+            </mat-toolbar-row>
+        </mat-toolbar><!-- .wrapper-toolbar -->
+
+        <mat-menu #hrMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/admin/clients/client/list">List</a>
+            <a mat-menu-item title="Add" routerLink="/admin/clients/client/new">New</a>
+        </mat-menu>
+
+    </div><!-- .wrapper-toolbar -->
+</div><!-- .wrapper-component -->
+<router-outlet></router-outlet>
