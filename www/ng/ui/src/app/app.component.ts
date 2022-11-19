@@ -4,9 +4,9 @@ import { User } from './classes/user';
 import { MessageService } from './services/message.service';
 import { UserService } from './services/user.service';
 import {
-  MatLegacySnackBar as MatSnackBar,
-  MatLegacySnackBarHorizontalPosition as MatSnackBarHorizontalPosition,
-  MatLegacySnackBarVerticalPosition as MatSnackBarVerticalPosition,
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
 } from '@angular/material/legacy-snack-bar';
 
 import { v4 as uuidv4 } from 'uuid';
