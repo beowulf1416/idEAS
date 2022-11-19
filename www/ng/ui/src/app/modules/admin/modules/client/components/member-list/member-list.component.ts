@@ -109,8 +109,8 @@ export class MemberListComponent implements OnInit {
     console.debug("members", members);
   }
 
-  get members() {
-    // return this.formMembers.get('members') as FormArray;
+  // get members() {
+  //   // return this.formMembers.get('members') as FormArray;
     
-  }
+  // }
 }

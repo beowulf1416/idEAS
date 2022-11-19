@@ -6,6 +6,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { HomeComponent } from './components/home/home.component';
 import { AccountComponent } from './components/account/account.component';
 import { AccountChartComponent } from './components/account-chart/account-chart.component';
+import { MaterialModule } from 'src/material/material.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,6 +19,8 @@ import { AccountChartComponent } from './components/account-chart/account-chart.
   ],
   imports: [
     CommonModule,
+    MaterialModule,
+    ReactiveFormsModule,
     AccountingRoutingModule
   ]
 })
