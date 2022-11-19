@@ -8,6 +8,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/material/material.module';
 import { EmployeeComponent } from './components/employee/employee.component';
 import { EmployeeListComponent } from './components/employee-list/employee-list.component';
+import { LeaveComponent } from './components/leave/leave.component';
+import { TimesheetComponent } from './components/timesheet/timesheet.component';
 
 
 @NgModule({
@@ -15,7 +17,9 @@ import { EmployeeListComponent } from './components/employee-list/employee-list.
     HomeComponent,
     DashboardComponent,
     EmployeeComponent,
-    EmployeeListComponent
+    EmployeeListComponent,
+    LeaveComponent,
+    TimesheetComponent
   ],
   imports: [
     CommonModule,
