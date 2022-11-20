@@ -3,11 +3,12 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from './classes/user';
 import { MessageService } from './services/message.service';
 import { UserService } from './services/user.service';
-import {
-  MatSnackBar,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition,
-} from '@angular/material/legacy-snack-bar';
+// import {
+//   MatSnackBar,
+//   MatSnackBarHorizontalPosition,
+//   MatSnackBarVerticalPosition,
+// } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { v4 as uuidv4 } from 'uuid';
 import { MessageType } from './classes/message-type';
