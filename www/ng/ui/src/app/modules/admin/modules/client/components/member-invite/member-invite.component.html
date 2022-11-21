@@ -1,0 +1,20 @@
+<div class="wrapper-component">
+    <div class="wrapper-form">
+        <form class="form-member-invite" method="post" action="" [formGroup]="inviteForm" (ngSubmit)="submit()">
+            <fieldset>
+                <button mat-icon-button type="submit">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </fieldset>
+            <fieldset>
+                <input type="hidden" id="client_id" name="client_id" value="client_id?.value" />
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input type="text" id="email" name="email" class="field-email" placeholder="Email" required matInput formControlName="email" />
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint>Please enter email address</mat-hint>
+                </mat-form-field>
+            </fieldset>
+        </form>
+    </div><!-- .wrapper-form -->
+</div><!-- .wrapper-component -->
