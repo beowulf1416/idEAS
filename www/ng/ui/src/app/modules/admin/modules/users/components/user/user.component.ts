@@ -21,6 +21,7 @@ export class UserComponent implements OnInit {
 
   submitting = false;
   read_only = false;
+  invite = false;
 
   formUser = new FormGroup({
     user_id: new FormControl('', []),
@@ -44,7 +45,13 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.read_only = (this.route.snapshot.data as { readonly: boolean }).readonly;
+    const data = (this.route.snapshot.data as {
+      readonly: boolean,
+      invite: boolean
+    });
+
+    this.read_only = data.readonly;
+    this.invite = data.invite;
 
     const user_id = this.route.snapshot.paramMap.get("user_id");
     if (user_id != null) {

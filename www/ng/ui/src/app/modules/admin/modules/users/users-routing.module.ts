@@ -27,6 +27,13 @@ const routes: Routes = [
       {
         path: 'list',
         component: UserListComponent
+      },
+      {
+        path: 'invite/:client_id',
+        component: UserComponent,
+        data: {
+          invite: true
+        }
       }
     ]
   }
