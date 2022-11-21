@@ -1,4 +1,17 @@
 <div class="wrapper-component">
+    <div class="wrapper-toolbar">
+        <mat-toolbar color="secondary">
+            <mat-toolbar-row>
+                <button mat-button class="btn-users" aria-label="Administer Members" [matMenuTriggerFor]="membersMenu">
+                    Members
+                </button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <mat-menu #membersMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/admin/clients/client/invite/{{ client_id }}">Invite</a>
+        </mat-menu>
+    </div><!-- .wrapper-toolbar -->
     <div class="wrapper-form">
         <form class="form-members" method="post" action="" [formGroup]="formMembers" (ngSubmit)="submit()">
             <fieldset class="members">

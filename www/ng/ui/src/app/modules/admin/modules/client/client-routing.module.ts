@@ -6,6 +6,7 @@ import { ClientListComponent } from './components/client-list/client-list.compon
 import { ClientToolbarComponent } from './components/client-toolbar/client-toolbar.component';
 import { ClientComponent } from './components/client/client.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MemberInviteComponent } from './components/member-invite/member-invite.component';
 import { MemberListComponent } from './components/member-list/member-list.component';
 import { OrganizationListComponent } from './components/organization-list/organization-list.component';
 
@@ -44,12 +45,12 @@ const routes: Routes = [
       {
         path: "organizations/:client_id",
         component: OrganizationListComponent
+      },
+      {
+        path: "invite/:client_id",
+        component: MemberInviteComponent
       }
     ]
-  },
-  {
-    path: "",
-    component: DashboardComponent
   }
 ];
 

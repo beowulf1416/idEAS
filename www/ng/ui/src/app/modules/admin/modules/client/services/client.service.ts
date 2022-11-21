@@ -101,4 +101,17 @@ export class ClientService {
       }
     )
   }
+
+  invite_member(
+    client_id: string,
+    email: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_client_members_invite,
+      {
+        client_id: client_id,
+        email: email
+      }
+    );
+  }
 }
