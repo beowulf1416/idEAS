@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TitleService } from 'src/app/services/title.service';
 import { UsersService } from '../../services/users.service';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 
 
 export interface User {
@@ -89,32 +89,31 @@ export class UserComponent implements OnInit {
     if (this.formUser.valid) {
       this.submitting = true;
 
-      const user_id = this.formUser.get('user_id')?.value;
-      if (user_id == null) {
-        this.users_service.add(
-          uuidv4(),
-          this.formUser.get('email')?.value || '',
-          this.formUser.get('pw')?.value || ''
-        ).subscribe(r => {
-          if (r.success) {
-            this.router.navigate(['/admin/users']);
-          } else {
-            console.error('UserComponent::add()', r);
-          }
-        });
-      } else {
+      const user_id = this.formUser.get('user_id')?.value || '';
+      if (uuidValidate(user_id)) {
         this.users_service.update(
           user_id,
           this.formUser.get('email')?.value || '',
           this.formUser.get('pw')?.value || ''
         ).subscribe(r => {
           if (r.success) {
-            this.router.navigate(['/admin/users']);
+            this.router.navigate(['/admin/users/list']);
           } else {
             console.error('UserComponent::add()', r);
           }
         });
-
+      } else {
+        this.users_service.add(
+          uuidv4(),
+          this.formUser.get('email')?.value || '',
+          this.formUser.get('pw')?.value || ''
+        ).subscribe(r => {
+          if (r.success) {
+            this.router.navigate(['/admin/users/list']);
+          } else {
+            console.error('UserComponent::add()', r);
+          }
+        });
       }
     }
   }
