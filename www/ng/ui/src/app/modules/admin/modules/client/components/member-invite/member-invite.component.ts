@@ -42,12 +42,13 @@ export class MemberInviteComponent {
     console.log("MemberInviteComponent::submit()");
     if (this.inviteForm.valid) {
       this.submitting = true;
+      const client_id = this.inviteForm.get('client_id')?.value || '';
       this.client_service.invite_member(
-        this.inviteForm.get('client_id')?.value || '',
+        client_id,
         this.inviteForm.get('email')?.value || ''
       ).subscribe((r: ApiResponse) => {
         if (r.success) {
-          console.debug("//TODO MemberInviteComponent::submit()");
+          this.router.navigate([`/admin/clients/client/members/${client_id}`]);
         } else {
           console.error("MemberInviteComponent::submit()", r);
         }
