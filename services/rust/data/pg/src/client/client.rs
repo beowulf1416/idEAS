@@ -236,6 +236,21 @@ impl Client {
             }
         }
     }
+
+    pub async fn member_invite(
+        &self,
+        client_id: &uuid::Uuid,
+        email: &str
+    ) -> Result<(), DbError> {
+        let t_email = crate::types::email::Email::new(email);
+        return self.0.call_sp(
+            "call iam.user_client_invite($1, $2);",
+            &[
+                &client_id,
+                &t_email
+            ]
+        ).await;
+    }
 }
 
 

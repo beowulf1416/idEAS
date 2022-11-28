@@ -82,6 +82,12 @@ struct ClientMembersRequest {
     active: bool
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct ClientMemberInviteRequest {
+    client_id: uuid::Uuid,
+    email: String
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     /// base url /clients
@@ -124,6 +130,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(client_members_get))
                 .route(web::post().to(client_members_post))
+        )
+        .service(
+            web::resource("members/invite")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(client_members_invite_get))
+                .route(web::post().to(client_members_invite_post))
         )
     ;
 }
@@ -392,7 +404,54 @@ async fn client_members_post(
                             Some(json!({
                                 "members": members
                             }))
-                        ))
+                        ));
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            error_message,
+            None
+        ));
+}
+
+
+async fn client_members_invite_get() -> impl Responder {
+    info!("client_members_invite_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+
+async fn client_members_invite_post(
+    db: web::Data<Db>,
+    params: web::Json<ClientMemberInviteRequest>
+) -> impl Responder {
+    info!("client_members_invite_post()");
+    let error_message = String::from("an error occured while trying to process this request");
+
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let client_dbo = ClientDbo::new(client);
+            match client_dbo.member_invite(
+                &params.client_id,
+                &params.email
+            ).await {
+                Err(e) => {
+                    error!("unable to invite client member");
+                }
+                Ok(_) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully invited client member"),
+                            None
+                        ));
                 }
             }
         }
