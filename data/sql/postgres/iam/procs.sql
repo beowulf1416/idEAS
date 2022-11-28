@@ -6,6 +6,7 @@ set schema 'iam';
 \ir procs/user_clients/user_client_set_active.sql
 \ir procs/user_clients/user_client_fetch.sql
 \ir procs/user_clients/user_client_members_fetch.sql
+\ir procs/user_clients/user_client_invite.sql
 
 \ir procs/users/user_add.sql
 \ir procs/users/user_set_password.sql
