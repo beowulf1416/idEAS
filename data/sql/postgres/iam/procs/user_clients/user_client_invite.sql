@@ -7,11 +7,18 @@ as $$
 declare
     t_user_id iam.users.id%type;
 begin
-    t_user_id := public.gen_random_uuid();
-    call iam.user_add(
-        t_user_id,
-        p_email
-    );
+    select 
+        id into t_user_id
+    from iam.user_get_by_email(p_email);
+
+    if t_user_id is null then
+    begin
+        t_user_id := public.gen_random_uuid();
+        call iam.user_add(
+            t_user_id,
+            p_email
+        );
+    end
 
     call iam.user_client_add(
         t_user_id,
