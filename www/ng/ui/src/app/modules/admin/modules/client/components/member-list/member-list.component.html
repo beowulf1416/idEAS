@@ -46,6 +46,9 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <ng-container *ngFor="let m of members_inactive">
+                                <app-member-item [member]="m"></app-member-item>
+                            </ng-container>
                         </tbody>
                     </table>
                 </div><!-- .wrapper-table -->
