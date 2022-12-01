@@ -59,11 +59,17 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(role_update_get))
                 .route(web::post().to(role_update_post))
         )
+        .service(
+            web::resource("fetch")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(role_fetch_get))
+                .route(web::post().to(role_fetch_post))
+        )
     ;
 }
 
 
-pub async fn role_add_get() -> impl Responder {
+async fn role_add_get() -> impl Responder {
     info!("role_add_get()");
     return HttpResponse::Ok().body("use POST method instead");
 }
@@ -112,7 +118,7 @@ async fn role_add_post(
 }
 
 
-pub async fn role_update_get() -> impl Responder {
+async fn role_update_get() -> impl Responder {
     info!("role_update_get()");
     return HttpResponse::Ok().body("use POST method instead");
 }
@@ -158,4 +164,14 @@ async fn role_update_post(
             String::from("Service is up. version: 1.0.0.0.dev"),
             None
         ));
+}
+
+async fn role_fetch_get() -> impl Responder {
+    info!("role_fetch_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+async fn role_fetch_post() -> impl Responder {
+    info!("role_fetch_post()");
+    return HttpResponse::Ok().body("//TODO");
 }
