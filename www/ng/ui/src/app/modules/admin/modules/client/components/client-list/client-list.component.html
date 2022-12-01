@@ -1,4 +1,4 @@
-<div class="wrapper-component">
+<div class="wrapper-component admin-client-list">
     <div class="wrapper-form">
         <form class="form-filter" method="post" action="" [formGroup]="formFilter" (ngSubmit)="submit()">
             <fieldset>
@@ -38,12 +38,14 @@
         <table class="tbl-clients">
             <caption>Clients</caption>
             <colgroup>
-                <col span="2" class="actions">
+                <col span="4" class="actions">
             </colgroup>
             <thead>
                 <tr>
                     <th scope="col" class="action-view"></th>
                     <th scope="col" class="action-edit"></th>
+                    <th scope="col" class="action-roles"></th>
+                    <th scope="col" class="action-members"></th>
                     <th>Name</th>
                 </tr>
             </thead>
@@ -51,6 +53,8 @@
                 <tr>
                     <th scope="col" class="action-view"></th>
                     <th scope="col" class="action-edit"></th>
+                    <th scope="col" class="action-roles"></th>
+                    <th scope="col" class="action-members"></th>
                     <th>Name</th>
                 </tr>
             </tfoot>
@@ -61,6 +65,9 @@
                     </td>
                     <td>
                         <a title="Edit {{ c.name }}" routerLink="/admin/clients/client/edit/{{ c.id }}">Edit</a>
+                    </td>
+                    <td>
+                        <a title="Members" routerLink="/admin/clients/client/roles/{{ c.id }}">Roles</a>
                     </td>
                     <td>
                         <a title="Members" routerLink="/admin/clients/client/members/{{ c.id }}">Members</a>
