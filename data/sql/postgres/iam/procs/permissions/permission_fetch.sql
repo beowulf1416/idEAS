@@ -1,8 +1,7 @@
-create or replace function permission_list (
+create or replace function permission_fetch (
     p_filter iam.permissions.name%type default '',
     p_items int default 10,
-    p_page int default 0,
-    p_total_items int output
+    p_page int default 0
 )
 returns table (
     id iam.permissions.id%type,
@@ -14,10 +13,10 @@ language plpgsql
 as $$
 begin
     if p_filter = '' then
-        select
-            count(*) into p_total_items
-        from iam.permissions
-        ;
+        -- select
+        --     count(*) into p_total_items
+        -- from iam.permissions
+        -- ;
 
         return query
         select
@@ -32,12 +31,12 @@ begin
         offset p_items * p_page
         ;
     else
-        select
-            count(*) into p_total_items
-        from iam.permissions
-        where
-            name like p_filter
-        ;
+        -- select
+        --     count(*) into p_total_items
+        -- from iam.permissions
+        -- where
+        --     name like p_filter
+        -- ;
 
         return query
         select

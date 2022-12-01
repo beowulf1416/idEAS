@@ -1,6 +1,7 @@
 set schema 'iam';
 
 \ir procs/permissions/permission_get_id.sql
+\ir procs/permissions/permission_fetch.sql
 
 \ir procs/user_clients/user_client_add.sql
 \ir procs/user_clients/user_client_set_active.sql

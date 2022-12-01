@@ -16,6 +16,7 @@ comment on table permissions is 'table of permissions';
 
 
 
+/*
 -- create permissions
 insert into iam.permissions (id, active, name, description) values
 (1, true, 'user.current', 'get current user information'),
@@ -35,3 +36,8 @@ insert into iam.permissions (id, active, name, description) values
 (15, true, 'client.admin.list', 'view list of client'),
 (16, true, 'client.admin.view', 'view tenant information')
 ;
+*/
+
+
+
+\copy iam.permissions (id, active, name, description) from '/docker-entrypoint-initdb.d/permissions.csv' with delimiter ',' csv header quote '"';
