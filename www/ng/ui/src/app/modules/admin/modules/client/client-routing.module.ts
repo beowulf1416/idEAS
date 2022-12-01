@@ -9,6 +9,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MemberInviteComponent } from './components/member-invite/member-invite.component';
 import { MemberListComponent } from './components/member-list/member-list.component';
 import { OrganizationListComponent } from './components/organization-list/organization-list.component';
+import { RoleListComponent } from './components/role-list/role-list.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,10 @@ const routes: Routes = [
       {
         path: "invite/:client_id",
         component: MemberInviteComponent
+      },
+      {
+        path: "roles/:client_id",
+        component: RoleListComponent
       }
     ]
   }
