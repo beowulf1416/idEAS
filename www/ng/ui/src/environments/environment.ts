@@ -42,6 +42,7 @@ export const environment = {
 
   api_role_add: "/roles/add",
   api_role_update: "/roles/update",
+  api_roles_fetch: "/roles/fetch",
 
   api_permissions_assigned: "/permissions/assigned",
   api_permissions_not_assigned: "/permissions/not-assigned"
