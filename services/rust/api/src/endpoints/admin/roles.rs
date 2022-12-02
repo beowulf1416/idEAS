@@ -8,6 +8,7 @@ use serde::{
     Serialize,
     Deserialize
 };
+use serde_json::json;
 
 use actix_web::{
     HttpResponse, 
@@ -41,6 +42,15 @@ struct RoleUpdateRequest {
     client_id: uuid::Uuid,
     name: String,
     description: String
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct RoleFetchRequest {
+    client_id: uuid::Uuid,
+    filter: String,
+    active: bool,
+    items: i32,
+    page: i32
 }
 
 
@@ -171,7 +181,45 @@ async fn role_fetch_get() -> impl Responder {
     return HttpResponse::Ok().body("use POST method instead");
 }
 
-async fn role_fetch_post() -> impl Responder {
+async fn role_fetch_post(
+    db: web::Data<Db>,
+    params: web::Json<RoleFetchRequest>
+) -> impl Responder {
     info!("role_fetch_post()");
-    return HttpResponse::Ok().body("//TODO");
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let role_dbo = RoleDbo::new(client);
+
+            match role_dbo.fetch(
+                &params.client_id,
+                &params.filter,
+                &params.items,
+                &params.page,
+            ).await {
+                Err(e) => {
+                    error!("unable to retrieve roles");
+                }
+                Ok(roles) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved roles"),
+                            Some(json!({
+                                "roles": roles
+                            }))
+                        ));
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from("Service is up. version: 1.0.0.0.dev"),
+            None
+        ));
 }
