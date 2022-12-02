@@ -3,13 +3,14 @@
         <table class="tbl-roles">
             <caption>Roles</caption>
             <colgroup>
-                <col span="4" class="actions">
+                <col span="2" class="actions">
             </colgroup>
             <thead>
                 <tr>
                     <th scope="col" class="action-view"></th>
                     <th scope="col" class="action-edit"></th>
-                    <th scope="col" class="action-permissions"></th>
+                    <th>Permissions</th>
+                    <th>Active</th>
                     <th>Name</th>
                     <th>Description</th>
                 </tr>
@@ -18,13 +19,44 @@
                 <tr>
                     <th scope="col" class="action-view"></th>
                     <th scope="col" class="action-edit"></th>
-                    <th scope="col" class="action-permissions"></th>
+                    <th>Permissions</th>
+                    <th>Active</th>
                     <th>Name</th>
                     <th>Description</th>
                 </tr>
             </tfoot>
             <tbody>
-                
+                <tr *ngFor="let r of roles">
+                    <td>view</td>
+                    <td>edit</td>
+                    <td>permissions</td>
+                    <td>{{ r.active }}</td>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.description }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><!-- .wrapper-table -->
+    <div class="wrapper-table">
+        <table class="tbl-roles-find">
+            <caption>Find</caption>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr *ngFor="let r of roles_filter">
+                    <td></td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     </div><!-- .wrapper-table -->
