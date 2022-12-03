@@ -17,6 +17,7 @@ import { OrganizationComponent } from './components/organization/organization.co
 import { MemberInviteComponent } from './components/member-invite/member-invite.component';
 import { RolesComponent } from './components/roles/roles.component';
 import { RoleListComponent } from './components/role-list/role-list.component';
+import { RoleComponent } from './components/role/role.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { RoleListComponent } from './components/role-list/role-list.component';
     OrganizationComponent,
     MemberInviteComponent,
     RolesComponent,
-    RoleListComponent
+    RoleListComponent,
+    RoleComponent
   ],
   imports: [
     CommonModule,

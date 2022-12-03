@@ -29,7 +29,7 @@
                 <tr *ngFor="let r of roles">
                     <td>view</td>
                     <td><a title="Edit Role" routerLink="/admin/roles/role/{{ r.id }}">edit</a></td>
-                    <td>permissions</td>
+                    <td><a title="View Permissions" routerLink="/admin/roles/role/{{ r.id }}/permissions`">permissions</a></td>
                     <td>{{ r.active }}</td>
                     <td>{{ r.name }}</td>
                     <td>{{ r.description }}</td>
