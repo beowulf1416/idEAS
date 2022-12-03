@@ -53,6 +53,11 @@ struct RoleFetchRequest {
     page: i32
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct RoleGetRequest {
+    role_id: uuid::Uuid
+}
+
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     /// base url /roles
@@ -74,6 +79,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 .route(web::method(http::Method::OPTIONS).to(default_options))
                 .route(web::get().to(role_fetch_get))
                 .route(web::post().to(role_fetch_post))
+        )
+        .service(
+            web::resource("get")
+                .route(web::method(http::Method::OPTIONS).to(default_options))
+                .route(web::get().to(role_get_get))
+                .route(web::post().to(role_get_post))
         )
     ;
 }
@@ -186,6 +197,7 @@ async fn role_fetch_post(
     params: web::Json<RoleFetchRequest>
 ) -> impl Responder {
     info!("role_fetch_post()");
+    let error_message = "An error occured while processing this request";
     match db.get_client().await {
         Err(e) => {
             error!("unable to retrieve client");
@@ -219,7 +231,53 @@ async fn role_fetch_post(
     return HttpResponse::InternalServerError()
         .json(ApiResponse::new(
             false,
-            String::from("Service is up. version: 1.0.0.0.dev"),
+            String::from(error_message),
+            None
+        ));
+}
+
+async fn role_get_get() -> impl Responder {
+    info!("role_get_get()");
+    return HttpResponse::Ok().body("use POST method instead");
+}
+
+async fn role_get_post(
+    db: web::Data<Db>,
+    params: web::Json<RoleGetRequest>
+) -> impl Responder {
+    info!("role_get_post()");
+    let error_message = "An error occured while processing this request";
+    match db.get_client().await {
+        Err(e) => {
+            error!("unable to retrieve client");
+        }
+        Ok(client) => {
+            let role_dbo = RoleDbo::new(client);
+
+            match role_dbo.get(
+                &params.role_id
+            ).await {
+                Err(e) => {
+                    error!("unable to retrieve role");
+                }
+                Ok(role) => {
+                    return HttpResponse::Ok()
+                        .json(ApiResponse::new(
+                            true,
+                            String::from("successfully retrieved role"),
+                            Some(json!({
+                                "role": role
+                            }))
+                        ));
+                }
+            }
+        }
+    }
+
+    return HttpResponse::InternalServerError()
+        .json(ApiResponse::new(
+            false,
+            String::from(error_message),
             None
         ));
 }

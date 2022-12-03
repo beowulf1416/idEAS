@@ -117,6 +117,41 @@ impl Role {
             }
         }
     }
+
+    pub async fn get(
+        &self,
+        role_id: &uuid::Uuid
+    ) -> Result<common::iam::role::Role, DbError> {
+        let sql = "select * from iam.role_get($1)";
+        match self.0.client.prepare_cached(sql).await {
+            Err(e) => {
+                error!("unable to prepare query: {} {:?}", sql, e);
+                return Err(DbError::ClientError);
+            }
+            Ok(stmt) => {
+                match self.0.client.query_one(
+                        &stmt,
+                        &[
+                            &role_id
+                        ]
+                ).await {
+                    Err(e) => {
+                        error!("unable to retrieve records: {:?}", e);
+                        return Err(DbError::ClientError);
+                    }
+                    Ok(row) => {
+                        let result: common::iam::role::Role = common::iam::role::Role {
+                            id: row.get("id"),
+                            active: row.get("active"),
+                            name: row.get("name"),
+                            description: row.get("description")
+                        };
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+    }
 }
 
 
