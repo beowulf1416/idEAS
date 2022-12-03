@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ApiResponse } from 'src/app/classes/api-response';
 import { MessageService } from 'src/app/services/message.service';
 import { MessageType } from 'src/app/classes/message-type';
+import { ActionType } from 'src/app/classes/action-type';
 
 
 export interface Role {
@@ -27,7 +28,7 @@ export interface Role {
 export class RoleComponent implements OnInit {
 
   submitting = false;
-  action = "new";
+  action: ActionType = ActionType.new;
 
   roleForm = new FormGroup({
     role_id: new FormControl('', []),
@@ -67,17 +68,20 @@ export class RoleComponent implements OnInit {
   ngOnInit(): void {
     const role_id = this.route.snapshot.paramMap.get("role_id") || uuidv4();
     this.roleForm.get("role_id")?.setValue(role_id);
-    this.action = this.route.snapshot.paramMap.get("action") || "new";
+    // this.action = this.route.snapshot.paramMap.get("action") || "new";
+    this.action = (this.route.snapshot.data as { action: ActionType }).action;
 
-    this.role_service.get(role_id).subscribe(r => {
-      if (r.success) {
-        const role = (r.data as { role: Role}).role;
-        this.roleForm.get("name")?.setValue(role.name);
-        this.roleForm.get("description")?.setValue(role.description);
-      } else {
-        this.msg_service.send(r.message, MessageType.error);
-      }
-    });
+    if (this.action != ActionType.new) {
+      this.role_service.get(role_id).subscribe(r => {
+        if (r.success) {
+          const role = (r.data as { role: Role}).role;
+          this.roleForm.get("name")?.setValue(role.name);
+          this.roleForm.get("description")?.setValue(role.description);
+        } else {
+          this.msg_service.send(r.message, MessageType.error);
+        }
+      });
+    }
 
     this.user_service.get_user$().subscribe((user: User) => {
       this.roleForm.get("client_id")?.setValue(user.client);
