@@ -47,4 +47,15 @@ export class RoleService {
       }
     )
   }
+
+  get(
+    role_id: string
+  ): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      environment.api_url_base + environment.api_role_get,
+      {
+        role_id: role_id
+      }
+    );
+  }
 }
