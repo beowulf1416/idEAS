@@ -1,4 +1,5 @@
 export enum ActionType {
     new,
-    view
+    view,
+    edit
 }

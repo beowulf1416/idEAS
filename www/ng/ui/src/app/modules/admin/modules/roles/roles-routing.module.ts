@@ -25,6 +25,13 @@ const routes: Routes = [
     component: RoleComponent
   },
   {
+    path: "role/:role_id/edit",
+    component: RoleComponent,
+    data: {
+      action: ActionType.edit
+    }
+  },
+  {
     path: "role/:role_id/permissions",
     component: RolePermissionsComponent
   },
