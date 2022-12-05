@@ -67,20 +67,22 @@ export class RoleComponent implements OnInit {
 
   ngOnInit(): void {
     const role_id = this.route.snapshot.paramMap.get("role_id") || uuidv4();
-    this.roleForm.get("role_id")?.setValue(role_id);
+    // this.roleForm.get("role_id")?.setValue(role_id);
     // this.action = this.route.snapshot.paramMap.get("action") || "new";
     this.action = (this.route.snapshot.data as { action: ActionType }).action;
 
-    if (this.action != ActionType.new) {
-      this.role_service.get(role_id).subscribe(r => {
-        if (r.success) {
-          const role = (r.data as { role: Role}).role;
-          this.roleForm.get("name")?.setValue(role.name);
-          this.roleForm.get("description")?.setValue(role.description);
-        } else {
-          this.msg_service.send(r.message, MessageType.error);
-        }
-      });
+    switch (this.action) {
+      case ActionType.view: {
+        this.fetch_role(role_id, true);
+        break;
+      }
+      case ActionType.edit: {
+        this.fetch_role(role_id, false);
+        break;
+      }
+      default: {
+        break;
+      }
     }
 
     this.user_service.get_user$().subscribe((user: User) => {
@@ -88,11 +90,34 @@ export class RoleComponent implements OnInit {
     });
   }
 
+  fetch_role(
+    role_id: string,
+    read_only: boolean
+  ) {
+    this.role_service.get(role_id).subscribe(r => {
+      if (r.success) {
+        const role = (r.data as { role: Role}).role;
+        this.set_role(role, read_only);
+      } else {
+        this.msg_service.send(r.message, MessageType.error);
+      }
+    });
+  }
+
+  set_role(
+    role: Role,
+    read_only: boolean
+  ) {
+    this.roleForm.get("role_id")?.setValue(role.id);
+    this.roleForm.get("name")?.setValue(role.name);
+    this.roleForm.get("description")?.setValue(role.description);
+  }
+
   submit() {
     if (this.roleForm.valid) {
       this.submitting = true;
       switch (this.action) {
-        case "edit": {
+        case ActionType.edit: {
           this.role_service.update(
             this.roleForm.get("role_id")?.value || '',
             this.roleForm.get("client_id")?.value || '',
