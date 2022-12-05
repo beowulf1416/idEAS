@@ -1,10 +1,12 @@
 id,active,name,description
-1,TRUE,user.current,get current user information
-2,TRUE,user.profile,view user profile
-3,TRUE,client.add,add client
-4,TRUE,client.update,update client
-5,TRUE,client.update.any,update any client
-6,TRUE,client.active,set client active status
-7,TRUE,client.view,view client information
-8,TRUE,client.view.any,view any client information
-9,TRUE,client.admin,administer client
+1,TRUE,"user.current","get current user information"
+2,TRUE,"user.profile","view user profile"
+3,TRUE,"client.add","add client"
+4,TRUE,"client.update","update client"
+5,TRUE,"client.update.any","update any client"
+6,TRUE,"client.active","set client active status"
+7,TRUE,"client.view","view client information"
+8,TRUE,"client.view.any","view any client information"
+9,TRUE,"client.admin","administer client"
+10,TRUE,"role.add","add client role"
+11,TRUE,"role.add.client.any","add role for any client"
