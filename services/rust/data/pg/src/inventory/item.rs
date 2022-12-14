@@ -71,6 +71,67 @@ impl Item {
             ]
         ).await;
     }
+
+    pub async update(
+        &self,
+        client_id: &uuid::Uuid,
+        item_id: &uuid::Uuid,
+        name: &str,
+        description: &str,
+        sku: &str,
+        upc: &str,
+        dimension_id: &i32,
+        uom_id: &i32,
+        volume: &f32,
+        weight: &f32,
+        shelf_width: &f32,
+        shelf_height: &f32,
+        shelf_depth: &f32,
+        perishable: &bool,
+        stocked: &bool,
+        purchased: &bool,
+        sold: &bool,
+        manufactured: &bool
+    ) -> Result<(), DbError> {
+        return self.0.call_sp(
+            "call inventory.item_update($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $16, $17, $18);",
+            &[
+                &client_id,
+                &item_id,
+                &name,
+                &description,
+                &sku,
+                &upc,
+                &dimension_id,
+                &uom_id,
+                &volume,
+                &weight,
+                &shelf_width,
+                &shelf_height,
+                &shelf_depth,
+                &perishable,
+                &stocked,
+                &purchased,
+                &sold,
+                &manufactured
+            ]
+        ).await;
+    }
+
+    pub async set_active(
+        &self,
+        item_id: &uuid::Uuid,
+        active: &bool
+    ) -> Result<(), DbError> {
+        return self.0.call_sp(
+            "call inventory.item_set_active($1, $2);",
+            &[
+                &client_id,
+                &item_id,
+                &active
+            ]
+        ).await;
+    }
 }
 
 #[cfg(test)]
