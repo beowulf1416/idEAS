@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ActionType } from 'src/app/classes/action-type';
 import { AccountChartComponent } from './components/account-chart/account-chart.component';
 import { AccountComponent } from './components/account/account.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -19,8 +20,18 @@ const routes: Routes = [
         component: AccountChartComponent
       },
       {
-        path: "account",
-        component: AccountComponent
+        path: "account/new",
+        component: AccountComponent,
+        data: {
+          action: ActionType.new
+        }
+      },
+      {
+        path: "account/edit/:account_id",
+        component: AccountComponent,
+        data: {
+          action: ActionType.edit
+        }
       }
     ]
   }
