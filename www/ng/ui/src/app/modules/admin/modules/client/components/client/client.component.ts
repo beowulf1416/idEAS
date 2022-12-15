@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiResponse } from 'src/app/classes/api-response';
@@ -13,7 +13,7 @@ import { ClientService } from '../../services/client.service';
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
-export class ClientComponent implements OnInit {
+export class ClientComponent implements OnInit, AfterViewInit {
 
   submitting = false;
   messages = "";
@@ -46,7 +46,8 @@ export class ClientComponent implements OnInit {
     private client_service: ClientService,
     private country_service: CountryService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {
     this.title.set_title("Client");
   }
@@ -84,6 +85,10 @@ export class ClientComponent implements OnInit {
         break;
       }
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
   }
 
   get client_name() {
