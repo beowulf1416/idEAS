@@ -12,7 +12,8 @@ export class ItemComponent implements OnInit {
   formItem = new FormGroup({
     name: new FormControl('', []),
     description: new FormControl('', []),
-    sku: new FormControl('', [])
+    sku: new FormControl('', []),
+    upc: new FormControl('', [])
   });
 
   constructor(

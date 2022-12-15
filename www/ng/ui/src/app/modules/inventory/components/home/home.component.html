@@ -2,6 +2,9 @@
     <div class="wrapper-toolbar">
         <mat-toolbar color="secondary">
             <mat-toolbar-row>
+                <button mat-button class="btn-locations" aria-label="Locations" [matMenuTriggerFor]="locationsMenu">
+                    Locations
+                </button>
                 <button mat-button class="btn-items" aria-label="Items" [matMenuTriggerFor]="itemsMenu">
                     Items
                 </button>
@@ -11,6 +14,15 @@
         <mat-menu #itemsMenu="matMenu">
             <a mat-menu-item title="List" routerLink="/inventory/items/list">List</a>
             <a mat-menu-item title="Add" routerLink="/inventory/items/new">New</a>
+        </mat-menu>
+
+        <mat-menu #locationsMenu="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="warehousesMenu">Warehouses</button>
+        </mat-menu>
+
+        <mat-menu #warehousesMenu="matMenu">
+            <a mat-menu-item title="List" routerLink="/inventory/warehouses/list">List</a>
+            <a mat-menu-item title="Add" routerLink="/inventory/warehouses/new">New</a>
         </mat-menu>
     </div><!-- .wrapper-toolbar -->
     <div class="wrapper-child">
