@@ -9,9 +9,9 @@ use deadpool::managed::Object;
 use deadpool_postgres::{ 
     Manager
 };
-use tokio_postgres::{
-    error::SqlState
-};
+// use tokio_postgres::{
+//     error::SqlState
+// };
 
 use crate::{
     DbError,
@@ -19,7 +19,7 @@ use crate::{
 };
 
 
-pub struct Item(Dbo);
+pub struct ItemBalances(Dbo);
 
 impl ItemBalances {
     pub fn new(client: Object<Manager>) -> Self {

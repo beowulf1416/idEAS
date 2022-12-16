@@ -9,9 +9,9 @@ use deadpool::managed::Object;
 use deadpool_postgres::{ 
     Manager
 };
-use tokio_postgres::{
-    error::SqlState
-};
+// use tokio_postgres::{
+//     error::SqlState
+// };
 
 use crate::{
     DbError,
@@ -72,7 +72,7 @@ impl Item {
         ).await;
     }
 
-    pub async update(
+    pub async fn update(
         &self,
         client_id: &uuid::Uuid,
         item_id: &uuid::Uuid,
@@ -118,7 +118,7 @@ impl Item {
         ).await;
     }
 
-    pub async set_active(
+    pub async fn set_active(
         &self,
         item_id: &uuid::Uuid,
         active: &bool
@@ -126,7 +126,6 @@ impl Item {
         return self.0.call_sp(
             "call inventory.item_set_active($1, $2);",
             &[
-                &client_id,
                 &item_id,
                 &active
             ]

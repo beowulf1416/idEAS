@@ -13,9 +13,9 @@ use deadpool::managed::Object;
 use deadpool_postgres::{ 
     Manager
 };
-use tokio_postgres::{
-    error::SqlState
-};
+// use tokio_postgres::{
+//     error::SqlState
+// };
 
 use crate::{
     DbError,
