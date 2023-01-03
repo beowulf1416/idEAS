@@ -3,8 +3,11 @@ use serde::{
     Deserialize
 };
 
+/// data store trait
 pub trait Store {
-    fn write(&self, key: &str, data: &serde_json::Value);
+    /// put data into store
+    fn put(&self, key: &str, context: &serde_json::Value);
 
-    fn get(&self, key: &str, data: &serde_json::Value) -> Result<Vec, Error>;
+    /// retrieve data from store
+    fn get(&self, key: &str, context: &serde_json::Value) -> Result<Vec, Error>;
 }
