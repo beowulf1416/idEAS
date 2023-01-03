@@ -183,6 +183,16 @@ impl Dbo {
         };
     }
 
+    pub fn from_db(db: Db) -> Self {
+        if let Ok(client) = db.get_client {
+            return Self {
+                client: client
+            }
+        } else {
+            error!("unable to retrieve db client object");
+        }
+    }
+
     pub fn get_client(
         &self
     ) -> &Object<Manager> {
