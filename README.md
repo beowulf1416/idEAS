@@ -21,6 +21,10 @@ Components
   * Human Resource
   * Sales
   * Procurement
+  
+### THIS PROJECT IS BEING MOVED TO ANOTHER ORGANIZATION/REPOSITORY ###
+### Please refer to the IDEAS platform ###
+### https://github.com/orgs/devphilplus/repositories ###
 
 
 ## Installation and testing
